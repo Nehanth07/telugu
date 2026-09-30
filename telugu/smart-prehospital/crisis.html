@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Crisis — Why Poor PreHospital Care Is Lethal</title>
+  <meta name="description" content="More than half of deaths come from time-sensitive conditions treatable with timely emergency care. Fragmented prehospital systems cost lives." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@200;300;400;500;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    .page-hero{ min-height:78svh; display:flex; align-items:flex-end; position:relative; overflow:hidden; padding-bottom:clamp(3rem,7vh,5rem); }
+    .page-hero .bg{ position:absolute; inset:-8% 0; z-index:0; }
+    .page-hero .bg .ph{ height:116%; }
+    .page-hero .veil{ position:absolute; inset:0; z-index:1;
+      background:linear-gradient(to top, var(--ink) 6%, rgba(8,11,16,.55) 60%, rgba(8,11,16,.7) 100%),
+                 radial-gradient(80% 60% at 80% 10%, rgba(255,70,85,.11), transparent 62%); }
+    .page-hero .inner{ position:relative; z-index:2; width:100%; }
+    .page-hero .idx{ font-family:var(--f-mono); letter-spacing:.3em; color:var(--red); text-transform:uppercase; font-size:.8rem; }
+    .page-hero h1{ font-size:clamp(2.6rem,10vw,9rem); margin-top:1rem; }
+
+    /* Big number callouts */
+    .callout{ display:grid; grid-template-columns:auto 1fr; gap:clamp(1.5rem,4vw,4rem); align-items:center; }
+    .callout .big{ font-family:var(--f-display); font-size:clamp(4rem,14vw,12rem); line-height:.85; color:transparent; -webkit-text-stroke:2px var(--red); }
+    .callout p{ max-width:44ch; }
+    @media(max-width:760px){ .callout{ grid-template-columns:1fr; } }
+
+    .split{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,5rem); align-items:center; }
+    @media(max-width:900px){ .split{ grid-template-columns:1fr; } }
+    .split .frame{ aspect-ratio:3/4; border:1px solid var(--line); }
+
+    .fail-list{ list-style:none; }
+    .fail-list li{ display:flex; gap:1.4rem; padding:1.6rem 0; border-top:1px solid var(--line); align-items:baseline; }
+    .fail-list li .n{ font-family:var(--f-mono); color:var(--red); font-weight:700; letter-spacing:.15em; min-width:3ch; }
+    .fail-list li h3{ font-size:clamp(1.1rem,2.2vw,1.6rem); margin-bottom:.4rem; }
+
+    .pquote{ font-family:var(--f-display); font-size:clamp(2rem,6vw,5rem); line-height:1.02; text-transform:uppercase; max-width:22ch; }
+    .pquote .accent{ color:var(--red); }
+
+    /* Reality section: big portrait + text */
+    .reality{ display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(2rem,5vw,5.5rem); align-items:start; }
+    @media(max-width:900px){ .reality{ grid-template-columns:1fr; } }
+    .reality .portrait{ position:sticky; top:clamp(90px,12vh,140px); aspect-ratio:3/4.3; border:1px solid var(--line); }
+    .reality .portrait .pcap{ position:absolute; left:0; bottom:0; z-index:3; width:100%; padding:1.2rem 1.4rem;
+      font-family:var(--f-mono); letter-spacing:.18em; text-transform:uppercase; font-size:.72rem; color:var(--fg-dim); }
+    @media(max-width:900px){ .reality .portrait{ position:static; aspect-ratio:3/4; max-width:520px; margin-bottom:2.5rem; } }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="bg" data-parallax="0.14">
+      <div class="ph" style="height:116%"><span class="plabel">Empty road at dusk / siren blur (image)</span></div>
+    </div>
+    <div class="veil"></div>
+    <div class="inner wrap">
+      <div class="idx" data-fade>01 — The Crisis</div>
+      <h1 class="display reveal" data-reveal>Why poor <span class="accent">prehospital</span> care is lethal.</h1>
+      <p class="lead" data-fade style="max-width:56ch; margin-top:1.4rem; color:var(--fg-dim);">
+        More than half of all deaths come from conditions that could be treated with timely emergency care —
+        trauma, heart attacks, strokes, sepsis, obstetric and pediatric emergencies.
+      </p>
+    </div>
+  </section>
+
+  <!-- THE FIRST HOUR -->
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow" data-fade>The Golden Hour</span>
+        <h2 class="section-title reveal" data-reveal style="margin:1rem 0 1.4rem;">Most deaths happen in the first hour — and outside the hospital.</h2>
+        <p class="lead muted" data-fade>
+          Because time-sensitive conditions turn fatal fast, gaps in prehospital care translate directly into
+          avoidable mortality and disability. The clock starts long before the emergency room does.
+        </p>
+      </div>
+      <div class="zoom-frame frame">
+        <div class="ph"><span class="plabel">Clock / ECG monitor (image)</span></div>
+        <div class="veil soft"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALLOUT: preventable -->
+  <section class="section paper tight">
+    <div class="wrap callout">
+      <div class="big" data-fade>15–50%</div>
+      <div>
+        <h3 style="color:var(--paper-ink);" data-fade>Trauma death rates before hospital arrival</h3>
+        <p class="lead muted" data-fade style="margin-top:.8rem;">
+          Systematic reviews show prehospital trauma death rates ranging from about 15% to nearly 50% — and a
+          substantial share are preventable: roughly <strong>5–11% definitely</strong> and
+          <strong>26–43% potentially</strong>, with faster transport, better on-scene management and fewer errors.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW POOR IT IS -->
+  <section class="section">
+    <div class="wrap reality">
+      <div class="zoom-frame frame portrait" data-parallax="0.08">
+        <div class="ph"><span class="plabel">Portrait — paramedic / first responder (image)</span></div>
+        <div class="veil soft"></div>
+        <span class="pcap">On the front line — every second counts</span>
+      </div>
+
+      <div class="reality-body">
+        <span class="eyebrow" data-fade>The Reality Today</span>
+        <h2 class="section-title reveal" data-reveal style="margin:1rem 0 clamp(2rem,5vh,3rem); max-width:20ch;">
+          Fragmented. Uncoordinated. Often “suboptimal”.
+        </h2>
+        <div class="grid cols-2">
+          <p class="lead muted" data-fade>
+            Across most of Asia, emergency transport frequently relies on private cars, taxis, or auto-rickshaws —
+            vehicles with no basic life-support capability — contributing to delays and unsafe handling of
+            critically ill patients.
+          </p>
+          <p class="lead muted" data-fade>
+            Studies repeatedly link long response times, missing protocols, minimal triage and out-of-pocket
+            payment barriers to worse outcomes — with higher mortality when the response is slow, unorganized,
+            or clinically weak.
+          </p>
+        </div>
+
+        <ul class="fail-list" style="margin-top:clamp(2.5rem,6vh,4rem);">
+          <li data-fade><span class="n">A.</span><div><h3>Long response &amp; transport times</h3><p class="muted">No GPS dispatch, poor road access, and vehicles placed without regard to incidence hotspots.</p></div></li>
+          <li data-fade><span class="n">B.</span><div><h3>No standardized protocols</h3><p class="muted">Care depends on who shows up — often bystanders with minimal training and no clinical pathway.</p></div></li>
+          <li data-fade><span class="n">C.</span><div><h3>Minimal triage capability</h3><p class="muted">Under-triage, over-triage and wrong-hospital decisions increase mortality and ED crowding.</p></div></li>
+          <li data-fade><span class="n">D.</span><div><h3>Out-of-pocket payment barriers</h3><p class="muted">Cost deters poor patients from calling an ambulance at all — the deadliest delay of them all.</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <section class="section">
+    <div class="wrap" style="display:grid; grid-template-columns:auto 1fr; gap:clamp(1.5rem,4vw,3rem); align-items:center;">
+      <div class="pulse-dot" aria-hidden="true"></div>
+      <p class="pquote reveal" data-reveal>
+        Treated as a last resort, the ambulance stays scarce — and that scarcity <span class="accent">silently</span> becomes loss.
+      </p>
+    </div>
+    <div class="wrap" style="margin-top:clamp(2.5rem,6vh,4rem);">
+      <a class="btn solid" href="capabilities.html" data-link>How we fix it <span class="arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <script src="assets/js/motion.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lando Norris Experience - Modular Horizontal Scroll</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #e3e3dc;
+            color: #1a1c18;
+            overflow-x: hidden;
+        }
+        .serif-font {
+            font-family: 'Instrument Serif', serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e3e3dc;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b5b5ac;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8c8c82;
+        }
+    </style>
+</head>
+<body class="selection:bg-black selection:text-white">
+
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 bg-[#e3e3dc]/80 backdrop-blur-md">
+        <div class="flex items-center space-x-3">
+            <span class="text-xl font-black tracking-tighter uppercase font-mono bg-black text-white px-2 py-0.5">Lando</span>
+            <span class="text-xl font-black tracking-widest uppercase">Norris</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wider text-gray-700">
+            <a href="#hero" class="hover:text-black transition">HOME</a>
+            <a href="#experience" class="hover:text-black transition">JOURNEY</a>
+            <a href="#stats" class="hover:text-black transition">STATS</a>
+        </div>
+        <a href="#store" class="bg-[#ccff00] hover:bg-[#b8e600] text-black font-semibold text-xs tracking-wider uppercase px-6 py-3 rounded-full transition shadow-md flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            STORE
+        </a>
+    </header>
+
+    <section id="hero" class="relative min-h-screen flex flex-col justify-center items-center px-6 pt-24 pb-16 bg-[#161814] text-[#f3f4f1] text-center overflow-hidden">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                <path d="M0,200 Q250,50 500,300 T1000,150 V1000 H0 Z" fill="none" stroke="#d4ff00" stroke-width="2"/>
+                <path d="M0,600 Q300,800 600,500 T1000,700" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+        </div>
+
+        <div class="max-w-4xl mx-auto z-10 space-y-6">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs tracking-widest text-[#d4ff00] uppercase font-mono">
+                McLaren F1 Since 2019
+            </div>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] uppercase">
+                Redefining Limits, Fighting for <span class="text-[#d4ff00] italic font-serif font-normal">Wins</span>, Bringing it all in all ways. Defining a <span class="text-[#d4ff00] italic font-serif font-normal">Legacy</span> in Formula 1 on and off the track.
+            </h1>
+            <p class="text-gray-400 max-w-xl mx-auto text-base md:text-lg font-light pt-4">
+                Scroll down to enter the modular horizontal gallery experience.
+            </p>
+            <div class="pt-8">
+                <div class="w-6 h-10 border-2 border-white/20 rounded-full mx-auto flex justify-center p-1">
+                    <div class="w-1.5 h-3 bg-[#d4ff00] rounded-full animate-bounce"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="relative h-[600vh] bg-[#d3d3cc]">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex items-center">
+            
+            <svg class="absolute inset-0 w-[8000px] h-full pointer-events-none opacity-20 z-0" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-100,500 Q500,200 1200,600 T2800,300 T4500,800 T6000,200 T8000,500" fill="none" stroke="#71736b" stroke-width="1"/>
+                <path d="M-200,800 Q600,900 1500,400 T3200,700 T5000,100 T6500,600 T8000,300" fill="none" stroke="#71736b" stroke-width="0.75"/>
+                <path d="M0,200 Q800,-100 1800,300 T3800,800 T5500,400 T7000,900" fill="none" stroke="#8a8c82" stroke-width="0.5"/>
+            </svg>
+
+            <div id="horizontal-track" class="flex items-center h-full will-change-transform absolute left-0 z-10 w-[6000px]">
+
+                <!-- LAYER 1: IMAGE PLACEMENT CONTAINER -->
+                <div id="image-layer" class="absolute inset-0 pointer-events-none z-10">
+                    
+                    <div class="pointer-events-auto absolute left-[5vw] bottom-[5%] w-[420px] shadow-2xl bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">Miami GP, 2024</div>
+                        <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80" alt="Miami Win" class="w-full aspect-[4/5] object-cover filter contrast-110" onerror="this.src='https://placehold.co/800x1000/d0d0c8/333?text=Miami+Win';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[1250px] top-[18%] w-[240px] shadow-md bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">Monaco, 2023</div>
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80" alt="Golf" class="w-full aspect-square object-cover filter sepia-[0.3] grayscale-[0.5]" onerror="this.src='https://placehold.co/500x500/d0d0c8/333?text=Golf';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[2100px] top-[42%] -translate-y-1/2 w-[340px] shadow-xl bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">Britain, 2025</div>
+                        <img src="https://images.unsplash.com/photo-1579829366248-204fe84172f1?auto=format&fit=crop&w=600&q=80" alt="Helmet" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/600x600/d0d0c8/333?text=Helmet';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[3050px] top-[10%] w-[250px] shadow-lg bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">High Performance Gala, 2024</div>
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80" alt="Gala" class="w-full aspect-[3/4] object-cover filter sepia-[0.2] grayscale-[0.8] contrast-125" onerror="this.src='https://placehold.co/500x666/d0d0c8/333?text=Gala';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[3750px] bottom-[12%] w-[280px] shadow-lg bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">Battersea, 2024</div>
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Battersea" class="w-full aspect-[4/5] object-cover" onerror="this.src='https://placehold.co/600x750/d0d0c8/333?text=Battersea';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[4550px] top-[25%] w-[420px] shadow-xl bg-[#d0d0c8]">
+                        <div class="text-[8px] font-mono text-gray-500 mb-1 ml-1 uppercase tracking-widest">Barcelona, 2024</div>
+                        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=800&q=80" alt="Track" class="w-full aspect-[16/9] object-cover filter grayscale contrast-110" onerror="this.src='https://placehold.co/800x450/d0d0c8/333?text=Track';">
+                    </div>
+
+                </div>
+
+                <!-- LAYER 2: TEXT PLACEMENT CONTAINER -->
+                <div id="text-layer" class="absolute inset-0 pointer-events-none z-20">
+                    
+                    <div class="absolute left-[2vw] top-[10%] max-w-[280px]">
+                        <p class="serif-font text-3xl italic leading-tight text-gray-800">"It doesn't matter where you start..."</p>
+                    </div>
+
+                    <div class="absolute left-[2550px] top-[65%] max-w-[320px]">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-gray-500 block mb-2">// FOCUS & CRAFT</span>
+                        <p class="text-sm font-medium text-gray-700 leading-relaxed">Precision under pressure requires rigorous mental conditioning and technical alignment.</p>
+                    </div>
+
+                    <div class="absolute left-[5250px] top-[50%] -translate-y-1/2 w-[400px] pr-20">
+                        <p class="serif-font text-3xl md:text-4xl italic leading-relaxed text-gray-800">
+                            "Since I was 7 years old and had my first experience with kart racing, I've worked tirelessly to make that dream come true."
+                        </p>
+                        <div class="flex items-center gap-4 pt-6">
+                            <div class="h-[1px] w-12 bg-black"></div>
+                            <span class="text-[10px] font-mono uppercase tracking-widest text-gray-500">End of Gallery // Proceed Down</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="absolute bottom-8 left-12 right-12 z-30 flex items-center justify-between pointer-events-none text-[10px] font-mono text-gray-500 tracking-widest uppercase">
+                <span>Modular Scroll Canvas</span>
+                <div class="w-48 h-[2px] bg-black/10 rounded-full overflow-hidden">
+                    <div id="scroll-progress-bar" class="h-full bg-black/40 w-0 transition-all duration-75"></div>
+                </div>
+                <span>Norris Archive</span>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="stats" class="relative py-28 px-6 md:px-16 bg-[#161814] text-[#f3f4f1] border-t border-white/10 z-30">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+            <div class="p-8 rounded-2xl bg-white/[0.02] border border-white/10 space-y-3">
+                <div class="text-5xl md:text-6xl font-black text-[#d4ff00] serif-font">2019</div>
+                <h3 class="text-xl font-bold uppercase tracking-wide">F1 Debut</h3>
+                <p class="text-gray-400 text-sm">Stepping into the pinnacle of motorsport with McLaren and carving out a rapid reputation.</p>
+            </div>
+            <div class="p-8 rounded-2xl bg-white/[0.02] border border-white/10 space-y-3">
+                <div class="text-5xl md:text-6xl font-black text-[#d4ff00] serif-font">P1</div>
+                <h3 class="text-xl font-bold uppercase tracking-wide">Race Winner</h3>
+                <p class="text-gray-400 text-sm">Mastering elite race craft, converting pole positions and relentless pace into supreme victories.</p>
+            </div>
+            <div class="p-8 rounded-2xl bg-white/[0.02] border border-white/10 space-y-3">
+                <div class="text-5xl md:text-6xl font-black text-[#d4ff00] serif-font">#4</div>
+                <h3 class="text-xl font-bold uppercase tracking-wide">Signature Number</h3>
+                <p class="text-gray-400 text-sm">Racing with precision, personality, and unwavering dedication on and off the circuit.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="store" class="py-16 px-6 bg-[#111310] text-[#f3f4f1] border-t border-white/10 text-center md:text-left z-30 relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+            <div>
+                <span class="text-2xl font-black tracking-tighter uppercase font-mono bg-white text-black px-2 py-0.5">Lando</span>
+                <span class="text-2xl font-black tracking-widest uppercase ml-2">Norris</span>
+                <p class="text-gray-400 text-xs mt-2 font-mono">OFFICIAL FAN EXPERIENCE & ARCHIVE</p>
+            </div>
+            <div class="flex items-center space-x-6 text-sm text-gray-400">
+                <a href="#hero" class="hover:text-white transition">Back to Top</a>
+                <a href="#" class="hover:text-white transition">Privacy</a>
+                <a href="#" class="hover:text-white transition">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const experienceSection = document.getElementById('experience');
+        const track = document.getElementById('horizontal-track');
+        const progressBar = document.getElementById('scroll-progress-bar');
+
+        function updateHorizontalScroll() {
+            const rect = experienceSection.getBoundingClientRect();
+            const sectionHeight = experienceSection.offsetHeight;
+            const windowHeight = window.innerHeight;
+
+            const scrollableDistance = sectionHeight - windowHeight;
+            const scrolledCurrent = -rect.top;
+
+            if (scrolledCurrent >= 0 && scrolledCurrent <= scrollableDistance) {
+                const progress = scrolledCurrent / scrollableDistance;
+                
+                const trackWidth = track.scrollWidth;
+                const viewWidth = window.innerWidth;
+                const maxTranslate = trackWidth - viewWidth + 150;
+
+                const translateX = progress * maxTranslate;
+                track.style.transform = `translateX(-${translateX}px)`;
+
+                if (progressBar) {
+                    progressBar.style.width = `${progress * 100}%`;
+                }
+            } else if (scrolledCurrent < 0) {
+                track.style.transform = `translateX(0px)`;
+                if (progressBar) progressBar.style.width = '0%';
+            } else {
+                const trackWidth = track.scrollWidth;
+                const viewWidth = window.innerWidth;
+                const maxTranslate = trackWidth - viewWidth + 150;
+                track.style.transform = `translateX(-${maxTranslate}px)`;
+                if (progressBar) progressBar.style.width = '100%';
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            requestAnimationFrame(updateHorizontalScroll);
+        }, { passive: true });
+
+        window.addEventListener('resize', updateHorizontalScroll);
+    </script>
+</body>
+</html>

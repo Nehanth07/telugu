@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capabilities — Why We Need Smart, Tech-Enabled Ambulances</title>
+  <meta name="description" content="Five capabilities of a highly responsive, smart, tech-enabled ambulance service: dispatch, paramedics, triage, integration and non-emergency transport." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@200;300;400;500;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    .page-hero{ min-height:70svh; display:flex; align-items:flex-end; position:relative; overflow:hidden; padding-bottom:clamp(3rem,7vh,5rem); }
+    .page-hero .veil{ position:absolute; inset:0; z-index:1;
+      background:radial-gradient(70% 60% at 15% 20%, rgba(33,243,155,.08), transparent 62%),
+                 linear-gradient(to top, var(--ink) 10%, transparent 90%); }
+    .page-hero .grid-lines{ position:absolute; inset:0; z-index:0;
+      background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px); background-size:70px 70px; }
+    .page-hero .inner{ position:relative; z-index:2; width:100%; }
+    .page-hero .idx{ font-family:var(--f-mono); letter-spacing:.3em; color:var(--vital); text-transform:uppercase; font-size:.8rem; }
+    .page-hero h1{ font-size:clamp(2.4rem,9vw,8rem); margin-top:1rem; }
+
+    /* Capability block */
+    .cap{ padding-block:clamp(3rem,8vh,7rem); border-top:1px solid var(--line); }
+    .cap-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:clamp(2rem,5vw,5rem); align-items:start; }
+    @media(max-width:900px){ .cap-grid{ grid-template-columns:1fr; } }
+    .cap .num{ font-family:var(--f-display); font-size:clamp(3.5rem,9vw,7rem); line-height:.85; color:transparent; -webkit-text-stroke:2px var(--red); }
+    .cap h2{ font-family:var(--f-display); font-weight:400; text-transform:uppercase; font-size:clamp(1.6rem,3.4vw,2.8rem); line-height:1; margin:1rem 0 1.2rem; }
+    .cap .problem{ color:var(--fg-dim); max-width:52ch; }
+    .cap .sol-label{ font-family:var(--f-mono); letter-spacing:.2em; text-transform:uppercase; font-size:.75rem; color:var(--vital); margin-bottom:1rem; display:flex; align-items:center; gap:.6em; }
+    .cap .sol-label::before{ content:""; width:22px; height:1px; background:var(--vital); }
+    .sol-list{ list-style:none; }
+    .sol-list li{ display:flex; gap:1rem; padding:1rem 0; border-bottom:1px solid var(--line); }
+    .sol-list li::before{ content:"+"; color:var(--vital); font-family:var(--f-mono); font-weight:700; }
+    .sol-list li span{ color:var(--fg); }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="grid-lines"></div>
+    <div class="veil"></div>
+    <div class="inner wrap">
+      <div class="idx" data-fade>02 — Capabilities</div>
+      <h1 class="display reveal" data-reveal>Why we need <span class="accent">smart</span> ambulances.</h1>
+      <p class="lead" data-fade style="max-width:58ch; margin-top:1.4rem; color:var(--fg-dim);">
+        Highly responsive, tech-enabled ambulances don't just move faster — they close five specific,
+        measurable gaps that cost lives today. Each problem has a solution we can deploy now.
+      </p>
+    </div>
+  </section>
+
+  <!-- CAP 01 -->
+  <section class="cap"><div class="wrap cap-grid">
+    <div>
+      <div class="num" data-fade>01</div>
+      <h2 class="reveal" data-reveal>Reduce delayed response &amp; increase coverage</h2>
+      <p class="problem" data-fade>
+        Fragmented EMS systems, poor road access and inadequate availability lead to long response times and
+        avoidable mortality. Rural and peri-urban areas are particularly underserved.
+      </p>
+    </div>
+    <div data-fade>
+      <div class="sol-label">What we deploy</div>
+      <ul class="sol-list">
+        <li><span>Tech-enabled dispatch with GPS-based nearest-vehicle allocation and traffic-aware routing.</span></li>
+        <li><span>Real-time data to hospitals on patient condition, with live viewing to assist the paramedic.</span></li>
+        <li><span>Hub-and-spoke fleet placement covering high-incidence zones and rural clusters.</span></li>
+        <li><span>One universal access number and app-based data sharing.</span></li>
+      </ul>
+    </div>
+  </div></section>
+
+  <!-- CAP 02 -->
+  <section class="cap"><div class="wrap cap-grid">
+    <div>
+      <div class="num" data-fade>02</div>
+      <h2 class="reveal" data-reveal>Put trained paramedics on every vehicle</h2>
+      <p class="problem" data-fade>
+        Patients are too often managed by bystanders with minimal training, amid a shortage of skilled
+        prehospital professionals — hurting outcomes for trauma, stroke and other time-sensitive conditions.
+      </p>
+    </div>
+    <div data-fade>
+      <div class="sol-label">What we deploy</div>
+      <ul class="sol-list">
+        <li><span>EMT/paramedic-led ambulances with protocolized care for trauma, stroke, STEMI and sepsis.</span></li>
+        <li><span>Continuous training for EMTs and drivers, plus telemedicine support from emergency physicians.</span></li>
+        <li><span>Community first-responder training — police, taxi drivers, factory staff — linked into dispatch.</span></li>
+      </ul>
+    </div>
+  </div></section>
+
+  <!-- CAP 03 -->
+  <section class="cap"><div class="wrap cap-grid">
+    <div>
+      <div class="num" data-fade>03</div>
+      <h2 class="reveal" data-reveal>Fix triage &amp; destination decisions</h2>
+      <p class="problem" data-fade>
+        Teams struggle to identify time-sensitive conditions, causing under-triage, over-triage or the wrong
+        hospital choice — raising mortality, ED crowding and cost for patients and hospitals alike.
+      </p>
+    </div>
+    <div data-fade>
+      <div class="sol-label">What we deploy</div>
+      <ul class="sol-list">
+        <li><span>AI decision-support and standardized triage scales embedded in EMT tablets.</span></li>
+        <li><span>Condition-specific pathways: stroke → CT centre, STEMI → PCI hospital, polytrauma → trauma centre.</span></li>
+        <li><span>Real-time sharing of vitals and assessment so receiving teams activate early — proactive, not reactive.</span></li>
+      </ul>
+    </div>
+  </div></section>
+
+  <!-- CAP 04 -->
+  <section class="cap"><div class="wrap cap-grid">
+    <div>
+      <div class="num" data-fade>04</div>
+      <h2 class="reveal" data-reveal>Integrate, coordinate &amp; make data visible</h2>
+      <p class="problem" data-fade>
+        Prehospital systems are uncoordinated — lacking a unified access number, protocols and data exchange.
+        Incomplete EMS-to-hospital information limits audit, benchmarking and planning.
+      </p>
+    </div>
+    <div data-fade>
+      <div class="sol-label">What we deploy</div>
+      <ul class="sol-list">
+        <li><span>A central digital platform integrating call centre, dispatch, navigation, documentation and hospital comms.</span></li>
+        <li><span>Standardized electronic patient care records (ePCR) with structured time stamps, interventions and outcomes.</span></li>
+        <li><span>Analytics for governments, payers and hospitals to monitor coverage, response times and clinical indicators.</span></li>
+      </ul>
+    </div>
+  </div></section>
+
+  <!-- CAP 05 -->
+  <section class="cap"><div class="wrap cap-grid">
+    <div>
+      <div class="num" data-fade>05</div>
+      <h2 class="reveal" data-reveal>Serve non-emergency &amp; interfacility transport</h2>
+      <p class="problem" data-fade>
+        Systems built around emergencies only leave gaps in scheduled and interfacility transport — logistically
+        complex, critical for continuity of care, and among the most profitable ambulance segments.
+      </p>
+    </div>
+    <div data-fade>
+      <div class="sol-label">What we deploy</div>
+      <ul class="sol-list">
+        <li><span>Dedicated scheduling for dialysis, oncology, rehab visits and chronic-care follow-ups.</span></li>
+        <li><span>High-reliability interfacility transfers — ICU, neonatal, cardiac — under hospital contract.</span></li>
+        <li><span>On-demand and pre-booked coverage for events, sports and public gatherings.</span></li>
+      </ul>
+    </div>
+  </div></section>
+
+  <!-- EVENTS NOTE -->
+  <section class="section paper">
+    <div class="wrap" style="max-width:52ch;">
+      <span class="eyebrow" data-fade>Events &amp; Gatherings</span>
+      <p class="lead reveal" data-reveal style="font-size:clamp(1.3rem,3vw,2rem); margin-top:1rem;">
+        At any event with 500+ people, the real risk isn't calling an ambulance too early — it's calling it
+        too late. On-site care is a sign the event is professionally run and cares for its people.
+      </p>
+      <a class="btn" href="solution.html" data-link style="--c:var(--red-deep); color:var(--paper-ink); margin-top:2rem;">See the platform <span class="arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <script src="assets/js/motion.js"></script>
+</body>
+</html>

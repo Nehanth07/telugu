@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telugu School</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #f0f0f0; }
+    .page-section { width: 100%; overflow: hidden; }
+    #testimonials-page { min-height: 100vh; }
+    #testimonials-page iframe { display: block; width: 100%; min-height: 100vh; border: 0; }
+    #footer-page { background: #fdf8f0; }
+    #footer-page iframe { display: block; width: 100%; border: 0; min-height: 650px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="testimonials-page" class="page-section" aria-label="Testimonials">
+      <iframe id="testimonials-frame" src="9.html" title="Voices of Students"></iframe>
+    </section>
+    <section id="footer-page" class="page-section" aria-label="Footer">
+      <iframe id="footer-frame" src="footer.html" title="Site footer"></iframe>
+    </section>
+  </main>
+  <script>
+    function fitFrame(frame) {
+      try {
+        const documentHeight = frame.contentDocument.documentElement.scrollHeight;
+        frame.style.height = Math.max(documentHeight, 650) + 'px';
+      } catch (error) {
+        frame.style.height = '100vh';
+      }
+    }
+
+    document.getElementById('testimonials-frame').addEventListener('load', function () {
+      fitFrame(this);
+    });
+
+    document.getElementById('footer-frame').addEventListener('load', function () {
+      const footerDocument = this.contentDocument;
+      const footerWindow = this.contentWindow;
+      const footerStyle = footerDocument.createElement('style');
+      footerStyle.textContent = `
+        html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+        #main-container { position: relative !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }
+        #bottom-card { position: relative !important; inset: auto !important; min-height: 650px; }
+        #red-section, #top-curtain, #bottom-curtain, #scroll-hint, #wave-canvas { display: none !important; }
+        #doodle-container, #answer-container { opacity: 1 !important; transform: none !important; }
+        .animate-wiggle { animation: none !important; }
+      `;
+      footerDocument.head.appendChild(footerStyle);
+      footerDocument.querySelectorAll('script').forEach(function (script) {
+        if (script.textContent.includes('WaveAnimation') || script.textContent.includes('ScrollTrigger')) {
+          script.remove();
+        }
+      });
+      fitFrame(this);
+      if (footerWindow.ResizeObserver) {
+        new footerWindow.ResizeObserver(() => fitFrame(document.getElementById('footer-frame')))
+          .observe(footerDocument.body);
+      }
+    });
+  </script>
+</body>
+</html>

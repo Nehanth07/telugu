@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Olynta — Stroke Formation (Generous-style)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  :root{
+    --ink:#0b0f14;
+    --bg:#f2f0ea;
+    --stroke-w: 26;          /* monoline thickness (looks bold + hand-drawn) */
+    --logo-w: 720px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2.2rem; font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  .lab-tag{ letter-spacing:.4em; text-transform:uppercase; font-size:.62rem; color:#8a8577; }
+
+  .logo{ width:var(--logo-w); max-width:92vw; }
+  .logo svg{ width:100%; height:auto; display:block; overflow:visible; }
+
+  /* every drawable path shares this monoline pen look */
+  .pen{
+    fill:none;
+    stroke:var(--ink);
+    stroke-width:var(--stroke-w);
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+
+  .controls{ display:flex; gap:.9rem; }
+  button{
+    letter-spacing:.15em;text-transform:uppercase;font-size:.72rem;
+    color:#0b0f14;background:transparent;border:1px solid #0b0f14;
+    padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;transition:.2s;
+  }
+  button:hover{ background:#0b0f14;color:#f2f0ea; }
+</style>
+</head>
+<body>
+
+<div class="lab-tag">Olynta · stroke formation</div>
+
+<div class="logo">
+  <!-- viewBox laid out left→right: O l y n t a -->
+  <svg viewBox="0 0 760 320" role="img" aria-label="Olynta">
+    <!-- O : two arcs sweeping around (drawn like a pen) -->
+    <path id="o"  class="pen" d="M95,65 A58,85 0 1,1 95,235 A58,85 0 1,1 95,65" />
+
+    <!-- y : left arm + long main stroke into the tail (pen-traced) -->
+    <path id="yArm"  class="pen" d="M240,95 L288,175" />
+    <path id="yMain" class="pen" d="M338,95 L255,278" />
+
+    <!-- n : left stem, arch, right stem -->
+    <path id="nStemL" class="pen" d="M385,235 L385,150" />
+    <path id="nArch"  class="pen" d="M385,150 C385,95 480,95 480,150" />
+    <path id="nStemR" class="pen" d="M480,150 L480,235" />
+
+    <!-- l : a vertical stroke that TRAVELS LEFT into place while drawing -->
+    <g id="lTravel">
+      <path id="l" class="pen" d="M185,65 L185,235" />
+    </g>
+
+    <!-- t : vertical stroke TRAVELS RIGHT into place, then crossbar draws -->
+    <g id="tTravel">
+      <path id="tStem" class="pen" d="M560,90 L560,235" />
+    </g>
+    <path id="tCross" class="pen" d="M530,135 L592,135" />
+
+    <!-- a : formed like n but WITHOUT the top stroke (two stems + bottom bowl) -->
+    <path id="aStemL" class="pen" d="M620,150 L620,235" />
+    <path id="aBowl"  class="pen" d="M620,235 C620,272 710,272 710,235" />
+    <path id="aStemR" class="pen" d="M710,235 L710,150" />
+  </svg>
+</div>
+
+<div class="controls">
+  <button id="replay">Replay</button>
+</div>
+
+<script>
+  // --- set up every path for "pen drawing" via stroke-dashoffset ---
+  const paths = {};
+  document.querySelectorAll('.pen').forEach(p => {
+    const len = p.getTotalLength();
+    p.style.strokeDasharray  = len;
+    p.style.strokeDashoffset = len;         // hidden until drawn
+    p.dataset.len = len;
+    paths[p.id] = p;
+  });
+
+  // draw helper: tween dashoffset len -> 0 (pen moves along the path)
+  function draw(id, dur, ease='power1.inOut'){
+    return { el: paths[id], dur, ease };
+  }
+
+  let tl;
+  function build(){
+    // reset
+    document.querySelectorAll('.pen').forEach(p => {
+      p.style.strokeDashoffset = p.dataset.len;
+    });
+    gsap.set('#lTravel', { x: 200 });        // l starts over by the n (right) then slides LEFT
+    gsap.set('#tTravel', { x: -60 });        // t starts near n then slides RIGHT
+    gsap.set(['#tCross','#yArm','#yMain'], { autoAlpha: 1 });
+
+    tl = gsap.timeline({ defaults:{ ease:'power1.inOut' } });
+
+    // 1) O — traced like the Generous O
+    tl.to('#o', { strokeDashoffset:0, duration:0.75 }, 0.0);
+
+    // 2) y — pen-traced (short arm, then long stroke into the tail)
+    tl.to('#yArm',  { strokeDashoffset:0, duration:0.22 }, 0.7);
+    tl.to('#yMain', { strokeDashoffset:0, duration:0.40 }, 0.9);
+
+    // 3) n — draws; AT THE SAME TIME l travels LEFT and t travels RIGHT
+    tl.to('#nStemL', { strokeDashoffset:0, duration:0.30 }, 1.35);
+    tl.to('#nArch',  { strokeDashoffset:0, duration:0.40 }, 1.55);
+    tl.to('#nStemR', { strokeDashoffset:0, duration:0.30 }, 1.85);
+
+    //    l : split off and glide left while drawing (like Generous pulling a stroke across)
+    tl.to('#lTravel', { x:0, duration:0.75, ease:'power2.out' }, 1.35);
+    tl.to('#l',       { strokeDashoffset:0, duration:0.6 },      1.4);
+
+    //    t : glide right into position while drawing its stem…
+    tl.to('#tTravel', { x:0, duration:0.75, ease:'power2.out' }, 1.35);
+    tl.to('#tStem',   { strokeDashoffset:0, duration:0.55 },     1.4);
+    // 4) t crossbar completes the t
+    tl.to('#tCross',  { strokeDashoffset:0, duration:0.28 },     2.15);
+
+    // 5) a — formed like n but WITHOUT the top stroke (stem, bottom bowl, stem)
+    tl.to('#aStemL', { strokeDashoffset:0, duration:0.28 }, 2.35);
+    tl.to('#aBowl',  { strokeDashoffset:0, duration:0.40 }, 2.6);
+    tl.to('#aStemR', { strokeDashoffset:0, duration:0.28 }, 2.95);
+
+    return tl;
+  }
+
+  function play(){ if(tl) tl.kill(); build().play(0); }
+
+  // respect reduced motion → show final instantly
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('.pen').forEach(p => p.style.strokeDashoffset = 0);
+    gsap.set('#lTravel',{x:0}); gsap.set('#tTravel',{x:0});
+  } else {
+    window.addEventListener('load', play);
+  }
+  document.getElementById('replay').addEventListener('click', play);
+</script>
+</body>
+</html>

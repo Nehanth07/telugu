@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24/7 Artists - Dummy Page Layout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'bricolage': ['"Bricolage Grotesque"', 'sans-serif'],
+                            'caveat': ['"Caveat"', 'cursive'],
+                            'inter': ['"Inter"', 'sans-serif'],
+                            'jakarta': ['"Plus Jakarta Sans"', 'sans-serif'],
+                            'barlow': ['"Barlow Condensed"', 'sans-serif'],
+                        },
+                        colors: {
+                            'brand-cream': '#FDF8F0',
+                            'brand-red': '#F95335',
+                            'brand-yellow': '#FDBB11',
+                            'brand-green': '#4ADE80',
+                            'brand-blue': '#2563EB',
+                            'brand-black': '#1A1A1A',
+                            'sonar-bg': '#EAE8E0',
+                            'sonar-dark': '#1A1A1A',
+                            'accent-lime': '#D1FF00',
+                        }
+                    }
+                }
+            }
+        </script>
+<!-- Styles copied from 1.html -->
+<style>
+        :root {
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --grid-column-width: 6vw;
+            --grid-gutter-width: 2vw;
+            --grid-offset: 4vw;
+            --color-edu: #b4ff33;
+            --color-tech: #ffb800;
+            --color-net: #9d83ff;
+            --clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Lenis Required Styles */
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-smooth iframe {
+            pointer-events: none;
+        }
+
+        /* Custom Font Loading */
+        @font-face {
+            font-family: 'Telegraf';
+            font-style: normal;
+            font-weight: 400;
+            src: url('./telegraf/PPTelegraf-Regular.woff2') format('woff2');
+            font-display: swap;
+            text-rendering: optimizeLegibility;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Custom slide transitions for right-to-left slide over */
+        .slide {
+            visibility: hidden;
+            transform: translateX(100%);
+            z-index: 1;
+            will-change: transform;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+        }
+
+        .slide.is-active {
+            visibility: visible;
+            transform: translateX(0);
+            z-index: 10;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+        }
+
+        .slide.is-leaving {
+            visibility: visible;
+            transform: translateX(0);
+            filter: brightness(0.5);
+            z-index: 5;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), filter 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .slide video {
+            transform: translateX(0);
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .slide.is-leaving video {
+            transform: translateX(-15%);
+        }
+
+        /* Text Animation (Line Reveal) */
+        .slide-text {
+            transform: translateY(120%);
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: block;
+            will-change: transform;
+        }
+
+        .slide.is-active .slide-text {
+            transform: translateY(0);
+        }
+
+        .slide.is-active h3.slide-text {
+            transition-delay: 1.0s;
+        }
+
+        .slide.is-active p.slide-text {
+            transition-delay: 1.5s;
+        }
+
+        .slide:not(.is-active) .slide-text {
+            transform: translateY(120%);
+            transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide:not(.is-active) h3.slide-text {
+            transition-delay: 0.27s;
+        }
+
+        .slide:not(.is-active) p.slide-text {
+            transition-delay: 0s;
+        }
+
+        .spin-slow {
+            animation: spin 15s linear infinite;
+        }
+
+        .text-overlay-gradient {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 40%, transparent 100%);
+        }
+
+        /* Layered Button Animation */
+        .layered-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            overflow: hidden;
+            z-index: 1;
+            text-decoration: none;
+        }
+
+        .header-btn {
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 0.4rem 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header-btn {
+                padding: 0.6rem 1.6rem;
+            }
+        }
+
+        .vision-btn {
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+        }
+
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleY(0);
+            transform-origin: center;
+        }
+
+        .bg-layer-1 { 
+            background-color: #f0f0f0; 
+            z-index: -3;
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.2s; 
+        }
+        .bg-layer-2 { 
+            background-color: #D1FF00; 
+            z-index: -2; 
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.1s; 
+        }
+        .bg-layer-3 { 
+            background-color: #1a1a1a; 
+            z-index: -1; 
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0s; 
+        }
+        
+        .layered-btn:hover .bg-layer-1 {
+            transform: scaleY(1);
+            transition-delay: 0s;
+        }
+        .layered-btn:hover .bg-layer-2 {
+            transform: scaleY(1);
+            transition-delay: 0.1s;
+        }
+        .layered-btn:hover .bg-layer-3 {
+            transform: scaleY(1);
+            transition-delay: 0.2s;
+        }
+
+        .btn-text, .btn-icon {
+            position: relative;
+            z-index: 2;
+            transition: color 0.2s ease 0.2s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .layered-btn:hover .btn-text,
+        .layered-btn:hover .btn-icon {
+            color: #D1FF00;
+            transition-delay: 0.25s;
+        }
+        
+        .layered-btn:hover .btn-icon {
+            transform: translate(4px, -4px);
+        }
+
+        /* Nav Toggle Animation Mechanics */
+        :root {
+            --line-color: #ffffff;
+            --line-height: 2px;
+            --line-width: 32px;
+            --gap: 8px;
+            --collapse-dist: 5px;
+        }
+
+        .nav-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            gap: var(--gap);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            width: 40px;
+        }
+
+        .line {
+            height: var(--line-height);
+            background-color: var(--line-color);
+            display: block;
+            transform-origin: center;
+            will-change: transform, translate, rotate, width;
+            scale: 1 1;
+            translate: 0 0;
+            rotate: 0deg;
+            transition:
+                rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                opacity 0.2s ease 0.3s,
+                scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+        }
+
+        .l1 { width: var(--line-width); }
+        .l2 { width: calc(var(--line-width) * 0.55); }
+
+        .nav-toggle.active .line {
+            width: var(--line-width);
+            transition:
+                translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                opacity 0.2s ease 0s,
+                scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+        }
+
+        .nav-toggle.active .l1 {
+            translate: 0 var(--collapse-dist);
+            rotate: 45deg;
+        }
+
+        .nav-toggle.active .l2 {
+            translate: 0 calc(var(--collapse-dist) * -1);
+            rotate: -45deg;
+        }
+
+        .animated-link {
+            position: relative;
+            display: inline-block;
+            width: max-content;
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            left: 0;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .animated-link:hover::after {
+            transform-origin: left;
+            transform: scaleX(1);
+        }
+
+        .desktop-link::after {
+            height: 1.5px;
+            bottom: -4px;
+        }
+
+        .mobile-link::after {
+            height: 5px;
+            bottom: 4px;
+        }
+    </style>
+<!-- Styles copied from the updated 2,3,4 page code -->
+<style>
+        :root {
+            /* 24/7 Artists Variables */
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --grid-column-width: 6vw;
+            --grid-gutter-width: 2vw;
+            --grid-offset: 4vw;
+            --color-edu: #b4ff33;
+            --color-tech: #ffb800;
+            --color-net: #9d83ff;
+            --clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
+            
+            /* Telugu Badi Variables */
+            --color-tb-black: #231C3B;
+            --color-tb-bg: #FCF8F2;
+            --color-pink: #FF4B8A;
+            --color-teal: #00BFA5;
+            --color-orange: #FF9800;
+            --color-purple: #8E24AA;
+            --color-green: #4CAF50;
+
+            /* Journey Variables */
+            --left-ext: 600px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: var(--color-brand-10); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+        }
+
+        .u-container { max-width: 1440px; margin: 0 auto; padding: 0 var(--grid-offset); position: relative; }
+        .t-label { display: inline-block; padding: .15em .5em .2em; border-radius: 50px; color: var(--color-black); font-weight: 500; line-height: 1; transform: translateY(-.05em); }
+        .t-label--education { background: var(--color-edu); }
+        .t-label--technology { background: var(--color-tech); }
+        .t-label--network { background: var(--color-net); }
+        h2.s__suptitle { margin: 0; font-size: 1.25rem; border: 1px solid var(--color-black); display: inline-block; padding: .3rem 1.2rem; border-radius: 50px; font-weight: 500; letter-spacing: -.02em; }
+        
+        .s-about-home { position: relative; z-index: 1; padding: 16.2222rem 0; background: var(--color-brand-10); overflow: hidden; }
+        .s-about-home::before { position: absolute; top: 0; left: 50%; z-index: -1; width: 1px; height: 100%; background: var(--color-black); content: ''; }
+        .s-about-home .s__header { margin: 0 0 2.25rem; display: flex; justify-content: flex-start; }
+        .s-about-home .s__title { position: relative; z-index: 2; display: inline-block; background: var(--color-brand-10); padding: 0 2rem .24em 0; max-width: 7.125em; margin: 0; font-size: min(11.1111rem, 10.4167vw); line-height: .95; letter-spacing: -.05em; font-weight: 600; }
+        .s-about-home .s__title .line { clip-path: inset(0 0 -.105em 0); }
+        .s-about-home .s__title .word { will-change: transform; }
+        
+        .s-about-home .s__medias { position: relative; margin: 4.5rem auto 17.5556rem; width: calc(7.8 * var(--grid-column-width) + 6.8 * var(--grid-gutter-width)); max-width: 1180px; }
+        .s-about-home .s__medias::before, .s-about-home .s__medias .s__video::before { display: block; padding-top: 100%; content: ''; }
+        .s-about-home .s__medias .s__video { position: absolute; z-index: 1; }
+        .s-about-home .s__medias .s__video-inner { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: var(--clip-path); }
+        .s-about-home .s__medias .s__video--1 .s__video-inner { clip-path: polygon(20% 0%,80% 0%,80% 5%,85% 5%,85% 10%,90% 10%,90% 15%,95% 15%,95% 20%,100% 20%,100% 80%,95% 80%,95% 85%,90% 85%,90% 90%,85% 90%,85% 95%,80% 95%,80% 100%,20% 100%,20% 95%,15% 95%,15% 90%,10% 90%,10% 85%,5% 85%,5% 80%,0% 80%,0% 20%,5% 20%,5% 15%,10% 15%,10% 10%,15% 10%,15% 5%,20% 5%); }
+        .s-about-home .s__medias .s__video video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+        
+        .s-about-home .s__medias .s__video--1 { top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .s-about-home .s__medias .s__video--2 { --width: 32%; top: 25%; left: calc(100% - var(--width) * .5); width: var(--width); z-index: 2; }
+        .s-about-home .s__medias .s__video--3 { --width: 25%; top: 35%; right: calc(100% - var(--width) * .5); width: var(--width); z-index: 3; }
+        .s-about-home .s__medias .s__video--4 { --width: 26%; top: 100%; right: 57.5%; margin-top: calc(var(--width) * -.5); width: var(--width); z-index: 4; }
+        
+        .s-about-home .s__text { position: relative; z-index: 2; background: var(--color-brand-10); padding: 1.25rem 1.75rem; border-radius: 24px; margin: 0 auto; max-width: 18.6875em; font-size: min(4.4444rem, 4.1667vw); font-weight: 500; letter-spacing: -.06em; line-height: 1; text-indent: 1.425em; text-align: left; }
+        .s-about-home .s__title .word { display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); will-change: opacity, transform; }
+        
+        .s-about-home.is-inview .s__title .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+        .s-about-home .s__medias .s__video video { transform: scale(1.08); filter: saturate(.72) brightness(.9); transition: transform 2.2s cubic-bezier(.16,1,.3,1), filter 2s ease; }
+        .s-about-home .s__medias.is-media-inview .s__video video { transform: scale(1); filter: saturate(1) brightness(1); }
+        .s-about-home .s__medias .s__video-inner::before, .s-about-home .s__medias .s__video-inner::after { content: ''; position: absolute; top: 0; width: 50%; height: 100%; background: var(--color-brand-10); z-index: 2; transition: transform 1.7s cubic-bezier(.19,1,.22,1), opacity 1.7s ease; }
+        .s-about-home .s__medias .s__video-inner::before { left: 0; transform-origin: left center; }
+        .s-about-home .s__medias .s__video-inner::after { right: 0; transform-origin: right center; }
+        
+        .s-about-home .s__medias .s__video--1 .s__video-inner::before, .s-about-home .s__medias .s__video--1 .s__video-inner::after { transition-delay: .1s; }
+        .s-about-home .s__medias .s__video--2 .s__video-inner::before, .s-about-home .s__medias .s__video--2 .s__video-inner::after { transition-delay: .25s; }
+        .s-about-home .s__medias .s__video--3 .s__video-inner::before, .s-about-home .s__medias .s__video--3 .s__video-inner::after { transition-delay: .4s; }
+        .s-about-home .s__medias .s__video--4 .s__video-inner::before, .s-about-home .s__medias .s__video--4 .s__video-inner::after { transition-delay: .55s; }
+        .s-about-home .s__medias.is-media-inview .s__video-inner::before, .s-about-home .s__medias.is-media-inview .s__video-inner::after { opacity: .96; transform: scaleX(0); }
+        
+        .s-about-home .s__text { opacity: 0; transform: translate3d(0, 38px, 0); transition: opacity 1.1s ease, transform 1.2s cubic-bezier(.16,1,.3,1); transition-delay: .9s; }
+        .s-about-home.is-inview .s__text { opacity: 1; transform: translate3d(0, 0, 0); }
+        
+        @media (max-width:1536px) { .s-about-home { padding-top: 11rem; } .s-about-home .s__medias { margin-bottom: 13rem; width: calc(6 * var(--grid-column-width) + 5 * var(--grid-gutter-width)); } }
+        @media (max-width:1280px) { .s-about-home { padding: 8rem 0 13rem; } .s-about-home .s__medias { margin-bottom: 10rem; } .s-about-home .s__text { font-size: 2.6rem; } }
+        @media (max-width:987px) { .s-about-home { padding: 11rem 0 16rem; } .s-about-home .s__title { font-size: min(5.4rem,12.2656vw); } .s-about-home .s__medias { margin-bottom: 8rem; width: 70vw; } .s-about-home .s__text { text-indent: 0; } }
+        @media (max-width:767px) { .s-about-home { padding-bottom: 9rem; } .s-about-home .s__header { margin-bottom: 1.5rem; } .s-about-home .s__medias { margin-bottom: 5rem; } .s-about-home .s__text { font-size: 2rem; } }
+        @media (max-width:576px) { .s-about-home .s__medias { width: 100%; } .s-about-home .s__medias .s__video--2 { --width: 37.5%; right: calc(var(--grid-offset) * -2); left: auto; } .s-about-home .s__medias .s__video--3 { --width: 34%; right: auto; left: calc(var(--grid-offset) * -2); } .s-about-home .s__medias .s__video--4 { --width: 30%; right: 30%; } }
+
+        .s-education-home { 
+            position: relative; 
+            min-height: 400vh; 
+            height: 400vh; 
+            overflow: hidden; 
+            z-index: 10; 
+            background-color: var(--color-tb-bg);
+            background-image: radial-gradient(circle at 10% 80%, rgba(162,228,213,.4) 0%, transparent 35%), 
+                              radial-gradient(circle at 90% 10%, rgba(255,236,179,.4) 0%, transparent 35%), 
+                              radial-gradient(circle at 80% 80%, rgba(255,204,229,.4) 0%, transparent 35%);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .sticky-wrapper { position: relative; top: auto; min-height: 100vh; height: auto; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .parallax-text-group { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
+        .center-line { position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; }
+        .center-line::before, .center-line::after { content: ''; position: absolute; left: 0; width: 1px; height: 200vh; background: var(--color-tb-black); opacity: .15; }
+        .center-line::before { bottom: 180px; } .center-line::after { top: 200px; }
+        
+        .s__content { position: relative; z-index: 10; text-align: center; max-width: 800px; display: flex; flex-direction: column; align-items: center; padding: 0 20px; margin-top: 40px; }
+        .s_suptitle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(35,28,59,.1); border-radius: 50px; padding: 8px 24px; font-size: .9rem; font-weight: 600; margin-bottom: 30px; background: var(--color-white); color: #555; box-shadow: 0 4px 15px rgba(0,0,0,.03); }
+        .s_title { font-size: clamp(3rem,7vw,6.5rem); line-height: 1.05; font-weight: 800; letter-spacing: -.03em; margin-bottom: 25px; color: var(--color-tb-black); }
+        .c-teal { color: var(--color-teal); } .c-pink { color: var(--color-pink); }
+        .s_subtitle_telugu { color: var(--color-orange); font-size: clamp(1.5rem,3vw,2.5rem); font-weight: 700; margin-bottom: 20px; }
+        .s__text-tb { font-size: 1.15rem; line-height: 1.5; max-width: 600px; color: #444; margin-bottom: 40px; }
+        
+        .hero-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-primary { background: var(--color-tb-black); color: var(--color-white); padding: 16px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; box-shadow: 0 8px 20px rgba(35,28,59,.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(35,28,59,.3); }
+        .btn-secondary { background: transparent; color: var(--color-tb-black); border: 1px solid rgba(35,28,59,.2); padding: 15px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; }
+        .btn-secondary:hover { background: rgba(35,28,59,.05); }
+        
+        .sb-letter { position: absolute; font-size: clamp(2rem,5vw,4rem); font-weight: 800; will-change: transform; z-index: 5; user-select: none; pointer-events: none; text-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .s__courses { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .s_courses_list { position: relative; width: 100%; height: 100%; list-style: none; }
+        @media (max-width: 900px) { .hero-buttons { flex-direction: column; width: 100%; } .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; } .s__text-tb { padding: 0 20px; } }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+        .topo-line { fill: none; stroke: #2d6a38; stroke-width: 0.5; opacity: 0.15; }
+        #horizontal-track { will-change: transform; white-space: nowrap; }
+        #journey #track-inner { min-width: 9000px; }
+        .js-split-text .line { clip-path: inset(0 0 -.105em 0); }
+        .js-split-text .word { will-change: transform, opacity; display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); }
+        .js-split-text.is-inview .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    </style>
+<!-- Styles copied from bottom4.html -->
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FDF8F0;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --page-unit: clamp(0.5rem, calc(0.35vw + 0.45vh), 1.25rem);
+            --page-gutter: clamp(1rem, 4vw, 4rem);
+            --section-gap: clamp(1.5rem, calc(2vw + 1vh), 4rem);
+        }
+
+        .page-content {
+            flex: 1 0 auto;
+            padding-bottom: calc(var(--page-unit) * 4) !important;
+        }
+
+        .responsive-main {
+            padding-block: var(--section-gap) !important;
+            gap: var(--section-gap) !important;
+        }
+
+        .responsive-footer {
+            position: sticky !important;
+            bottom: 0;
+            z-index: 10;
+            flex: 0 0 auto;
+            padding-inline: var(--page-gutter) !important;
+            padding-block: clamp(2.5rem, 6vw, 5rem) !important;
+        }
+
+        @media (min-width: 1024px) {
+            .responsive-footer {
+                padding-inline: clamp(1.5rem, 2.5vw, 2.5rem) !important;
+                padding-block: clamp(2.5rem, 4vw, 3.5rem) !important;
+            }
+
+            .responsive-footer > .max-w-7xl,
+            .responsive-footer > .max-w-7xl + .max-w-7xl {
+                max-width: 90rem;
+            }
+        }
+
+        .font-barlow {
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+
+        /* --- Marquee Keyframes & Animations --- */
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes scrollRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        .animate-marquee-left {
+            display: flex;
+            width: max-content;
+            animation: scrollLeft 35s linear infinite;
+        }
+
+        .animate-marquee-right {
+            display: flex;
+            width: max-content;
+            animation: scrollRight 35s linear infinite;
+        }
+
+        /* Pause marquee on hover */
+        .marquee-container:hover .animate-marquee-left,
+        .marquee-container:hover .animate-marquee-right {
+            animation-play-state: paused;
+        }
+
+        /* Fade gradient masks on left/right edges for a cleaner look */
+        .fade-mask {
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        /* --- Testimonial Card Hover Mechanics --- */
+        .testimonial-card {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            background-color: #ffffff; 
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 1rem;
+            transition: padding-left 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0s;
+            cursor: pointer;
+        }
+
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            z-index: -1;
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.85, 0, 0.15, 1);
+            will-change: transform;
+            border-radius: inherit; 
+        }
+
+        .testimonial-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .testimonial-card:hover {
+            padding-left: 2.5rem;
+            background-color: #D1FF00;
+        }
+
+        .testimonial-text {
+            color: #666;
+            transition: color 0.4s ease;
+        }
+
+        .closing-quote {
+            --closing-quote-top-gap: 10rem;
+            --closing-quote-bottom-gap: 0rem;
+            padding-top: var(--closing-quote-top-gap);
+            padding-bottom: var(--closing-quote-bottom-gap);
+        }
+        
+        .testimonial-name {
+            color: #1a1a1a;
+            transition: color 0.4s ease;
+        }
+        
+        .testimonial-role {
+            color: #999;
+            transition: color 0.4s ease;
+        }
+
+        .testimonial-card:hover .testimonial-text,
+        .testimonial-card:hover .testimonial-name,
+        .testimonial-card:hover .testimonial-role {
+            color: #D1FF00 !important; 
+        }
+
+        .stars {
+            color: transparent;
+            -webkit-text-stroke: 1px #1a1a1a;
+            transition: all 0.4s ease;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card:hover .stars {
+            color: #D1FF00;
+            -webkit-text-stroke: 0px transparent;
+            transform: scale(1.1);
+            transform-origin: left;
+        }
+
+        /* Smooth transition for footer elements */
+        #bottom-card a, #bottom-card li, #bottom-card button {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* --- Injected Styles for Showcase Section --- */
+        :root {
+            /* Journey Variables */
+            --left-ext: 600px;
+            
+            /* Theme Variables */
+            --color-black: #111111;
+            --color-brand-10: #fef5e7;
+            
+            /* Projects Variables */
+            --projects-pad-x: 5;
+            --project-row-pad-y: 6;
+            --project-info-width: 25;
+            --project-image-width: 70;
+            --project-image-ratio: 16 / 10;
+            --project-image-min-h: 340;
+            --project-title-size: 2.2;
+            --project-details-width: 80;
+            --project-details-size: 0.95;
+            --garage-pad-y: 10;
+            --garage-heading-size: 2.5;
+            --garage-title-size: 1.8;
+            --garage-details-size: 1.2;
+            --garage-gap: 2;
+            --garage-card-ratio: 4 / 3;
+        }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+        
+        .topo-line { fill: none; stroke: #2d6a38; stroke-width: 0.5; opacity: 0.15; }
+        #horizontal-track { will-change: transform; }
+        
+        .js-split-text .line { clip-path: inset(0 0 -.105em 0); }
+        .js-split-text .word { will-change: transform, opacity; display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); }
+        .js-split-text.is-inview .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+
+        .projects-section { padding: 8vh calc(var(--projects-pad-x)*1vw) 10vh; position: relative; background: #ffffff; overflow: hidden; }
+        .project-row { display: flex; justify-content: space-between; align-items: center; padding: calc(var(--project-row-pad-y)*1vw) 0; position: relative; cursor: pointer; }
+        .project-row.reverse { flex-direction: row-reverse; }
+        
+        .project-info { width: calc(var(--project-info-width)*1%); position: relative; display: flex; flex-direction: column; }
+        .project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .project-details { position: absolute; top: 100%; left: 0; width: calc(var(--project-details-width)*1%); opacity: 0; visibility: hidden; transform: translateY(40px); transition: all .5s cubic-bezier(.19,1,.22,1); padding-top: 20px; z-index: 20; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); }
+        .project-row.reverse .project-details { left: auto; right: 0; }
+        .project-details p { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; margin-bottom: 20px; font-weight: 400; }
+        .project-row:hover .project-details { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .grid-project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0 0 1rem 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .grid-project-desc { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; font-weight: 400; }
+        
+        .arrow-btn { background: #000; color: #fff; border: 0; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; transition: transform .3s; display: flex; align-items: center; justify-content: center; }
+        .arrow-btn:hover { transform: translateX(10px); }
+        
+        .img-size-1 { width: calc(var(--project-image-width)*1%); height: 60vh; }
+        .img-size-2 { width: 100%; aspect-ratio: 4 / 3.5; height: auto; }
+        .img-size-3 { width: 100%; aspect-ratio: 16 / 10; height: auto; }
+        
+        .side-projects-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 5vw; margin-top: 8vw; align-items: start; }
+
+        .project-image { overflow: hidden; position: relative; border-radius: 8px; }
+        .project-image img, .card-image-container img { width: 100%; height: 130%; position: absolute; top: -15%; left: 0; object-fit: cover; }
+        
+        .garage-section { padding: calc(var(--garage-pad-y)*1vh) calc(var(--projects-pad-x)*1vw); background: #ffffff; }
+        .garage-heading { font-size: calc(var(--garage-heading-size)*1vw); font-weight: 400; margin: 0 0 4vw; letter-spacing: -.02em; }
+        .garage-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: calc(var(--garage-gap)*1vw); }
+        .garage-card { cursor: pointer; }
+        .card-image-container { position: relative; width: 100%; aspect-ratio: var(--garage-card-ratio); overflow: hidden; margin-bottom: 1.5vw; border-radius: 8px; }
+        .garage-title { font-size: calc(var(--garage-title-size)*1vw); font-weight: 400; margin: 0; color: #111; }
+        .garage-details { opacity: 0; visibility: hidden; max-height: 0; transform: translateY(-10px); transition: all .5s cubic-bezier(.19,1,.22,1); margin-top: 0; overflow: hidden; }
+        .garage-details p { font-size: calc(var(--garage-details-size)*1vw); line-height: 1.6; color: #777; margin: 0; font-weight: 400; }
+        .garage-card:hover .garage-details { opacity: 1; visibility: visible; max-height: 200px; transform: translateY(0); margin-top: 1vw; }
+
+        @media(max-width:1200px) and (min-width:769px){
+            .project-title, .grid-project-title { font-size: clamp(1.5rem, calc(var(--project-title-size)*1vw), 2.5rem); }
+            .garage-heading { font-size: clamp(1.8rem, calc(var(--garage-heading-size)*1vw), 2.8rem); }
+        }
+        @media(max-width:768px){
+            .project-row { flex-direction: column !important; align-items: flex-start; padding: 10vw 0; }
+            .project-info { width: 100%; margin-bottom: 2rem; }
+            .project-title, .grid-project-title { font-size: calc(var(--project-title-size)*1vw + 0.8rem); }
+            .project-image { width: 100%; aspect-ratio: var(--project-image-ratio); min-height: 0; }
+            .project-details { position: relative; opacity: 1; visibility: visible; transform: translateY(0); padding-top: 20px; width: 100%; }
+            .garage-heading { font-size: calc(var(--garage-heading-size)*1vw + 0.8rem); margin-bottom: 8vw; }
+            .garage-grid { grid-template-columns: 1fr; gap: calc(var(--garage-gap)*1vw + 2rem); }
+            .card-image-container { margin-bottom: 4vw; }
+            .garage-title { font-size: calc(var(--garage-title-size)*1vw + 0.4rem); }
+            .garage-details p { font-size: calc(var(--garage-details-size)*1vw + 0.2rem); }
+            .garage-card:hover .garage-details { margin-top: 3vw; }
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden w-full">
+
+<!-- Page 1 from 1.html; its original dummy section is omitted. -->
+
+    <div id="nav-bg"
+        class="fixed top-0 left-0 w-full h-[88px] lg:h-[104px] bg-white z-[65]" style="transform: translateY(-100%); will-change: transform;">
+    </div>
+
+    <header
+        class="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 md:px-12 z-[70] mix-blend-difference text-white">
+        <a href="#" class="z-50 block hover:opacity-80 transition-opacity">
+            <div class="text-3xl md:text-4xl lg:text-[2.2rem] font-bold tracking-tight text-white"
+                style="font-family: 'Telegraf', sans-serif;">
+                24/7 ARTISTS
+            </div>
+        </a>
+
+        <div class="flex items-center gap-6 lg:gap-10 z-50">
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-semibold tracking-[0.15em] uppercase">
+                <a href="#about" class="animated-link desktop-link">About</a>
+                <a href="#" class="animated-link desktop-link">Education</a>
+                <a href="#" class="animated-link desktop-link">Technology</a>
+                <a href="#" class="animated-link desktop-link">Network</a>
+            </nav>
+
+            <a href="#" class="layered-btn header-btn hidden md:inline-flex group text-xs font-semibold tracking-[0.15em] uppercase">
+                <span class="bg-layer bg-layer-1"></span>
+                <span class="bg-layer bg-layer-2"></span>
+                <span class="bg-layer bg-layer-3"></span>
+                <span class="btn-text">Book Now</span>
+                <svg class="btn-icon w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2.5"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                </svg>
+            </a>
+
+            <div class="flex md:hidden items-center gap-3">
+                <a href="#" class="layered-btn header-btn group text-[10px] font-semibold tracking-wider uppercase">
+                    <span class="bg-layer bg-layer-1"></span>
+                    <span class="bg-layer bg-layer-2"></span>
+                    <span class="bg-layer bg-layer-3"></span>
+                    <span class="btn-text">Book Now</span>
+                    <svg class="btn-icon w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                    </svg>
+                </a>
+                <div class="w-[1px] h-5 bg-white/40"></div>
+                <button id="nav-toggle" class="nav-toggle cursor-pointer p-2">
+                    <span class="line l1"></span>
+                    <span class="line l2"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] flex flex-col text-black h-screen w-full md:hidden">
+        <nav class="flex flex-col px-6 flex-grow gap-2 pt-32">
+            <a href="#about" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">ABOUT</a>
+            <a href="#" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">EDUCATION</a>
+            <a href="#" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">TECHNOLOGY</a>
+            <a href="#" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">NETWORK</a>
+        </nav>
+        <div class="px-6 py-8 text-gray-500 text-sm">
+            © 24/7 Artists 2026
+        </div>
+    </div>
+
+    <main class="relative w-full h-screen z-0">
+        <div id="slider" class="relative w-full h-full bg-black">
+            <div id="slider-dimmer" class="absolute inset-0 bg-black z-[25] pointer-events-none" style="opacity: 0; will-change: opacity;"></div>
+
+            <article class="slide is-active absolute inset-0 w-full h-full">
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-driving-a-car-on-a-mountain-road-13176-large.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">The Journey</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Experience the freedom of the open road with our premium selection of vehicles, tailored for your ultimate driving adventure.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="slide absolute inset-0 w-full h-full">
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-city-traffic-on-a-bridge-at-night-34692-large.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Mitwit</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Reinventing modern workspaces to empower teams and cultivate a culture of deep innovation.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="slide absolute inset-0 w-full h-full">
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-through-a-pine-forest-4286-large.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Saaj Paris</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            A fresh approach to elegance, blending timeless Parisian chic with striking contemporary design.
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="absolute bottom-8 left-6 md:bottom-12 md:left-12 flex items-center gap-3 z-30" id="pagination"></div>
+
+        <div class="scroll-container absolute bottom-6 right-6 md:bottom-10 md:right-10 w-24 h-24 md:w-32 md:h-32 flex items-center justify-center z-30 mix-blend-difference cursor-pointer">
+            <svg class="absolute inset-0 w-full h-full spin-slow" viewBox="0 0 100 100">
+                <path id="circlePath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
+                <text fill="white" font-size="10.5" font-weight="600" letter-spacing="3.5">
+                    <textPath href="#circlePath">SCROLL • SCROLL • SCROLL •</textPath>
+                </text>
+            </svg>
+            <svg class="scroll-arrow w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20m0 0l-7-7m7 7l7-7"></path>
+            </svg>
+        </div>
+    </main>
+<script>
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+            wheelMultiplier: 1.0,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navBg = document.getElementById('nav-bg');
+            const sliderDimmer = document.getElementById('slider-dimmer');
+
+            // Scroll Events
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const vh = window.innerHeight;
+                const navHeight = navBg.offsetHeight || 104;
+                
+                // Navbar slide down effect
+                if (scrollY >= navHeight) {
+                    navBg.style.transform = `translateY(0px)`;
+                } else {
+                    navBg.style.transform = `translateY(${scrollY - navHeight}px)`;
+                }
+
+                // Slider fading dim effect based on scroll position
+                let dimOpacity = 0;
+                if (scrollY <= vh * 0.2) {
+                    dimOpacity = (scrollY / (vh * 0.2)) * 0.1;
+                } else if (scrollY <= vh * 0.8) {
+                    dimOpacity = 0.1 + ((scrollY - (vh * 0.2)) / (vh * 0.6)) * 0.9;
+                } else {
+                    dimOpacity = 1;
+                }
+                if (sliderDimmer) sliderDimmer.style.opacity = dimOpacity;
+            });
+
+            // Mobile Menu Toggle
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navToggle = document.getElementById('nav-toggle');
+
+            navToggle.addEventListener('click', () => {
+                navToggle.classList.toggle('active');
+                if (navToggle.classList.contains('active')) {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                } else {
+                    mobileMenu.classList.add('translate-x-full');
+                    mobileMenu.classList.remove('translate-x-0');
+                }
+            });
+
+            // Video Slider Logic
+            const slides = document.querySelectorAll('.slide');
+            const paginationContainer = document.getElementById('pagination');
+            let currentSlideIndex = 0;
+            let slideInterval;
+            const intervalTime = 6000;
+
+            slides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                dot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+
+                const filler = document.createElement('span');
+                filler.className = 'filler absolute top-0 left-0 h-full w-full bg-white origin-left';
+                filler.style.transform = 'scaleX(0)';
+                filler.style.transitionProperty = 'transform';
+                filler.style.transitionTimingFunction = 'linear';
+                filler.style.transitionDuration = '0ms';
+
+                dot.appendChild(filler);
+                dot.addEventListener('click', () => {
+                    if (currentSlideIndex !== index) goToSlide(index);
+                });
+                paginationContainer.appendChild(dot);
+            });
+
+            const dots = paginationContainer.querySelectorAll('button');
+
+            function goToSlide(index, isInit = false) {
+                if (!isInit) {
+                    const previousSlide = slides[currentSlideIndex];
+                    previousSlide.classList.remove('is-active');
+                    previousSlide.classList.add('is-leaving');
+                    setTimeout(() => { previousSlide.classList.remove('is-leaving'); }, 1200);
+                } else {
+                    slides[currentSlideIndex].classList.remove('is-active');
+                }
+
+                const currentDot = dots[currentSlideIndex];
+                currentDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+                const currentFiller = currentDot.querySelector('.filler');
+                currentFiller.style.transitionDuration = '0ms';
+                currentFiller.style.transform = 'scaleX(0)';
+
+                currentSlideIndex = index;
+                slides[currentSlideIndex].classList.add('is-active');
+
+                const activeVideo = slides[currentSlideIndex].querySelector('video');
+                if (activeVideo) {
+                    activeVideo.currentTime = 0;
+                    activeVideo.play().catch(e => console.log('Autoplay prevented', e));
+                }
+
+                const newDot = dots[currentSlideIndex];
+                newDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/30 w-8 h-2';
+                const newFiller = newDot.querySelector('.filler');
+                void newFiller.offsetWidth;
+                newFiller.style.transitionDuration = `${intervalTime}ms`;
+                newFiller.style.transform = 'scaleX(1)';
+
+                resetInterval();
+            }
+
+            function nextSlide() {
+                let nextIndex = (currentSlideIndex + 1) % slides.length;
+                goToSlide(nextIndex);
+            }
+
+            function startInterval() {
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+
+            function resetInterval() {
+                clearInterval(slideInterval);
+                startInterval();
+            }
+
+            // Start Slider
+            goToSlide(0, true);
+        });
+    </script>
+
+<!-- Pages 2, 3, and 4 copied directly from 2,3,4 page.html. -->
+<!-- Updated Pages 2, 3, and 4 copied directly from the supplied Pasted code(1).html -->
+<!-- Section 1: 24/7 Artists About Section -->
+    <div class="s-about-home" data-plr-component="s-about-home" id="about">
+        <div class="u-container">
+            <div class="s__header js-header"><h2 class="s__suptitle t-suptitle">About</h2></div>
+            <p class="s__title t-title js-title" aria-label="24/7 Artists is here to make the hard stuff easy.">24/7 Artists is here to make the hard stuff easy.</p>
+            
+            <div class="s__medias js-medias">
+                <div class="s__video s__video--1 js-media parallax-item" data-lag="0.12" data-speed="0.04"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/00-ld.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--2 js-media parallax-item" data-lag="0.20" data-speed="0.14"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--3 js-media parallax-item" data-lag="0.24" data-speed="0.105"><div class="s__video-inner"><video preload="auto" src="https://www.w3schools.com/html/mov_bbb.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--4 js-media parallax-item" data-lag="0.18" data-speed="0.063"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video></div></div>
+            </div>
+            
+            <div class="parallax-item" data-lag="0.25" data-speed="0.03" style="will-change: transform;">
+                <p class="s__text">Everything you need to build your music career — in one place. Learn with <span class="t-label t-label--education">Education</span>, move faster with <span class="t-label t-label--technology">Technology</span>, and link up through a global <span class="t-label t-label--network">Network</span> of artists and industry people who actually get it.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Telugu Badi Education Section with Parallax Animation -->
+    <div class="s-education-home" id="education">
+        <div class="sticky-wrapper">
+            <div class="parallax-text-group parallax-item" data-lag="0.35" data-speed="0">
+                <div class="center-line"></div>
+                <div class="s__content">
+                    <div class="s_suptitle"><span style="font-size:1.2em;line-height:0;">🍲</span> Telugu Association Inc. Sydney • Non-profit since 1992</div>
+                    <h1 class="s_title">Let's learn <span class="c-teal">Telugu</span><br>while we <span class="c-pink">play</span> &amp; <span class="c-teal">sing</span>.</h1>
+                    <h2 class="s_subtitle_telugu">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము!</h2>
+                    <p class="s__text-tb">A joyful weekend Telugu school for children across Sydney —<br>preserving our language, culture and stories for the next generation.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn-primary">Join Telugu School</a>
+                        <a href="#" class="btn-secondary">Our Story</a>
+                    </div>
+                </div>
+            </div>
+            <div class="s__courses"><ul class="s_courses_list" id="coursesList"></ul></div>
+        </div>
+    </div>
+
+    <!-- Section 3: Horizontal Journey Showcase -->
+    <section id="journey" class="relative h-[650vh] bg-[#f4f1ea] pt-10 overflow-hidden">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex items-center bg-transparent">
+            
+            <svg class="absolute inset-0 h-full pointer-events-none z-0" style="width: calc(9000px + var(--left-ext));" xmlns="http://www.w3.org/2000/svg">
+                <g style="transform: translateX(var(--left-ext));">
+                    <path class="topo-line" d="M-100,500 Q400,200 1200,700 T2800,200 T4500,800 T6500,100 T8000,600 T9500,300" />
+                    <path class="topo-line" d="M-200,800 Q600,900 1500,400 T3200,800 T5000,200 T6800,900 T8500,400" />
+                    <path class="topo-line" stroke-width="1" d="M0,200 Q800,-100 1800,400 T3800,900 T5800,300 T7500,800 T9000,200" />
+                    <path class="topo-line" stroke-dasharray="10, 10" d="M-50,300 Q1000,800 2200,100 T4200,600 T6000,800 T7800,100" />
+                </g>
+            </svg>
+
+            <div id="horizontal-track" class="flex items-center h-full absolute left-0 z-10" style="width: calc(8500px + var(--left-ext));">
+                <div id="track-inner" class="relative w-full h-full" style="transform: translateX(var(--left-ext));">
+
+                    <div class="absolute left-0 top-[50%] parallax-item-h z-10" data-lag="0.18" data-speed="0.10">
+                        <div class="-translate-y-1/2 w-[500px] text-center">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-tight text-[#1b3a20] js-split-text">"It doesn't matter where you start, education is the bridge to everywhere."</p>
+                            <p class="mt-6 text-[#2d6a38] font-medium text-lg inline-block border-b-2 border-[#e67e22] pb-2">A legacy of bringing quality Telugu education to communities across the region.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1050px] bottom-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Hyderabad Campus</div>
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" alt="School Campus" class="w-full aspect-[4/3] object-cover rounded" onerror="this.src='https://placehold.co/600x450/e0ded8/1b3a20?text=Hyderabad+Campus';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1400px] top-[45%] parallax-item-h z-10" data-lag="0.22" data-speed="0.14">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">9+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Schools</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[250px] text-center">Establishing centers of excellence in key communities.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1750px] top-[15%] parallax-item-h z-10" data-lag="0.25" data-speed="0.16">
+                        <div class="pointer-events-auto w-[260px] shadow-lg bg-white p-2 -rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Vijayawada Branch</div>
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="Classroom" class="w-full aspect-square object-cover rounded" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Vijayawada+Branch';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2050px] bottom-[25%] parallax-item-h z-10" data-lag="0.15" data-speed="0.09">
+                        <div class="pointer-events-auto w-[360px] shadow-2xl bg-white p-2 rotate-1 hover:rotate-0 transition-transform duration-500 hover:z-50 border-b-4 border-[#e67e22] rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Tirupati Primary</div>
+                            <img src="https://images.unsplash.com/photo-1546410531-bea5acadb6a0?auto=format&fit=crop&w=800&q=80" alt="Students" class="w-full aspect-[16/9] object-cover rounded" onerror="this.src='https://placehold.co/800x450/e0ded8/1b3a20?text=Tirupati+Primary';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2650px] top-[20%] parallax-item-h z-10" data-lag="0.18" data-speed="0.11">
+                        <div class="pointer-events-auto w-[330px] shadow-lg bg-[#f4f1ea] p-3 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80" alt="Students studying" class="w-full aspect-[3/4] object-cover rounded-sm filter sepia-[0.2] rounded" onerror="this.src='https://placehold.co/600x800/e0ded8/1b3a20?text=Students+Studying';">
+                            <div class="text-xs text-right mt-2 font-medium text-gray-600">Annual Science Fair, 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3050px] top-[50%] parallax-item-h z-10" data-lag="0.16" data-speed="0.09">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">550+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Students</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[280px] text-center">A growing family of eager learners discovering their heritage.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3500px] bottom-[10%] parallax-item-h z-10" data-lag="0.1" data-speed="0.06">
+                        <div class="pointer-events-auto w-[420px] shadow-2xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1 px-1">
+                                <span class="text-xs font-semibold text-[#2d6a38] uppercase tracking-wider">Cultural Day</span>
+                                <span class="text-xs text-[#e67e22] font-['Mukta']">సాంస్కృతిక దినోత్సవం</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Cultural Event" class="w-full aspect-[21/9] object-cover rounded" onerror="this.src='https://placehold.co/800x340/e0ded8/1b3a20?text=Cultural+Day';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4000px] top-[30%] parallax-item-h z-10" data-lag="0.22" data-speed="0.14">
+                        <div class="pointer-events-auto w-[280px] shadow-md bg-white p-2 hover:scale-105 transition-transform duration-500 hover:z-50 rounded-full overflow-hidden border-8 border-[#f4f1ea]">
+                            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80" alt="Happy Student" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Student';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4500px] bottom-[20%] parallax-item-h z-10" data-lag="0.12" data-speed="0.07">
+                        <div class="pointer-events-auto w-[350px] shadow-xl bg-white p-2 rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Faculty Training, Vizag</div>
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=80" alt="Teachers Meeting" class="w-full aspect-[4/3] object-cover grayscale-[0.3] rounded" onerror="this.src='https://placehold.co/700x525/e0ded8/1b3a20?text=Faculty+Training';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4950px] top-[40%] parallax-item-h z-10" data-lag="0.25" data-speed="0.11">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">80+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Teachers</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[300px] text-center">Dedicated educators bringing passion and expertise to every classroom.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[5400px] top-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-2xl bg-[#1b3a20] p-1 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80" alt="Teacher interacting" class="w-full aspect-square object-cover opacity-90 rounded" onerror="this.src='https://placehold.co/600x600/e0ded8/1b3a20?text=Teacher+Interaction';">
+                            <div class="text-xs text-white text-center py-2 font-medium tracking-wide">Award-winning Staff</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[6000px] top-[50%] parallax-item-h z-10" data-lag="0.14" data-speed="0.13">
+                        <div id="conclusion-slide" class="-translate-y-1/2 w-[600px] text-center md:text-left">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-relaxed text-[#1b3a20] js-split-text">
+                                "Since our foundation, we have worked tirelessly to make the dream of accessible, high-quality education a reality for every child."
+                            </p>
+                            <div class="flex items-center justify-center md:justify-start gap-4 pt-8">
+                                <div class="h-[2px] w-16 bg-[#e67e22]"></div>
+                                <span class="text-[12px] font-bold uppercase tracking-widest text-[#2d6a38]">End of Part 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // First Page Logic: Title Split and Intersection Observers
+            const title = document.querySelector('.js-title');
+            let splitTitle;
+            if (title && typeof SplitType !== 'undefined') {
+                splitTitle = new SplitType(title, { types: 'lines, words' });
+                const setupDelays = () => splitTitle.lines.forEach((line, lineIndex) => {
+                    line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                    line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                        word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                    });
+                });
+                setupDelays();
+                window.addEventListener('resize', () => { splitTitle.split(); setupDelays(); });
+            }
+            
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            const section1 = document.querySelector('.s-about-home');
+            if (section1) observer.observe(section1);
+            
+            const mediasContainer = document.querySelector('.s__medias');
+            if (mediasContainer) {
+                const mediaObserver = new IntersectionObserver((entries, observerInstance) => {
+                    entries.forEach(entry => { 
+                        if (entry.isIntersecting) { 
+                            entry.target.classList.add('is-media-inview'); 
+                            observerInstance.unobserve(entry.target); 
+                        } 
+                    });
+                }, { threshold: .2 });
+                mediaObserver.observe(mediasContainer);
+            }
+
+            const teluguLetters = [
+                {text:'అ',color:'#FF9800',top:'15%',left:'10%',rot:'-15deg',speedY:.35},
+                {text:'క',color:'#FF4B8A',top:'65%',left:'12%',rot:'10deg',speedY:.15},
+                {text:'చ',color:'#00BFA5',top:'25%',left:'80%',rot:'25deg',speedY:.45},
+                {text:'ట',color:'#8E24AA',top:'75%',left:'85%',rot:'-20deg',speedY:.25},
+                {text:'త',color:'#4CAF50',top:'82%',left:'70%',rot:'15deg',speedY:.55},
+                {text:'ప',color:'#00BFA5',top:'78%',left:'25%',rot:'-5deg',speedY:.35},
+                {text:'య',color:'#FF9800',top:'10%',left:'60%',rot:'30deg',speedY:.2},
+                {text:'శ',color:'#8E24AA',top:'45%',left:'90%',rot:'-15deg',speedY:.6},
+                {text:'స',color:'#FF4B8A',top:'85%',left:'45%',rot:'10deg',speedY:.3},
+                {text:'ళ',color:'#4CAF50',top:'35%',left:'5%',rot:'-25deg',speedY:.4},
+                {text:'వ',color:'#FF9800',top:'50%',left:'15%',rot:'5deg',speedY:.15},
+                {text:'మ',color:'#8E24AA',top:'20%',left:'20%',rot:'15deg',speedY:.5},
+                {text:'గ',color:'#4CAF50',top:'60%',left:'80%',rot:'-10deg',speedY:.25},
+                {text:'ఆ',color:'#8E24AA',top:'12%',left:'85%',rot:'12deg',speedY:.3}
+            ];
+            
+            const listContainer = document.getElementById('coursesList'); 
+            const parallaxElements = [];
+            
+            teluguLetters.forEach(card => { 
+                const li = document.createElement('li'); 
+                li.className = 'sb-letter'; 
+                li.style.top = card.top; 
+                li.style.left = card.left; 
+                li.style.color = card.color; 
+                li.innerHTML = card.text; 
+                listContainer.appendChild(li); 
+                
+                const rand = Math.random(); 
+                const floatSpeed = rand < .3 ? .015 + Math.random() * .02 : rand < .8 ? .04 + Math.random() * .04 : .12 + Math.random() * .15; 
+                
+                parallaxElements.push({
+                    element: li,
+                    rot: parseFloat(card.rot) || 0,
+                    currentRot: parseFloat(card.rot) || 0,
+                    baseRotSpeed: (Math.random() > .5 ? 1 : -1) * (.75 - card.speedY) * .07,
+                    speedY: card.speedY,
+                    topPercent: parseFloat(card.top),
+                    floatSpeed,
+                    ambientDistance: 0
+                }); 
+            });
+
+            const domParallaxItems = document.querySelectorAll('.parallax-item');
+            const parallaxItemsList = Array.from(domParallaxItems).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            // Horizontal Physics Variables
+            window.targetHScroll = 0;
+            let springHScroll = 0;
+            let springHVelocity = 0;
+            let smoothedHLag = 0;
+            const hStiffness = 0.06;
+            const hDamping = 0.58;
+            const hTrack = document.getElementById('horizontal-track');
+
+            let targetScrollY = window.scrollY; 
+            let springY = window.scrollY; 
+            let springVelocity = 0; 
+            const stiffness = .06, damping = .58; 
+            let smoothedLag = 0; 
+            
+            const educationSection = document.getElementById('education'); 
+            
+            window.addEventListener('scroll', () => { targetScrollY = window.scrollY }, { passive: true }); 
+            
+            let lastTime = null, lastScrollDirection = 1;
+            
+            function animate(time) { 
+                if (!lastTime) lastTime = time; 
+                const deltaTime = time - lastTime; 
+                lastTime = time; 
+                
+                const displacement = targetScrollY - springY; 
+                const springForce = displacement * stiffness; 
+                const prevSpringY = springY; 
+                
+                springVelocity = (springVelocity + springForce) * damping; 
+                springY += springVelocity; 
+                
+                if (Math.abs(springY - prevSpringY) > .1) lastScrollDirection = Math.sign(springY - prevSpringY); 
+                
+                const rawLag = targetScrollY - springY; 
+                smoothedLag += (rawLag - smoothedLag) * .15; 
+                
+                // Apply bounce and parallax values based on data-attributes
+                parallaxItemsList.forEach(item => {
+                    const bounceOffsetY = -(smoothedLag * item.lag); 
+                    const scrollParallaxY = -(springY * item.speed);
+                    item.el.style.transform = `translate3d(0, ${bounceOffsetY + scrollParallaxY}px, 0)`;
+                }); 
+                
+                // --- Horizontal Spring & Parallax ---
+                const hDisplacement = window.targetHScroll - springHScroll;
+                const hSpringForce = hDisplacement * hStiffness;
+                
+                springHVelocity = (springHVelocity + hSpringForce) * hDamping;
+                springHScroll += springHVelocity;
+                
+                const hRawLag = window.targetHScroll - springHScroll;
+                smoothedHLag += (hRawLag - smoothedHLag) * 0.15;
+                
+                if (hTrack) {
+                    hTrack.style.transform = `translateX(${springHScroll}px)`;
+                }
+                
+                if (window.hParallaxItemsList) {
+                    window.hParallaxItemsList.forEach(item => {
+                        const bounceOffsetX = -(smoothedHLag * item.lag); 
+                        const scrollParallaxX = (springHScroll * item.speed);
+                        item.el.style.transform = `translate3d(${bounceOffsetX + scrollParallaxX}px, 0, 0)`;
+                    });
+                }
+                
+                const H = window.innerHeight;
+                const minY = -500;
+                const maxY = H + 500;
+                const wrapRange = maxY - minY;
+                
+                // We calculate position relative to the section's offset to ensure it works accurately on the long page
+                let relativeSpringY = springY - (educationSection ? educationSection.offsetTop : window.innerHeight);
+                if (relativeSpringY < -H) relativeSpringY = -H; // clamp before it reaches view
+                
+                parallaxElements.forEach(item => {
+                    item.ambientDistance += item.floatSpeed * deltaTime * lastScrollDirection; 
+                    const startY = (item.topPercent / 100) * H; 
+                    const distanceMoved = (relativeSpringY * item.speedY * 2.5) + item.ambientDistance; 
+                    const absY = startY - distanceMoved; 
+                    const wrappedAbsY = ((absY - minY) % wrapRange + wrapRange) % wrapRange + minY; 
+                    const translateY = wrappedAbsY - startY; 
+                    
+                    item.currentRot += (item.baseRotSpeed * lastScrollDirection) * deltaTime; 
+                    item.element.style.transform = `translate3d(0, ${translateY}px, 0) rotate(${item.currentRot}deg)`;
+                }); 
+                
+                requestAnimationFrame(animate); 
+            }
+            requestAnimationFrame(animate);
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SplitType Initialization for Page 3
+            const splitElements = document.querySelectorAll('#journey .js-split-text');
+            let splitInstances = [];
+            
+            if (typeof SplitType !== 'undefined') {
+                splitElements.forEach(el => {
+                    const splitInstance = new SplitType(el, { types: 'lines, words' });
+                    splitInstances.push({ element: el, instance: splitInstance });
+                    const setupDelays = () => splitInstance.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                        });
+                    });
+                    setupDelays();
+                });
+                
+                window.addEventListener('resize', () => { 
+                    splitInstances.forEach(item => {
+                        item.instance.split();
+                        item.instance.lines.forEach((line, lineIndex) => {
+                            line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                            line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                                word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                            });
+                        });
+                    });
+                });
+            }
+            
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            document.querySelectorAll('#journey .js-split-text').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Horizontal Scroll Journey Calculation ---
+            const journeySection = document.getElementById('journey');
+            const horizontalEndProgress = 0.72;
+            
+            // Initialize horizontal parallax items list
+            window.hParallaxItemsList = Array.from(document.querySelectorAll('.parallax-item-h')).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            window.addEventListener('scroll', () => {
+                if(!journeySection) return;
+                
+                const rect = journeySection.getBoundingClientRect();
+                const totalScroll = journeySection.offsetHeight - window.innerHeight;
+                
+                // Only track horizontal scroll if we are inside the journey section's scroll boundaries
+                if(rect.top <= window.innerHeight && rect.bottom >= 0) {
+                    const headStartMultiplier = 0.35;
+                    let progress = ((window.innerHeight * headStartMultiplier) - rect.top) / totalScroll;
+                    progress = Math.max(0, Math.min(1, progress));
+                    
+                    const rootStyles = getComputedStyle(document.documentElement);
+                    const leftExt = parseInt(rootStyles.getPropertyValue('--left-ext').trim()) || 1200;
+                    
+                    const conclusionLeft = 6000 + leftExt; 
+                    const targetTranslateX = conclusionLeft - (window.innerWidth / 2) + 300;
+                    const horizontalProgress = Math.min(1, progress / horizontalEndProgress);
+                    
+                    // Assign to the global physics target instead of immediately styling
+                    window.targetHScroll = -horizontalProgress * targetTranslateX;
+                }
+            });
+        });
+    </script>
+
+<!-- Pages 5, 6, and footer copied from bottom4.html; its duplicate/reference Journey section is omitted. -->
+<div class="relative z-30 bg-white w-full shadow-[0_20px_50px_rgba(0,0,0,0.05)] border-b border-black/5">
+
+<section class="projects-section" id="projectsContainer">
+            
+            <!-- Project 1: Info left, Image right -->
+            <div class="project-row" data-dir="left-right">
+                <div class="project-info slide-left">
+                    <h2 class="project-title">Hippy Market</h2>
+                    <div class="project-details">
+                        <p style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;">Hippy Market is getting a refresh: a new, more iconic identity for a premium vintage fashion brand, which transforms second-hand into a fashion and cultural experience.</p>
+                        <button class="arrow-btn">→</button>
+                    </div>
+                </div>
+                <div class="project-image img-size-1 slide-right">
+                    <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=1200" alt="Hippy Market">
+                </div>
+            </div>
+
+            <!-- Projects 2 & 3: Side by Side Layout -->
+            <div class="side-projects-grid">
+                
+                <!-- Project 2 (Mitwit) -->
+                <div class="grid-project cursor-pointer group">
+                    <div class="project-image img-size-2">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Mitwit Office">
+                    </div>
+                    <div class="mt-6 pr-4">
+                        <h2 class="grid-project-title">Mitwit Office</h2>
+                        <p class="grid-project-desc line-clamp-4">Launched by La Poste Immobilier and resulting from the merger of Startway and Multiburo, MITWIT has established itself as a major player in the shared workspace market, with a network of nearly 40 sites in France, Belgium and Switzerland.</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 (Newton) -->
+                <div class="grid-project cursor-pointer group">
+                    <div class="project-image img-size-3">
+                        <img src="https://images.unsplash.com/photo-1600607687959-ce8a6c25118c?auto=format&fit=crop&q=80&w=1200" alt="Newton Offices">
+                    </div>
+                    <div class="mt-6 pr-4">
+                        <h2 class="grid-project-title">Newton Offices</h2>
+                        <p class="grid-project-desc line-clamp-4">Inventing a new brand territory for collaborative workspaces. Supporting an investor in the branding process, designing the brand and its key elements.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="garage-section">
+            <h2 class="garage-heading">Garage</h2>
+            <div class="garage-grid">
+                <div class="garage-card">
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=800" alt="Comet Meetings">
+                    </div>
+                    <h3 class="garage-title">Comet Meetings</h3>
+                    <div class="garage-details">
+                        <p>Innovative spaces for corporate meetings and creative team building.</p>
+                    </div>
+                </div>
+                <div class="garage-card">
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800" alt="CEB">
+                    </div>
+                    <h3 class="garage-title">CEB</h3>
+                    <div class="garage-details">
+                        <p>L'art de bien ranger. Premium custom organization solutions.</p>
+                    </div>
+                </div>
+                <div class="garage-card">
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1545607062-848e4b7b2586?auto=format&fit=crop&q=80&w=800" alt="Centrakor">
+                    </div>
+                    <h3 class="garage-title">Centrakor</h3>
+                    <div class="garage-details">
+                        <p>Commercial retail spaces designed for optimized customer flow.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TOP PAGE SECTION: Normal Scrollable Testimonials -->
+    <div class="page-content relative z-20 bg-[#FDF8F0] shadow-2xl">
+        <header class="w-full pt-16 pb-8 px-4 text-center">
+            <div class="max-w-4xl mx-auto">
+                <span class="inline-block text-xs md:text-sm font-bold tracking-widest uppercase text-[#1a1a1a] mb-4 bg-white px-4 py-1.5 rounded-full border border-black/5 shadow-sm">
+                    Testimonials
+                </span>
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-[#1a1a1a] mb-4 uppercase">
+                    Voices of Students
+                </h1>
+                <p class="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
+                    Hear from our wonderful students who have embarked on a journey to master the Telugu language.<br class="hidden sm:inline">
+                    From absolute beginners to advanced speakers, discover how our interactive classes bring the culture and language to life.
+                </p>
+            </div>
+        </header>
+
+        <main class="responsive-main w-full flex flex-col fade-mask overflow-hidden">
+            
+            <!-- Top Marquee Row: Scrolling Left -->
+            <div class="marquee-container w-full overflow-hidden">
+                <div class="animate-marquee-left flex gap-6 px-3">
+                    <!-- Testimonial Item 1 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "The interactive lessons made learning Telugu so much fun. I can finally speak with my grandparents in their native language!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Anika V.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Beginner Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Item 2 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "The teachers are incredibly patient. The curriculum is perfectly structured to build your confidence step-by-step."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Rohan K.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Intermediate Learner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Item 3 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "I tried learning Telugu on my own using apps, but this school provided the cultural context and speaking practice I desperately needed."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Maya S.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Adult Learner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Item 4 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "Amazing environment! The weekly speaking sessions helped me overcome my fear of making mistakes. Truly the best place to learn Telugu."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Nikhil R.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Advanced Learner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate set for infinite loop -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "The interactive lessons made learning Telugu so much fun. I can finally speak with my grandparents in their native language!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Anika V.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Beginner Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "The teachers are incredibly patient. The curriculum is perfectly structured to build your confidence step-by-step."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Rohan K.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Intermediate Learner</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Marquee Row: Scrolling Right -->
+            <div class="marquee-container w-full overflow-hidden">
+                <div class="animate-marquee-right flex gap-6 px-3">
+                    <!-- Bottom Testimonial Item 1 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "As an NRI, I wanted my kids to stay connected to our roots. This school has been a blessing. They love the storytelling sessions!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Priya M.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Parent of Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Testimonial Item 2 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "I joined to prepare for my relocation to Hyderabad. Within months, I could manage daily conversations easily. Highly recommended!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">David L.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Expat Learner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Testimonial Item 3 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "The vocabulary drills and grammar worksheets are brilliant. It's a very systematic and encouraging approach to a beautiful language."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Sneha T.</h4>
+                                <p class="testimonial-role text-xs font-semibold">High School Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Testimonial Item 4 -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "I never thought learning to read and write Telugu script could be this straightforward. The instructors break it down perfectly."
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Vishal C.</h4>
+                                <p class="testimonial-role text-xs font-semibold">University Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate set for infinite loop -->
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "As an NRI, I wanted my kids to stay connected to our roots. This school has been a blessing. They love the storytelling sessions!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">Priya M.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Parent of Student</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card w-[320px] sm:w-[400px] md:w-[440px] p-6 md:p-8 flex flex-col justify-between flex-shrink-0 bg-white">
+                        <div>
+                            <div class="stars space-x-1">★★★★★</div>
+                            <p class="testimonial-text text-sm md:text-base leading-relaxed font-medium mb-6">
+                                "I joined to prepare for my relocation to Hyderabad. Within months, I could manage daily conversations easily. Highly recommended!"
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4 pt-4 border-t border-black/5">
+                            <div>
+                                <h4 class="testimonial-name text-xl font-bold font-barlow uppercase tracking-wider">David L.</h4>
+                                <p class="testimonial-role text-xs font-semibold">Expat Learner</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quote Section -->
+            <div class="w-full text-center mt-12 mb-6 px-4">
+                <h3 class="closing-quote text-3xl sm:text-4xl md:text-5xl font-barlow font-bold italic text-[#1a1a1a] tracking-wide">
+                    "Deshabasha landhu telugu lessa"
+                </h3>
+                <div class="w-16 h-1.5 bg-[#D1FF00] mx-auto mt-6 rounded-full shadow-sm"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- BOTTOM PAGE SECTION: Stacked Footer Stacked Beneath with Doodle Animation -->
+    <footer id="bottom-card" class="responsive-footer w-full bg-sonar-bg z-10 flex flex-col justify-between text-sonar-dark shadow-inner">
+        
+        <!-- 3 Columns Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-7xl mx-auto mb-10 md:mb-12">
+            <!-- Col 1: Services -->
+            <div>
+                <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Services</h3>
+                <ul class="text-2xl md:text-3xl lg:text-4xl font-semibold space-y-1 tracking-tight text-brand-black">
+                    <li class="hover:text-brand-red cursor-pointer">Film</li>
+                    <li class="hover:text-brand-red cursor-pointer">Advertising</li>
+                    <li class="hover:text-brand-red cursor-pointer">Television</li>
+                    <li class="hover:text-brand-red cursor-pointer">Documentary</li>
+                    <li class="hover:text-brand-red cursor-pointer">Sonic Branding</li>
+                </ul>
+            </div>
+
+            <!-- Col 2: Newsletter -->
+            <div>
+                <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Sign up to our newsletter</h3>
+                <div class="border-b border-dashed border-brand-black/40 pb-2 flex items-center justify-between mt-4 md:mt-8">
+                    <input type="email" placeholder="Enter your email address" class="bg-transparent border-none outline-none text-sm w-full placeholder-brand-black/40 text-brand-black font-medium">
+                    <button class="text-brand-black hover:text-brand-red transition-colors flex items-center justify-center group" aria-label="Submit">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Col 3: Sitemap -->
+            <div>
+                <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Sitemap</h3>
+                <ul class="text-xs md:text-sm font-medium space-y-2 text-brand-black">
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Index</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Work</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Team</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Studio</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Contact</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                    <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                        <span>Awards</span>
+                        <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Row with Doodle Animation -->
+        <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 lg:gap-8 pt-6 border-t border-brand-black/10 relative">
+            <div class="flex flex-col items-start gap-2">
+                <div class="relative flex justify-center items-end mt-2">
+                    <h1 class="font-bricolage text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter text-brand-black leading-none relative z-10">
+                        bitesized
+                    </h1>
+                    
+                    <!-- Doodle Character Animation -->
+                    <div id="doodle-container" class="relative ml-4 w-12 h-16 sm:w-16 sm:h-20 z-20">
+                        <!-- Thought Bubble -->
+                        <div id="thought-bubble" class="absolute -top-8 -right-12 bg-brand-cream border-[2px] border-brand-black rounded-xl px-2 py-0.5 font-caveat text-sm sm:text-lg font-bold shadow-[2px_2px_0_0_#1A1A1A] opacity-0 transform scale-50 z-20 whitespace-nowrap text-brand-black pointer-events-none">
+                            <span id="thought-text"></span>
+                            <div class="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-brand-cream border-l-[2px] border-b-[2px] border-brand-black transform -rotate-45"></div>
+                        </div>
+
+                        <svg id="doodle-body" viewBox="0 0 100 120" class="w-full h-full overflow-visible drop-shadow-sm">
+                            <g id="doodle-character">
+                                <!-- Legs -->
+                                <rect x="36" y="70" width="10" height="40" fill="#3B82F6" />
+                                <rect x="54" y="70" width="10" height="40" fill="#3B82F6" />
+                                
+                                <!-- Main Circular Body -->
+                                <circle cx="50" cy="45" r="38" fill="#3B82F6"/>
+                                
+                                <!-- Mouth Group -->
+                                <g id="mouth-group">
+                                    <path id="mouth-normal" d="M 42 55 Q 50 60 58 55" fill="none" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round"/>
+                                    <circle id="mouth-thinking" cx="50" cy="56" r="3" fill="#1E3A8A" opacity="0"/>
+                                    <line id="mouth-curious" x1="46" y1="56" x2="54" y2="56" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round" opacity="0"/>
+                                    <g id="mouth-shocked" opacity="0">
+                                        <circle cx="50" cy="55" r="14" fill="#1E3A8A"/>
+                                        <rect x="43" y="42" width="5.5" height="7" rx="2" fill="#FFFFFF"/>
+                                        <rect x="51" y="42" width="5.5" height="7" rx="2" fill="#FFFFFF"/>
+                                    </g>
+                                </g>
+                                
+                                <!-- Eyes Group -->
+                                <g id="eyes-group" style="transform-origin: 50px 32px;">
+                                    <circle cx="36" cy="32" r="13" fill="#FFFFFF"/>
+                                    <circle cx="64" cy="32" r="13" fill="#FFFFFF"/>
+                                    <circle id="left-pupil" cx="36" cy="32" r="4.5" fill="#1A1A1A"/>
+                                    <circle id="right-pupil" cx="64" cy="32" r="4.5" fill="#1A1A1A"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-[9px] sm:text-[10px] tracking-[0.1em] text-brand-black/50 uppercase mt-1">Bitesized 2024. All rights reserved.</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-3 sm:gap-10 text-[9px] sm:text-[10px] tracking-[0.1em] text-brand-black/50 uppercase pb-1 relative">
+                
+                <!-- Answer Container -->
+                <div id="answer-container" class="absolute bottom-full right-0 mb-4 flex flex-col items-end pointer-events-none opacity-0">
+                    <div id="answer-extender" class="relative h-2 sm:h-3 bg-brand-black rounded-l-sm w-0">
+                        <div class="absolute bottom-full left-0 mb-1 overflow-hidden">
+                            <div id="answer-text" class="font-bricolage text-base sm:text-xl font-bold text-brand-black tracking-widest whitespace-nowrap pl-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>Website by <span class="text-brand-black font-bold">Niccolo' Miranda</span></p>
+                <p>Dev Support <span class="text-brand-black font-bold">Ilja Van Eck</span></p>
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <a href="#" class="hover:text-brand-red">Privacy</a>
+                    <a href="#" class="hover:text-brand-red">Cookie</a>
+                    <a href="#" class="hover:text-brand-red">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<!-- bottom4 inline scripts copied once. -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SplitType Initialization
+            const splitElements = document.querySelectorAll('.js-split-text');
+            let splitInstances = [];
+            
+            if (typeof SplitType !== 'undefined') {
+                splitElements.forEach(el => {
+                    const splitInstance = new SplitType(el, { types: 'lines, words' });
+                    splitInstances.push({ element: el, instance: splitInstance });
+                    const setupDelays = () => splitInstance.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                        });
+                    });
+                    setupDelays();
+                });
+                
+                window.addEventListener('resize', () => { 
+                    splitInstances.forEach(item => {
+                        item.instance.split();
+                        item.instance.lines.forEach((line, lineIndex) => {
+                            line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                            line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                                word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                            });
+                        });
+                    });
+                });
+            }
+            
+            // Intersection Observer for Animations
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            document.querySelectorAll('.js-split-text').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Horizontal Scroll Journey Calculation ---
+            const journeySection = document.getElementById('journey');
+            const hTrack = document.getElementById('horizontal-track');
+            
+            // Initialize horizontal parallax items list
+            const hParallaxItemsList = Array.from(document.querySelectorAll('.parallax-item-h')).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            // Physics Variables for Animation Loop
+            let targetHScroll = 0;
+            let springHScroll = 0;
+            let springHVelocity = 0;
+            let smoothedHLag = 0;
+            const hStiffness = 0.06;
+            const hDamping = 0.58;
+
+            // Calculate target translation on scroll
+            window.addEventListener('scroll', () => {
+                if(!journeySection) return;
+                
+                const rect = journeySection.getBoundingClientRect();
+                const totalScroll = journeySection.offsetHeight - window.innerHeight;
+                
+                // Track horizontal scroll based on vertical scroll progress
+                let progress = -rect.top / totalScroll;
+                progress = Math.max(0, Math.min(1, progress)); // clamp between 0 and 1
+                
+                const rootStyles = getComputedStyle(document.documentElement);
+                const leftExt = parseInt(rootStyles.getPropertyValue('--left-ext').trim()) || 1200;
+                
+                // The endpoint is perfectly mapped to 1.0 progress based on the 650vh height
+                const conclusionLeft = 6000 + leftExt; 
+                const targetTranslateX = conclusionLeft - (window.innerWidth / 2) + 300;
+                
+                targetHScroll = -progress * targetTranslateX;
+            }, { passive: true });
+
+            // Main Animation & Physics Loop
+            function animate() { 
+                // Horizontal Spring Logic
+                const hDisplacement = targetHScroll - springHScroll;
+                const hSpringForce = hDisplacement * hStiffness;
+                
+                springHVelocity = (springHVelocity + hSpringForce) * hDamping;
+                springHScroll += springHVelocity;
+                
+                const hRawLag = targetHScroll - springHScroll;
+                smoothedHLag += (hRawLag - smoothedHLag) * 0.15;
+                
+                // Apply Translation to Main Track
+                if (hTrack) {
+                    hTrack.style.transform = `translateX(${springHScroll}px)`;
+                }
+                
+                // Apply Spring Physics & Parallax to inner items
+                if (hParallaxItemsList) {
+                    hParallaxItemsList.forEach(item => {
+                        const bounceOffsetX = -(smoothedHLag * item.lag); 
+                        const scrollParallaxX = (springHScroll * item.speed);
+                        item.el.style.transform = `translate3d(${bounceOffsetX + scrollParallaxX}px, 0, 0)`;
+                    });
+                }
+                
+                requestAnimationFrame(animate); 
+            }
+            // Start the loop
+            requestAnimationFrame(animate);
+
+            // GSAP Animations for Projects Section
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Animate each project row elements
+                gsap.utils.toArray('.project-row').forEach(row => {
+                    const info = row.querySelector('.project-info');
+                    const image = row.querySelector('.project-image');
+                    const imgElement = row.querySelector('.project-image img');
+                    const isReverse = row.classList.contains('reverse');
+
+                    const infoX = isReverse ? 100 : -100;
+                    const imageX = isReverse ? -100 : 100;
+
+                    // Removed 'scrub' to ensure a smooth, time-based animation regardless of scroll speed
+                    const tl = gsap.timeline({
+                        scrollTrigger: { 
+                            trigger: row, 
+                            start: 'top 65%', // Delayed start so it comes in cleanly
+                            toggleActions: "play none none none" 
+                        }
+                    });
+
+                    // Animate the text info first
+                    tl.fromTo(info, 
+                        { x: infoX, opacity: 0 }, 
+                        { x: 0, opacity: 1, duration: 1.5, ease: 'power3.out' }
+                    )
+                    // Animate the image with a slight overlap delay for a premium feel
+                    .fromTo(image, 
+                        { x: imageX, opacity: 0, scale: 1.05 }, 
+                        { x: 0, opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' },
+                        "<0.3" 
+                    );
+
+                    if (imgElement) {
+                        // The internal parallax image effect stays scrubbed for the scrolling depth effect
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15, ease: 'none',
+                                scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true }
+                            }
+                        );
+
+                        row.addEventListener('mouseenter', () => { gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' }); });
+                        row.addEventListener('mouseleave', () => { gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' }); });
+                    }
+                });
+
+                // Animate Side-by-Side Projects
+                gsap.utils.toArray('.grid-project').forEach(card => {
+                    const image = card.querySelector('.project-image');
+                    const imgElement = card.querySelector('.project-image img');
+                    const info = card.lastElementChild; 
+                    
+                    // Converted to duration-based animation for consistency and smoothness
+                    gsap.fromTo([image, info], 
+                        { y: 60, opacity: 0 }, 
+                        {
+                            scrollTrigger: { trigger: card, start: 'top 70%', toggleActions: "play none none none" }, 
+                            y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: 'power3.out' 
+                        }
+                    );
+
+                    if (imgElement) {
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15, ease: 'none',
+                                scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: true }
+                            }
+                        );
+
+                        card.addEventListener('mouseenter', () => { gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' }); });
+                        card.addEventListener('mouseleave', () => { gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' }); });
+                    }
+                });
+
+                // Garage cards entry
+                gsap.from('.garage-card', {
+                    scrollTrigger: { trigger: '.garage-section', start: 'top 75%' }, 
+                    y: 60, opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out'
+                });
+            }
+        });
+    </script>
+<script>
+        class DoodleController {
+            constructor() {
+                this.sequence = [
+                    { q: "What is 2+2?", a: "4", baseW: 200 },
+                    { q: "E = ?", a: "mc²", baseW: 260 },
+                    { q: "∫2x dx?", a: "x² + C", baseW: 250 },
+                    { q: "Water?", a: "H₂O", baseW: 250 }
+                ];
+                this.index = 0;
+                this.mainTl = null;
+                this.isHovering = false;
+                this.hoverTimeout = null;
+                this.mouseX = window.innerWidth / 2;
+                this.mouseY = window.innerHeight / 2;
+                this.currentPupilX = 0;
+                this.currentPupilY = 0;
+                this.followTicker = this.updateEyesFocus.bind(this);
+                
+                if (document.getElementById('doodle-body')) {
+                    this.init();
+                }
+            }
+
+            init() {
+                gsap.set(["#left-pupil", "#right-pupil"], { x: 0, y: 0 });
+                gsap.set("#answer-text", { yPercent: 120 });
+                gsap.set("#answer-container", { opacity: 0 });
+                
+                window.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+
+                const container = document.getElementById('doodle-container');
+                if (container) {
+                    container.addEventListener('mouseenter', () => this.triggerHoverFollow());
+                }
+
+                this.startSequence();
+            }
+
+            startSequence() {
+                if (this.isHovering) return;
+                if (this.mainTl) this.mainTl.kill();
+                
+                const data = this.sequence[this.index];
+                document.getElementById('thought-text').innerText = data.q;
+                document.getElementById('answer-text').innerText = data.a;
+
+                const vw = window.innerWidth;
+                const scale = vw >= 1280 ? 2.5 : (vw >= 1024 ? 2 : (vw >= 640 ? 1.5 : 1));
+                const targetWidth = (data.baseW * scale) + "px";
+
+                this.mainTl = gsap.timeline({
+                    onComplete: () => {
+                        this.index = (this.index + 1) % this.sequence.length;
+                        this.startSequence();
+                    }
+                });
+                
+                this.mainTl
+                    .to(["#mouth-normal", "#mouth-shocked"], { opacity: 0, duration: 0.1 }, 0)
+                    .to("#mouth-thinking", { opacity: 1, duration: 0.1 }, 0)
+                    .to(["#left-pupil", "#right-pupil"], { x: 5, y: -4, duration: 0.4, ease: "back.out(1.5)" }, 0)
+                    .to("#thought-bubble", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, 0)
+                    .to({}, { duration: 1.5 })
+                    .to("#mouth-thinking", { opacity: 0, duration: 0.1 })
+                    .to("#mouth-normal", { opacity: 1, duration: 0.1 }, "<")
+                    .to(["#left-pupil", "#right-pupil"], { x: 5, y: 4, duration: 0.4, ease: "power2.inOut" }, "<")
+                    .to("#answer-container", { opacity: 1, duration: 0.3 }, "<")
+                    .to("#answer-extender", { width: targetWidth, duration: 0.5, ease: "power3.out" }, "<")
+                    .to("#answer-text", { yPercent: 0, duration: 0.4, ease: "back.out(1.5)" }, "<0.1")
+                    .to({}, { duration: 2.0 })
+                    .to("#thought-bubble", { opacity: 0, scale: 0.8, duration: 0.2 })
+                    .to("#answer-text", { yPercent: 120, duration: 0.3, ease: "power2.in" }, "<")
+                    .to("#answer-extender", { width: "0px", duration: 0.4, ease: "power2.inOut" }, "<0.1")
+                    .to("#answer-container", { opacity: 0, duration: 0.2 }, "<0.2")
+                    .to(["#left-pupil", "#right-pupil"], { x: 0, y: 0, duration: 0.3 }, "<")
+                    .to({}, { duration: 0.3 });
+            }
+
+            updateEyesFocus() {
+                const container = document.getElementById('doodle-container');
+                if (!container) return;
+                
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const dx = this.mouseX - centerX;
+                const dy = this.mouseY - centerY;
+                const angle = Math.atan2(dy, dx);
+                const maxDistance = 6;
+                const distance = Math.min(Math.sqrt(dx*dx + dy*dy) * 0.015, maxDistance);
+                
+                const targetX = Math.cos(angle) * distance;
+                const targetY = Math.sin(angle) * distance;
+                
+                this.currentPupilX += (targetX - this.currentPupilX) * 0.15;
+                this.currentPupilY += (targetY - this.currentPupilY) * 0.15;
+                
+                gsap.set(["#left-pupil", "#right-pupil"], { x: this.currentPupilX, y: this.currentPupilY });
+            }
+
+            triggerHoverFollow() {
+                if (this.isHovering) return;
+                this.isHovering = true;
+                
+                if (this.mainTl) this.mainTl.kill();
+                
+                gsap.to("#thought-bubble", { opacity: 0, scale: 0.5, duration: 0.2 });
+                gsap.to("#answer-text", { yPercent: 120, duration: 0.2 });
+                gsap.to("#answer-extender", { width: "0px", duration: 0.2 });
+                gsap.to("#answer-container", { opacity: 0, duration: 0.2 });
+                
+                gsap.to(["#mouth-normal", "#mouth-thinking", "#mouth-shocked"], { opacity: 0, duration: 0.1 });
+                gsap.to("#mouth-curious", { opacity: 1, duration: 0.1 });
+                
+                gsap.ticker.add(this.followTicker);
+                
+                this.hoverTimeout = gsap.delayedCall(3, () => {
+                    gsap.ticker.remove(this.followTicker);
+                    this.isHovering = false;
+                    gsap.to("#mouth-curious", { opacity: 0, duration: 0.2 });
+                    this.startSequence();
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            new DoodleController();
+        });
+    </script>
+</body>
+</html>

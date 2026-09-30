@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Long Page Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/split-type"></script>
+    
+    <style>
+        :root {
+            /* 24/7 Artists Variables */
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --grid-column-width: 6vw;
+            --grid-gutter-width: 2vw;
+            --grid-offset: 4vw;
+            --color-edu: #b4ff33;
+            --color-tech: #ffb800;
+            --color-net: #9d83ff;
+            --clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
+            
+            /* Telugu Badi Variables */
+            --color-tb-black: #231C3B;
+            --color-tb-bg: #FCF8F2;
+            --color-pink: #FF4B8A;
+            --color-teal: #00BFA5;
+            --color-orange: #FF9800;
+            --color-purple: #8E24AA;
+            --color-green: #4CAF50;
+
+            /* Journey Variables */
+            --left-ext: 600px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: var(--color-brand-10); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+        }
+
+        .u-container { max-width: 1440px; margin: 0 auto; padding: 0 var(--grid-offset); position: relative; }
+        .t-label { display: inline-block; padding: .15em .5em .2em; border-radius: 50px; color: var(--color-black); font-weight: 500; line-height: 1; transform: translateY(-.05em); }
+        .t-label--education { background: var(--color-edu); }
+        .t-label--technology { background: var(--color-tech); }
+        .t-label--network { background: var(--color-net); }
+        h2.s__suptitle { margin: 0; font-size: 1.25rem; border: 1px solid var(--color-black); display: inline-block; padding: .3rem 1.2rem; border-radius: 50px; font-weight: 500; letter-spacing: -.02em; }
+        
+        .s-about-home { position: relative; z-index: 1; padding: 16.2222rem 0; background: var(--color-brand-10); overflow: hidden; }
+        .s-about-home::before { position: absolute; top: 0; left: 50%; z-index: -1; width: 1px; height: 100%; background: var(--color-black); content: ''; }
+        .s-about-home .s__header { margin: 0 0 2.25rem; display: flex; justify-content: flex-start; }
+        .s-about-home .s__title { position: relative; z-index: 2; display: inline-block; background: var(--color-brand-10); padding: 0 2rem .24em 0; max-width: 7.125em; margin: 0; font-size: min(11.1111rem, 10.4167vw); line-height: .95; letter-spacing: -.05em; font-weight: 600; }
+        .s-about-home .s__title .line { clip-path: inset(0 0 -.105em 0); }
+        .s-about-home .s__title .word { will-change: transform; }
+        
+        .s-about-home .s__medias { position: relative; margin: 4.5rem auto 17.5556rem; width: calc(7.8 * var(--grid-column-width) + 6.8 * var(--grid-gutter-width)); max-width: 1180px; }
+        .s-about-home .s__medias::before, .s-about-home .s__medias .s__video::before { display: block; padding-top: 100%; content: ''; }
+        .s-about-home .s__medias .s__video { position: absolute; z-index: 1; }
+        .s-about-home .s__medias .s__video-inner { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: var(--clip-path); }
+        .s-about-home .s__medias .s__video--1 .s__video-inner { clip-path: polygon(20% 0%,80% 0%,80% 5%,85% 5%,85% 10%,90% 10%,90% 15%,95% 15%,95% 20%,100% 20%,100% 80%,95% 80%,95% 85%,90% 85%,90% 90%,85% 90%,85% 95%,80% 95%,80% 100%,20% 100%,20% 95%,15% 95%,15% 90%,10% 90%,10% 85%,5% 85%,5% 80%,0% 80%,0% 20%,5% 20%,5% 15%,10% 15%,10% 10%,15% 10%,15% 5%,20% 5%); }
+        .s-about-home .s__medias .s__video video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+        
+        .s-about-home .s__medias .s__video--1 { top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .s-about-home .s__medias .s__video--2 { --width: 32%; top: 25%; left: calc(100% - var(--width) * .5); width: var(--width); z-index: 2; }
+        .s-about-home .s__medias .s__video--3 { --width: 25%; top: 35%; right: calc(100% - var(--width) * .5); width: var(--width); z-index: 3; }
+        .s-about-home .s__medias .s__video--4 { --width: 26%; top: 100%; right: 57.5%; margin-top: calc(var(--width) * -.5); width: var(--width); z-index: 4; }
+        
+        .s-about-home .s__text { position: relative; z-index: 2; background: var(--color-brand-10); padding: 1.25rem 1.75rem; border-radius: 24px; margin: 0 auto; max-width: 18.6875em; font-size: min(4.4444rem, 4.1667vw); font-weight: 500; letter-spacing: -.06em; line-height: 1; text-indent: 1.425em; text-align: left; }
+        .s-about-home .s__title .word { display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); will-change: opacity, transform; }
+        
+        .s-about-home.is-inview .s__title .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+        .s-about-home .s__medias .s__video video { transform: scale(1.08); filter: saturate(.72) brightness(.9); transition: transform 2.2s cubic-bezier(.16,1,.3,1), filter 2s ease; }
+        .s-about-home .s__medias.is-media-inview .s__video video { transform: scale(1); filter: saturate(1) brightness(1); }
+        .s-about-home .s__medias .s__video-inner::before, .s-about-home .s__medias .s__video-inner::after { content: ''; position: absolute; top: 0; width: 50%; height: 100%; background: var(--color-brand-10); z-index: 2; transition: transform 1.7s cubic-bezier(.19,1,.22,1), opacity 1.7s ease; }
+        .s-about-home .s__medias .s__video-inner::before { left: 0; transform-origin: left center; }
+        .s-about-home .s__medias .s__video-inner::after { right: 0; transform-origin: right center; }
+        
+        .s-about-home .s__medias .s__video--1 .s__video-inner::before, .s-about-home .s__medias .s__video--1 .s__video-inner::after { transition-delay: .1s; }
+        .s-about-home .s__medias .s__video--2 .s__video-inner::before, .s-about-home .s__medias .s__video--2 .s__video-inner::after { transition-delay: .25s; }
+        .s-about-home .s__medias .s__video--3 .s__video-inner::before, .s-about-home .s__medias .s__video--3 .s__video-inner::after { transition-delay: .4s; }
+        .s-about-home .s__medias .s__video--4 .s__video-inner::before, .s-about-home .s__medias .s__video--4 .s__video-inner::after { transition-delay: .55s; }
+        .s-about-home .s__medias.is-media-inview .s__video-inner::before, .s-about-home .s__medias.is-media-inview .s__video-inner::after { opacity: .96; transform: scaleX(0); }
+        
+        .s-about-home .s__text { opacity: 0; transform: translate3d(0, 38px, 0); transition: opacity 1.1s ease, transform 1.2s cubic-bezier(.16,1,.3,1); transition-delay: .9s; }
+        .s-about-home.is-inview .s__text { opacity: 1; transform: translate3d(0, 0, 0); }
+        
+        @media (max-width:1536px) { .s-about-home { padding-top: 11rem; } .s-about-home .s__medias { margin-bottom: 13rem; width: calc(6 * var(--grid-column-width) + 5 * var(--grid-gutter-width)); } }
+        @media (max-width:1280px) { .s-about-home { padding: 8rem 0 13rem; } .s-about-home .s__medias { margin-bottom: 10rem; } .s-about-home .s__text { font-size: 2.6rem; } }
+        @media (max-width:987px) { .s-about-home { padding: 11rem 0 16rem; } .s-about-home .s__title { font-size: min(5.4rem,12.2656vw); } .s-about-home .s__medias { margin-bottom: 8rem; width: 70vw; } .s-about-home .s__text { text-indent: 0; } }
+        @media (max-width:767px) { .s-about-home { padding-bottom: 9rem; } .s-about-home .s__header { margin-bottom: 1.5rem; } .s-about-home .s__medias { margin-bottom: 5rem; } .s-about-home .s__text { font-size: 2rem; } }
+        @media (max-width:576px) { .s-about-home .s__medias { width: 100%; } .s-about-home .s__medias .s__video--2 { --width: 37.5%; right: calc(var(--grid-offset) * -2); left: auto; } .s-about-home .s__medias .s__video--3 { --width: 34%; right: auto; left: calc(var(--grid-offset) * -2); } .s-about-home .s__medias .s__video--4 { --width: 30%; right: 30%; } }
+
+        .s-education-home { 
+            position: relative; 
+            height: 250vh; 
+            overflow: visible; 
+            z-index: 10; 
+            background-color: var(--color-tb-bg);
+            background-image: radial-gradient(circle at 10% 80%, rgba(162,228,213,.4) 0%, transparent 35%), 
+                              radial-gradient(circle at 90% 10%, rgba(255,236,179,.4) 0%, transparent 35%), 
+                              radial-gradient(circle at 80% 80%, rgba(255,204,229,.4) 0%, transparent 35%);
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .sticky-wrapper { position: sticky; top: 0; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .parallax-text-group { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
+        .center-line { position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; }
+        .center-line::before, .center-line::after { content: ''; position: absolute; left: 0; width: 1px; height: 200vh; background: var(--color-tb-black); opacity: .15; }
+        .center-line::before { bottom: 180px; } .center-line::after { top: 200px; }
+        
+        .s__content { position: relative; z-index: 10; text-align: center; max-width: 800px; display: flex; flex-direction: column; align-items: center; padding: 0 20px; margin-top: 40px; }
+        .s_suptitle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(35,28,59,.1); border-radius: 50px; padding: 8px 24px; font-size: .9rem; font-weight: 600; margin-bottom: 30px; background: var(--color-white); color: #555; box-shadow: 0 4px 15px rgba(0,0,0,.03); }
+        .s_title { font-size: clamp(3rem,7vw,6.5rem); line-height: 1.05; font-weight: 800; letter-spacing: -.03em; margin-bottom: 25px; color: var(--color-tb-black); }
+        .c-teal { color: var(--color-teal); } .c-pink { color: var(--color-pink); }
+        .s_subtitle_telugu { color: var(--color-orange); font-size: clamp(1.5rem,3vw,2.5rem); font-weight: 700; margin-bottom: 20px; }
+        .s__text-tb { font-size: 1.15rem; line-height: 1.5; max-width: 600px; color: #444; margin-bottom: 40px; }
+        
+        .hero-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-primary { background: var(--color-tb-black); color: var(--color-white); padding: 16px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; box-shadow: 0 8px 20px rgba(35,28,59,.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(35,28,59,.3); }
+        .btn-secondary { background: transparent; color: var(--color-tb-black); border: 1px solid rgba(35,28,59,.2); padding: 15px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; }
+        .btn-secondary:hover { background: rgba(35,28,59,.05); }
+        
+        .sb-letter { position: absolute; font-size: clamp(2rem,5vw,4rem); font-weight: 800; will-change: transform; z-index: 5; user-select: none; pointer-events: none; text-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .s__courses { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .s_courses_list { position: relative; width: 100%; height: 100%; list-style: none; }
+        @media (max-width: 900px) { .hero-buttons { flex-direction: column; width: 100%; } .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; } .s__text-tb { padding: 0 20px; } }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+        .topo-line { fill: none; stroke: #2d6a38; stroke-width: 0.5; opacity: 0.15; }
+        #horizontal-track { will-change: transform; }
+        .js-split-text .line { clip-path: inset(0 0 -.105em 0); }
+        .js-split-text .word { will-change: transform, opacity; display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); }
+        .js-split-text.is-inview .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    </style>
+</head>
+<body class="selection:bg-[#e67e22] selection:text-white">
+    <!-- Section 1: 24/7 Artists About Section -->
+    <div class="s-about-home" data-plr-component="s-about-home" id="about">
+        <div class="u-container">
+            <div class="s__header js-header"><h2 class="s__suptitle t-suptitle">About</h2></div>
+            <p class="s__title t-title js-title" aria-label="24/7 Artists is here to make the hard stuff easy.">24/7 Artists is here to make the hard stuff easy.</p>
+            
+            <div class="s__medias js-medias">
+                <div class="s__video s__video--1 js-media parallax-item" data-lag="0.12" data-speed="0.04"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/00-ld.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--2 js-media parallax-item" data-lag="0.20" data-speed="0.14"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--3 js-media parallax-item" data-lag="0.24" data-speed="0.105"><div class="s__video-inner"><video preload="auto" src="https://www.w3schools.com/html/mov_bbb.mp4" loop muted playsinline autoplay></video></div></div>
+                <div class="s__video s__video--4 js-media parallax-item" data-lag="0.18" data-speed="0.063"><div class="s__video-inner"><video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video></div></div>
+            </div>
+            
+            <div class="parallax-item" data-lag="0.25" data-speed="0.03" style="will-change: transform;">
+                <p class="s__text">Everything you need to build your music career — in one place. Learn with <span class="t-label t-label--education">Education</span>, move faster with <span class="t-label t-label--technology">Technology</span>, and link up through a global <span class="t-label t-label--network">Network</span> of artists and industry people who actually get it.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Telugu Badi Education Section with Parallax Animation -->
+    <div class="s-education-home" id="education">
+        <div class="sticky-wrapper">
+            <div class="parallax-text-group parallax-item" data-lag="0.35" data-speed="0">
+                <div class="center-line"></div>
+                <div class="s__content">
+                    <div class="s_suptitle"><span style="font-size:1.2em;line-height:0;">🍲</span> Telugu Association Inc. Sydney • Non-profit since 1992</div>
+                    <h1 class="s_title">Let's learn <span class="c-teal">Telugu</span><br>while we <span class="c-pink">play</span> &amp; <span class="c-teal">sing</span>.</h1>
+                    <h2 class="s_subtitle_telugu">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము!</h2>
+                    <p class="s__text-tb">A joyful weekend Telugu school for children across Sydney —<br>preserving our language, culture and stories for the next generation.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn-primary">Join Telugu School</a>
+                        <a href="#" class="btn-secondary">Our Story</a>
+                    </div>
+                </div>
+            </div>
+            <div class="s__courses"><ul class="s_courses_list" id="coursesList"></ul></div>
+        </div>
+    </div>
+
+    <!-- Section 3: Horizontal Journey Showcase -->
+    <section id="journey" class="relative h-[650vh] bg-[#f4f1ea] pt-10">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex items-center bg-transparent">
+            
+            <svg class="absolute inset-0 h-full pointer-events-none z-0" style="width: calc(9000px + var(--left-ext));" xmlns="http://www.w3.org/2000/svg">
+                <g style="transform: translateX(var(--left-ext));">
+                    <path class="topo-line" d="M-100,500 Q400,200 1200,700 T2800,200 T4500,800 T6500,100 T8000,600 T9500,300" />
+                    <path class="topo-line" d="M-200,800 Q600,900 1500,400 T3200,800 T5000,200 T6800,900 T8500,400" />
+                    <path class="topo-line" stroke-width="1" d="M0,200 Q800,-100 1800,400 T3800,900 T5800,300 T7500,800 T9000,200" />
+                    <path class="topo-line" stroke-dasharray="10, 10" d="M-50,300 Q1000,800 2200,100 T4200,600 T6000,800 T7800,100" />
+                </g>
+            </svg>
+
+            <div id="horizontal-track" class="flex items-center h-full absolute left-0 z-10" style="width: calc(8500px + var(--left-ext));">
+                <div id="track-inner" class="relative w-full h-full" style="transform: translateX(var(--left-ext));">
+
+                    <div class="absolute left-0 top-[50%] parallax-item-h z-10" data-lag="0.1" data-speed="0.03">
+                        <div class="-translate-y-1/2 w-[500px] text-center">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-tight text-[#1b3a20] js-split-text">"It doesn't matter where you start, education is the bridge to everywhere."</p>
+                            <p class="mt-6 text-[#2d6a38] font-medium text-lg inline-block border-b-2 border-[#e67e22] pb-2">A legacy of bringing quality Telugu education to communities across the region.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1050px] bottom-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Hyderabad Campus</div>
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" alt="School Campus" class="w-full aspect-[4/3] object-cover rounded" onerror="this.src='https://placehold.co/600x450/e0ded8/1b3a20?text=Hyderabad+Campus';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1400px] top-[45%] parallax-item-h z-10" data-lag="0.15" data-speed="0.05">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">9+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Schools</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[250px] text-center">Establishing centers of excellence in key communities.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1750px] top-[15%] parallax-item-h z-10" data-lag="0.25" data-speed="0.16">
+                        <div class="pointer-events-auto w-[260px] shadow-lg bg-white p-2 -rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Vijayawada Branch</div>
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="Classroom" class="w-full aspect-square object-cover rounded" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Vijayawada+Branch';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2050px] bottom-[25%] parallax-item-h z-10" data-lag="0.15" data-speed="0.09">
+                        <div class="pointer-events-auto w-[360px] shadow-2xl bg-white p-2 rotate-1 hover:rotate-0 transition-transform duration-500 hover:z-50 border-b-4 border-[#e67e22] rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Tirupati Primary</div>
+                            <img src="https://images.unsplash.com/photo-1546410531-bea5acadb6a0?auto=format&fit=crop&w=800&q=80" alt="Students" class="w-full aspect-[16/9] object-cover rounded" onerror="this.src='https://placehold.co/800x450/e0ded8/1b3a20?text=Tirupati+Primary';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2650px] top-[20%] parallax-item-h z-10" data-lag="0.18" data-speed="0.11">
+                        <div class="pointer-events-auto w-[330px] shadow-lg bg-[#f4f1ea] p-3 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80" alt="Students studying" class="w-full aspect-[3/4] object-cover rounded-sm filter sepia-[0.2] rounded" onerror="this.src='https://placehold.co/600x800/e0ded8/1b3a20?text=Students+Studying';">
+                            <div class="text-xs text-right mt-2 font-medium text-gray-600">Annual Science Fair, 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3050px] top-[50%] parallax-item-h z-10" data-lag="0.15" data-speed="0.05">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">550+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Students</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[280px] text-center">A growing family of eager learners discovering their heritage.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3500px] bottom-[10%] parallax-item-h z-10" data-lag="0.1" data-speed="0.06">
+                        <div class="pointer-events-auto w-[420px] shadow-2xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1 px-1">
+                                <span class="text-xs font-semibold text-[#2d6a38] uppercase tracking-wider">Cultural Day</span>
+                                <span class="text-xs text-[#e67e22] font-['Mukta']">సాంస్కృతిక దినోత్సవం</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Cultural Event" class="w-full aspect-[21/9] object-cover rounded" onerror="this.src='https://placehold.co/800x340/e0ded8/1b3a20?text=Cultural+Day';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4000px] top-[30%] parallax-item-h z-10" data-lag="0.22" data-speed="0.14">
+                        <div class="pointer-events-auto w-[280px] shadow-md bg-white p-2 hover:scale-105 transition-transform duration-500 hover:z-50 rounded-full overflow-hidden border-8 border-[#f4f1ea]">
+                            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80" alt="Happy Student" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Student';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4500px] bottom-[20%] parallax-item-h z-10" data-lag="0.12" data-speed="0.07">
+                        <div class="pointer-events-auto w-[350px] shadow-xl bg-white p-2 rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Faculty Training, Vizag</div>
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=80" alt="Teachers Meeting" class="w-full aspect-[4/3] object-cover grayscale-[0.3] rounded" onerror="this.src='https://placehold.co/700x525/e0ded8/1b3a20?text=Faculty+Training';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4950px] top-[40%] parallax-item-h z-10" data-lag="0.15" data-speed="0.05">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">80+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Teachers</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[300px] text-center">Dedicated educators bringing passion and expertise to every classroom.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[5400px] top-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-2xl bg-[#1b3a20] p-1 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80" alt="Teacher interacting" class="w-full aspect-square object-cover opacity-90 rounded" onerror="this.src='https://placehold.co/600x600/e0ded8/1b3a20?text=Teacher+Interaction';">
+                            <div class="text-xs text-white text-center py-2 font-medium tracking-wide">Award-winning Staff</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[6000px] top-[50%] parallax-item-h z-10" data-lag="0.1" data-speed="0.03">
+                        <div id="conclusion-slide" class="-translate-y-1/2 w-[600px] text-center md:text-left">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-relaxed text-[#1b3a20] js-split-text">
+                                "Since our foundation, we have worked tirelessly to make the dream of accessible, high-quality education a reality for every child."
+                            </p>
+                            <div class="flex items-center justify-center md:justify-start gap-4 pt-8">
+                                <div class="h-[2px] w-16 bg-[#e67e22]"></div>
+                                <span class="text-[12px] font-bold uppercase tracking-widest text-[#2d6a38]">End of Part 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // First Page Logic: Title Split and Intersection Observers
+            const title = document.querySelector('.js-title');
+            let splitTitle;
+            if (title && typeof SplitType !== 'undefined') {
+                splitTitle = new SplitType(title, { types: 'lines, words' });
+                const setupDelays = () => splitTitle.lines.forEach((line, lineIndex) => {
+                    line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                    line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                        word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                    });
+                });
+                setupDelays();
+                window.addEventListener('resize', () => { splitTitle.split(); setupDelays(); });
+            }
+            
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            const section1 = document.querySelector('.s-about-home');
+            if (section1) observer.observe(section1);
+            
+            const mediasContainer = document.querySelector('.s__medias');
+            if (mediasContainer) {
+                const mediaObserver = new IntersectionObserver((entries, observerInstance) => {
+                    entries.forEach(entry => { 
+                        if (entry.isIntersecting) { 
+                            entry.target.classList.add('is-media-inview'); 
+                            observerInstance.unobserve(entry.target); 
+                        } 
+                    });
+                }, { threshold: .2 });
+                mediaObserver.observe(mediasContainer);
+            }
+
+            const teluguLetters = [
+                {text:'అ',color:'#FF9800',top:'15%',left:'10%',rot:'-15deg',speedY:.35},
+                {text:'క',color:'#FF4B8A',top:'65%',left:'12%',rot:'10deg',speedY:.15},
+                {text:'చ',color:'#00BFA5',top:'25%',left:'80%',rot:'25deg',speedY:.45},
+                {text:'ట',color:'#8E24AA',top:'75%',left:'85%',rot:'-20deg',speedY:.25},
+                {text:'త',color:'#4CAF50',top:'82%',left:'70%',rot:'15deg',speedY:.55},
+                {text:'ప',color:'#00BFA5',top:'78%',left:'25%',rot:'-5deg',speedY:.35},
+                {text:'య',color:'#FF9800',top:'10%',left:'60%',rot:'30deg',speedY:.2},
+                {text:'శ',color:'#8E24AA',top:'45%',left:'90%',rot:'-15deg',speedY:.6},
+                {text:'స',color:'#FF4B8A',top:'85%',left:'45%',rot:'10deg',speedY:.3},
+                {text:'ళ',color:'#4CAF50',top:'35%',left:'5%',rot:'-25deg',speedY:.4},
+                {text:'వ',color:'#FF9800',top:'50%',left:'15%',rot:'5deg',speedY:.15},
+                {text:'మ',color:'#8E24AA',top:'20%',left:'20%',rot:'15deg',speedY:.5},
+                {text:'గ',color:'#4CAF50',top:'60%',left:'80%',rot:'-10deg',speedY:.25},
+                {text:'ఆ',color:'#8E24AA',top:'12%',left:'85%',rot:'12deg',speedY:.3}
+            ];
+            
+            const listContainer = document.getElementById('coursesList'); 
+            const parallaxElements = [];
+            
+            teluguLetters.forEach(card => { 
+                const li = document.createElement('li'); 
+                li.className = 'sb-letter'; 
+                li.style.top = card.top; 
+                li.style.left = card.left; 
+                li.style.color = card.color; 
+                li.innerHTML = card.text; 
+                listContainer.appendChild(li); 
+                
+                const rand = Math.random(); 
+                const floatSpeed = rand < .3 ? .015 + Math.random() * .02 : rand < .8 ? .04 + Math.random() * .04 : .12 + Math.random() * .15; 
+                
+                parallaxElements.push({
+                    element: li,
+                    rot: parseFloat(card.rot) || 0,
+                    currentRot: parseFloat(card.rot) || 0,
+                    baseRotSpeed: (Math.random() > .5 ? 1 : -1) * (.75 - card.speedY) * .07,
+                    speedY: card.speedY,
+                    topPercent: parseFloat(card.top),
+                    floatSpeed,
+                    ambientDistance: 0
+                }); 
+            });
+
+            const domParallaxItems = document.querySelectorAll('.parallax-item');
+            const parallaxItemsList = Array.from(domParallaxItems).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            // Horizontal Physics Variables
+            window.targetHScroll = 0;
+            let springHScroll = 0;
+            let springHVelocity = 0;
+            let smoothedHLag = 0;
+            const hStiffness = 0.06;
+            const hDamping = 0.58;
+            const hTrack = document.getElementById('horizontal-track');
+
+            let targetScrollY = window.scrollY; 
+            let springY = window.scrollY; 
+            let springVelocity = 0; 
+            const stiffness = .06, damping = .58; 
+            let smoothedLag = 0; 
+            
+            const educationSection = document.getElementById('education'); 
+            
+            window.addEventListener('scroll', () => { targetScrollY = window.scrollY }, { passive: true }); 
+            
+            let lastTime = null, lastScrollDirection = 1;
+            
+            function animate(time) { 
+                if (!lastTime) lastTime = time; 
+                const deltaTime = time - lastTime; 
+                lastTime = time; 
+                
+                const displacement = targetScrollY - springY; 
+                const springForce = displacement * stiffness; 
+                const prevSpringY = springY; 
+                
+                springVelocity = (springVelocity + springForce) * damping; 
+                springY += springVelocity; 
+                
+                if (Math.abs(springY - prevSpringY) > .1) lastScrollDirection = Math.sign(springY - prevSpringY); 
+                
+                const rawLag = targetScrollY - springY; 
+                smoothedLag += (rawLag - smoothedLag) * .15; 
+                
+                // Apply bounce and parallax values based on data-attributes
+                parallaxItemsList.forEach(item => {
+                    const bounceOffsetY = -(smoothedLag * item.lag); 
+                    const scrollParallaxY = -(springY * item.speed);
+                    item.el.style.transform = `translate3d(0, ${bounceOffsetY + scrollParallaxY}px, 0)`;
+                }); 
+                
+                // --- Horizontal Spring & Parallax ---
+                const hDisplacement = window.targetHScroll - springHScroll;
+                const hSpringForce = hDisplacement * hStiffness;
+                
+                springHVelocity = (springHVelocity + hSpringForce) * hDamping;
+                springHScroll += springHVelocity;
+                
+                const hRawLag = window.targetHScroll - springHScroll;
+                smoothedHLag += (hRawLag - smoothedHLag) * 0.15;
+                
+                if (hTrack) {
+                    hTrack.style.transform = `translateX(${springHScroll}px)`;
+                }
+                
+                if (window.hParallaxItemsList) {
+                    window.hParallaxItemsList.forEach(item => {
+                        const bounceOffsetX = -(smoothedHLag * item.lag); 
+                        const scrollParallaxX = (springHScroll * item.speed);
+                        item.el.style.transform = `translate3d(${bounceOffsetX + scrollParallaxX}px, 0, 0)`;
+                    });
+                }
+                
+                const H = window.innerHeight;
+                const minY = -500;
+                const maxY = H + 500;
+                const wrapRange = maxY - minY;
+                
+                // We calculate position relative to the section's offset to ensure it works accurately on the long page
+                let relativeSpringY = springY - (educationSection ? educationSection.offsetTop : window.innerHeight);
+                if (relativeSpringY < -H) relativeSpringY = -H; // clamp before it reaches view
+                
+                parallaxElements.forEach(item => {
+                    item.ambientDistance += item.floatSpeed * deltaTime * lastScrollDirection; 
+                    const startY = (item.topPercent / 100) * H; 
+                    const distanceMoved = (relativeSpringY * item.speedY * 2.5) + item.ambientDistance; 
+                    const absY = startY - distanceMoved; 
+                    const wrappedAbsY = ((absY - minY) % wrapRange + wrapRange) % wrapRange + minY; 
+                    const translateY = wrappedAbsY - startY; 
+                    
+                    item.currentRot += (item.baseRotSpeed * lastScrollDirection) * deltaTime; 
+                    item.element.style.transform = `translate3d(0, ${translateY}px, 0) rotate(${item.currentRot}deg)`;
+                }); 
+                
+                requestAnimationFrame(animate); 
+            }
+            requestAnimationFrame(animate);
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SplitType Initialization for Page 3
+            const splitElements = document.querySelectorAll('#journey .js-split-text');
+            let splitInstances = [];
+            
+            if (typeof SplitType !== 'undefined') {
+                splitElements.forEach(el => {
+                    const splitInstance = new SplitType(el, { types: 'lines, words' });
+                    splitInstances.push({ element: el, instance: splitInstance });
+                    const setupDelays = () => splitInstance.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                        });
+                    });
+                    setupDelays();
+                });
+                
+                window.addEventListener('resize', () => { 
+                    splitInstances.forEach(item => {
+                        item.instance.split();
+                        item.instance.lines.forEach((line, lineIndex) => {
+                            line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                            line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                                word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                            });
+                        });
+                    });
+                });
+            }
+            
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            document.querySelectorAll('#journey .js-split-text').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Horizontal Scroll Journey Calculation ---
+            const journeySection = document.getElementById('journey');
+            const horizontalEndProgress = 0.72;
+            
+            // Initialize horizontal parallax items list
+            window.hParallaxItemsList = Array.from(document.querySelectorAll('.parallax-item-h')).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            window.addEventListener('scroll', () => {
+                if(!journeySection) return;
+                
+                const rect = journeySection.getBoundingClientRect();
+                const totalScroll = journeySection.offsetHeight - window.innerHeight;
+                
+                // Only track horizontal scroll if we are inside the journey section's scroll boundaries
+                if(rect.top <= window.innerHeight && rect.bottom >= 0) {
+                    const headStartMultiplier = 0.35;
+                    let progress = ((window.innerHeight * headStartMultiplier) - rect.top) / totalScroll;
+                    progress = Math.max(0, Math.min(1, progress));
+                    
+                    const rootStyles = getComputedStyle(document.documentElement);
+                    const leftExt = parseInt(rootStyles.getPropertyValue('--left-ext').trim()) || 1200;
+                    
+                    const conclusionLeft = 6000 + leftExt; 
+                    const targetTranslateX = conclusionLeft - (window.innerWidth / 2) + 300;
+                    const horizontalProgress = Math.min(1, progress / horizontalEndProgress);
+                    
+                    // Assign to the global physics target instead of immediately styling
+                    window.targetHScroll = -horizontalProgress * targetTranslateX;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interrentcars · Telugu Badi — Sydney</title>
+  <meta name="description" content="Page 1: Interrentcars premium car rental. Page 2: Telugu Badi — the Telugu language school of Telugu Association Inc. Sydney, teaching Telugu to children since 1993.">
+
+  <!-- Tailwind CSS + Lenis smooth scroll (used by Page 1: Interrentcars) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Tammudu+2:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@200;300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    /* Strict lock to prevent horizontal sliding from the colossal text (Page 1) */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    /* Lenis Required Styles */
+    html.lenis, html.lenis body {
+        height: auto;
+    }
+    .lenis.lenis-smooth {
+        scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+    }
+    .lenis.lenis-stopped {
+        overflow: hidden;
+    }
+    .lenis.lenis-smooth iframe {
+        pointer-events: none;
+    }
+
+    /* Custom Font Loading (Page 1) */
+    @font-face {
+        font-family: 'Telegraf';
+        font-style: normal;
+        font-weight: 400;
+        src: url('./telegraf/PPTelegraf-Regular.woff2') format('woff2');
+        font-display: swap;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Page 1 (Interrentcars) scoped theme — was `body` in the original standalone page */
+    .page-car {
+        font-family: 'Outfit', sans-serif;
+        background-color: #000;
+        color: #fff;
+    }
+
+    /* Custom slide transitions for right-to-left slide over */
+    .slide {
+        visibility: hidden;
+        transform: translateX(100%);
+        z-index: 1;
+        will-change: transform;
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+    }
+
+    .slide.is-active {
+        visibility: visible;
+        transform: translateX(0);
+        z-index: 10;
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+    }
+
+    .slide.is-leaving {
+        visibility: visible;
+        /* Keep the container perfectly still so the text falls straight down */
+        transform: translateX(0);
+        filter: brightness(0.5);
+        /* Darken as it gets covered */
+        z-index: 5;
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), filter 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    /* Apply the parallax push-back strictly to the background video so text isn't dragged sideways */
+    .slide video {
+        transform: translateX(0);
+        transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .slide.is-leaving video {
+        transform: translateX(-15%);
+    }
+
+    /* Text Animation (Line Reveal) */
+    .slide-text {
+        transform: translateY(120%);
+        /* Exponential Ease-Out: Comes in very fast, slowly settles into place */
+        transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: block;
+        will-change: transform;
+    }
+
+    .slide.is-active .slide-text {
+        transform: translateY(0);
+    }
+
+    /* Heading Slide IN (Wait for slide transition to almost finish) */
+    .slide.is-active h3.slide-text {
+        transition-delay: 1.0s;
+    }
+
+    /* Description Slide IN (0.5s delay after heading) */
+    .slide.is-active p.slide-text {
+        transition-delay: 1.5s;
+    }
+
+    /* Slide OUT transitions */
+    .slide:not(.is-active) .slide-text {
+        /* Exponential Ease-Out for sliding back down */
+        transform: translateY(120%);
+        transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide:not(.is-active) h3.slide-text {
+        /* Heading falls AFTER the description to mirror the entrance */
+        transition-delay: 0.27s;
+    }
+
+    .slide:not(.is-active) p.slide-text {
+        /* Description falls FIRST */
+        transition-delay: 0s;
+    }
+
+    .spin-slow {
+        animation: spin 15s linear infinite;
+    }
+
+    /* Subtle gradient to ensure text readability over bright images */
+    .text-overlay-gradient {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 40%, transparent 100%);
+    }
+
+    /* Layered Button Animation */
+    .layered-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50px;
+        overflow: hidden;
+        z-index: 1;
+        text-decoration: none;
+    }
+
+    .header-btn {
+        border: 1px solid #fff;
+        color: #fff;
+        padding: 0.4rem 1rem;
+    }
+
+    @media (min-width: 768px) {
+        .header-btn {
+            padding: 0.6rem 1.6rem;
+        }
+    }
+
+    .vision-btn {
+        border: 1px solid #1a1a1a;
+        color: #1a1a1a;
+    }
+
+    /* Multiple Color Slide Effect Backgrounds */
+    .bg-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: scaleY(0);
+        transform-origin: center;
+    }
+
+    .bg-layer-1 {
+        background-color: #f0f0f0;
+        z-index: -3;
+        transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.2s;
+    }
+    .bg-layer-2 {
+        background-color: #D1FF00;
+        z-index: -2;
+        transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.1s;
+    }
+    .bg-layer-3 {
+        background-color: #1a1a1a;
+        z-index: -1;
+        transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0s;
+    }
+
+    .layered-btn:hover .bg-layer-1 {
+        transform: scaleY(1);
+        transition-delay: 0s;
+    }
+    .layered-btn:hover .bg-layer-2 {
+        transform: scaleY(1);
+        transition-delay: 0.1s;
+    }
+    .layered-btn:hover .bg-layer-3 {
+        transform: scaleY(1);
+        transition-delay: 0.2s;
+    }
+
+    .btn-text, .btn-icon {
+        position: relative;
+        z-index: 2;
+        transition: color 0.2s ease 0.2s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .layered-btn:hover .btn-text,
+    .layered-btn:hover .btn-icon {
+        color: #D1FF00;
+        transition-delay: 0.25s;
+    }
+
+    .layered-btn:hover .btn-icon {
+        transform: translate(4px, -4px);
+    }
+
+    /* Nav Toggle Animation Mechanics */
+    .page-car {
+        --line-color: #ffffff;
+        --line-height: 2px;
+        --line-width: 32px;
+        --gap: 8px;
+        --collapse-dist: 5px;
+    }
+
+    .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        gap: var(--gap);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        -webkit-user-select: none;
+        user-select: none;
+        width: 40px;
+    }
+
+    .page-car .line {
+        height: var(--line-height);
+        background-color: var(--line-color);
+        display: block;
+        transform-origin: center;
+        will-change: transform, translate, rotate, width;
+        scale: 1 1;
+        translate: 0 0;
+        rotate: 0deg;
+        transition:
+            rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+            translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+            opacity 0.2s ease 0.3s,
+            scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    }
+
+    .l1 {
+        width: var(--line-width);
+    }
+
+    .l2 {
+        width: calc(var(--line-width) * 0.55);
+    }
+
+    @keyframes wave-expand {
+
+        0%,
+        100% {
+            width: calc(var(--line-width) * 0.55);
+        }
+
+        50% {
+            width: calc(var(--line-width) * 0.85);
+        }
+    }
+
+    @keyframes wave-contract {
+
+        0%,
+        100% {
+            width: var(--line-width);
+        }
+
+        50% {
+            width: calc(var(--line-width) * 0.7);
+        }
+    }
+
+    .nav-toggle:not(.active):hover .l1 {
+        animation: wave-contract 0.6s infinite ease-in-out;
+    }
+
+    .nav-toggle:not(.active):hover .l2 {
+        animation: wave-expand 0.6s infinite ease-in-out;
+        animation-delay: 0.1s;
+    }
+
+    .nav-toggle.active .line {
+        width: var(--line-width);
+        transition:
+            translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+            rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+            opacity 0.2s ease 0s,
+            scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    }
+
+    .nav-toggle.active .l1 {
+        translate: 0 var(--collapse-dist);
+        rotate: 45deg;
+    }
+
+    .nav-toggle.active .l2 {
+        translate: 0 calc(var(--collapse-dist) * -1);
+        rotate: -45deg;
+    }
+
+    .nav-toggle.active:hover .l1,
+    .nav-toggle.active:hover .l2 {
+        scale: 1.15;
+    }
+
+    .nav-toggle:active {
+        transform: scale(0.95);
+    }
+
+    /* Animated Menu Link Hover (Desktop & Mobile) */
+    .animated-link {
+        position: relative;
+        display: inline-block;
+        width: max-content;
+    }
+
+    .animated-link::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        left: 0;
+        background-color: currentColor;
+        transform: scaleX(0);
+        transform-origin: right;
+        /* Shrinks to the right when hovered out */
+        transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .animated-link:hover::after {
+        transform-origin: left;
+        /* Grows from the left when hovered in */
+        transform: scaleX(1);
+    }
+
+    .desktop-link::after {
+        height: 1.5px;
+        bottom: -4px;
+    }
+
+    .mobile-link::after {
+        height: 5px;
+        /* Matches the bold underline look */
+        bottom: 4px;
+        /* Sits cleanly beneath the uppercase text */
+    }
+
+    /* Fluid Segment Text Fill Animation */
+    .page-car .char {
+        color: #e5e5e5;
+        /* Transition removed here; animation is purely driven by JS loop for "alive" fluid feel */
+        will-change: color;
+    }
+
+    /* Staggered Split Text Reveal Animation */
+    .page-car .word-wrapper {
+        display: inline-flex;
+        overflow: hidden;
+        padding-bottom: 0.1em;
+        margin-right: 0.25em; /* Fallback, though JS inserts natural spaces */
+    }
+
+    .page-car .letter {
+        display: inline-block;
+        transform: translateY(120%);
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); /* Matches hero slide curve */
+        will-change: transform;
+    }
+
+    .page-car .is-revealed .letter {
+        transform: translateY(0);
+    }
+
+    /* Scroll Arrow Animation */
+    @keyframes scroll-arrow-slide {
+        0% {
+            transform: translateY(-10px) scale(1.3);
+            opacity: 0;
+        }
+
+        30% {
+            transform: translateY(-3px) scale(1.3);
+            opacity: 1;
+        }
+
+        70% {
+            transform: translateY(3px) scale(1.3);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(10px) scale(1.3);
+            opacity: 0;
+        }
+    }
+
+    .scroll-container:hover .scroll-arrow {
+        animation: scroll-arrow-slide 1.2s infinite ease-in-out;
+    }
+
+    .scroll-arrow {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="antialiased overflow-x-hidden w-full is-loading">
+
+  <!-- Loader -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__mark">అ</div>
+    <div class="loader__bar"><span id="loaderFill"></span></div>
+  </div>
+
+  <!-- Floating rangoli decorations -->
+  <div class="deco" aria-hidden="true">
+    <span class="deco__blob deco__blob--1"></span>
+    <span class="deco__blob deco__blob--2"></span>
+    <span class="deco__blob deco__blob--3"></span>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- PAGE 1: INTERRENTCARS (scoped so it only affects this section) -->
+  <!-- ======================================================= -->
+  <div class="page-car relative">
+
+    <!-- Header Navigation Background (Drops down on scroll) -->
+    <div id="nav-bg"
+        class="sticky top-0 left-0 w-full h-[88px] lg:h-[104px] bg-white z-[65]" style="transform: translateY(-100%); will-change: transform;">
+    </div>
+
+    <!-- Header Navigation -->
+    <header
+        class="sticky top-0 left-0 w-full flex justify-between items-center px-6 py-6 md:px-12 z-[70] mix-blend-difference text-white">
+        <!-- Logo -->
+        <a href="#" class="z-50 block hover:opacity-80 transition-opacity">
+            <div class="text-3xl md:text-4xl lg:text-[2.2rem] font-bold tracking-tight text-white"
+                style="font-family: 'Telegraf', sans-serif;">
+                TELUGU BADI
+            </div>
+        </a>
+
+        <div class="flex items-center gap-6 lg:gap-10 z-50">
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-semibold tracking-[0.15em] uppercase">
+                <a href="#about" class="animated-link desktop-link">About</a>
+                <a href="#courses" class="animated-link desktop-link">Courses</a>
+                <a href="#events" class="animated-link desktop-link">Events</a>
+                <a href="#contact" class="animated-link desktop-link">Contact</a>
+            </nav>
+
+            <!-- Enrol Now Button (Desktop) -->
+            <a href="#enrol" class="layered-btn header-btn hidden md:inline-flex group text-xs font-semibold tracking-[0.15em] uppercase">
+                <span class="bg-layer bg-layer-1"></span>
+                <span class="bg-layer bg-layer-2"></span>
+                <span class="bg-layer bg-layer-3"></span>
+                <span class="btn-text">Enrol Now</span>
+                <svg class="btn-icon w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2.5"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                </svg>
+            </a>
+
+            <!-- Mobile Actions (Enrol Now + Divider + Hamburger) -->
+            <div class="flex md:hidden items-center gap-3">
+                <a href="#enrol" class="layered-btn header-btn group text-[10px] font-semibold tracking-wider uppercase">
+                    <span class="bg-layer bg-layer-1"></span>
+                    <span class="bg-layer bg-layer-2"></span>
+                    <span class="bg-layer bg-layer-3"></span>
+                    <span class="btn-text">Enrol Now</span>
+                    <svg class="btn-icon w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                    </svg>
+                </a>
+                <div class="w-[1px] h-5 bg-white/40"></div>
+                <button id="nav-toggle" class="nav-toggle cursor-pointer p-2">
+                    <span class="line l1"></span>
+                    <span class="line l2"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] flex flex-col text-black h-screen w-full md:hidden">
+
+        <!-- Navigation Links -->
+        <nav class="flex flex-col px-6 flex-grow gap-2 pt-32">
+            <a href="#about" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">ABOUT</a>
+            <a href="#courses"
+                class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">COURSES</a>
+            <a href="#events" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">EVENTS</a>
+            <a href="#contact"
+                class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">CONTACT</a>
+        </nav>
+
+        <!-- Footer Text -->
+        <div class="px-6 py-8 text-gray-500 text-sm">
+            © Telugu Badi 2026
+        </div>
+    </div>
+
+    <!-- Main Hero Slider -->
+    <main class="relative w-full h-screen z-0">
+        <div id="slider" class="relative w-full h-full bg-black">
+
+            <!-- Slider Dimmer Overlay (Fades in on scroll) -->
+            <div id="slider-dimmer" class="absolute inset-0 bg-black z-[25] pointer-events-none" style="opacity: 0; will-change: opacity;"></div>
+
+            <!-- Slide 1: Video Background Slide -->
+            <article class="slide is-active absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="img_8751.mp4" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-driving-a-car-on-a-mountain-road-13176-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <!-- Dark Gradient for Text -->
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Telugu Badi</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            A joyful weekend Telugu school for children across Sydney — preserving our language,
+                            culture and stories for the next generation.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Slide 2: Video Background Slide -->
+            <article class="slide absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="clip.mp4" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-city-traffic-on-a-bridge-at-night-34692-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Learn · Play · Sing</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Songs, stories, festivals and arts &amp; crafts woven into every term — taught by a
+                            dedicated team of volunteers.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Slide 3: Video Background Slide -->
+            <article class="slide absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="img_8753.mov" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-through-a-pine-forest-4286-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Since 1993</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Now across many suburbs of Sydney with a common set of teaching standards, delivered by a
+                            passionate volunteer community.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="absolute bottom-8 left-6 md:bottom-12 md:left-12 flex items-center gap-3 z-30" id="pagination">
+            <!-- Pagination dots will be injected by JS -->
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div
+            class="scroll-container absolute bottom-6 right-6 md:bottom-10 md:right-10 w-24 h-24 md:w-32 md:h-32 flex items-center justify-center z-30 mix-blend-difference cursor-pointer">
+            <!-- Rotating SVG Text -->
+            <svg class="absolute inset-0 w-full h-full spin-slow" viewBox="0 0 100 100">
+                <path id="circlePath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
+                <text fill="white" font-size="10.5" font-weight="600" letter-spacing="3.5">
+                    <textPath href="#circlePath">SCROLL • SCROLL • SCROLL •</textPath>
+                </text>
+            </svg>
+            <!-- Center Arrow (Bigger with longer stem) -->
+            <svg class="scroll-arrow w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor"
+                stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20m0 0l-7-7m7 7l7-7"></path>
+            </svg>
+        </div>
+    </main>
+
+  </div>
+  <!-- ============ END PAGE 1 ============ -->
+
+  <!-- JavaScript for Page 1 (Interrentcars) Slider Functionality -->
+  <script>
+    // --- Premium "Heavy" Smooth Scrolling Initialization (Lenis) ---
+    const lenis = new Lenis({
+        duration: 1.2, // Reduced from 2.0 for faster settling
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Smooth ease-out
+        smoothWheel: true,
+        wheelMultiplier: 1.0, // Increased from 0.75 for less initial drag resistance
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Navigation Background Dropdown & Slider Dimming on Scroll
+        const navBg = document.getElementById('nav-bg');
+        const sliderDimmer = document.getElementById('slider-dimmer');
+
+        // Vision Section Animation Elements
+        const visionSection = document.getElementById('vision-section');
+        const fillTexts = document.querySelectorAll('.text-fill-anim');
+
+        // Pre-process fillTexts to split into characters for fluid sequential filling
+        fillTexts.forEach(text => {
+            if (text.dataset.initialized) return;
+            text.dataset.initialized = 'true';
+
+            const newNodes = [];
+            text.childNodes.forEach(node => {
+                if (node.nodeType === 3) { // Process only pure text nodes
+                    const textContent = node.textContent;
+                    for (let i = 0; i < textContent.length; i++) {
+                        const char = textContent[i];
+                        // Keep whitespace as normal text nodes to allow natural line wrapping
+                        if (char === ' ' || char === '\n' || char === '\t') {
+                            newNodes.push(document.createTextNode(char));
+                        } else {
+                            const span = document.createElement('span');
+                            span.textContent = char;
+                            span.className = 'char';
+                            newNodes.push(span);
+                        }
+                    }
+                } else {
+                    // Keeps inline HTML icons and formatting untouched
+                    newNodes.push(node.cloneNode(true));
+                }
+            });
+            text.innerHTML = '';
+            newNodes.forEach(node => text.appendChild(node));
+        });
+
+        // --- State array for "Alive" Ease-Out fluid scroll fill ---
+        const fillAnimData = Array.from(fillTexts).map(text => ({
+            element: text,
+            chars: text.querySelectorAll('.char'),
+            targetProgress: 0,
+            currentProgress: 0
+        }));
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const vh = window.innerHeight;
+
+            // 1. Navbar Dropdown Logic
+            // Maps exactly 1:1 with scroll position to stay perfectly "in sync" with the page
+            const navHeight = navBg.offsetHeight || (window.innerWidth >= 1024 ? 104 : 88);
+            if (scrollY >= navHeight) {
+                navBg.style.transform = `translateY(0px)`;
+            } else {
+                navBg.style.transform = `translateY(${scrollY - navHeight}px)`;
+            }
+
+            // 2. Slider Dimming Logic
+            let dimOpacity = 0;
+            if (scrollY <= vh * 0.2) {
+                // 0 to 20% scroll -> 0% to 10% opacity
+                dimOpacity = (scrollY / (vh * 0.2)) * 0.1;
+            } else if (scrollY <= vh * 0.8) {
+                // 20% to 80% scroll -> 10% to 100% opacity
+                dimOpacity = 0.1 + ((scrollY - (vh * 0.2)) / (vh * 0.6)) * 0.9;
+            } else {
+                // Beyond 80% scroll -> 100% opacity
+                dimOpacity = 1;
+            }
+
+            if (sliderDimmer) {
+                sliderDimmer.style.opacity = dimOpacity;
+            }
+
+            // 3. Vision Section Scroll Target Update
+            fillAnimData.forEach(data => {
+                if (data.chars.length === 0) return;
+                const textRect = data.element.getBoundingClientRect();
+
+                // Active trigger zone: from 90% down the screen to 40% down the screen
+                const start = vh * 0.9;
+                const end = vh * 0.7; // Increased from 0.2 so it finishes filling earlier
+
+                const scrollDistance = (start - end) + textRect.height;
+                let progress = (start - textRect.top) / scrollDistance;
+
+                // Update target. The loop handles the smooth ease-out catchup
+                data.targetProgress = Math.max(0, Math.min(1, progress));
+            });
+
+            // 4. Trigger Heading Reveal
+            const headingContainer = document.getElementById('vision-heading-container');
+            if (headingContainer) {
+                const rect = headingContainer.getBoundingClientRect();
+                // Trigger the slide-in when the top of the heading is 85% down the viewport
+                if (rect.top < vh * 0.85) {
+                    headingContainer.classList.add('is-revealed');
+                }
+            }
+        });
+
+        // 5. Setup Staggered Split Text Animation for Headings
+        const splitTexts = document.querySelectorAll('.split-text-anim');
+        let globalWordIndex = 0;
+
+        splitTexts.forEach((heading) => {
+            const text = heading.textContent.trim();
+            heading.innerHTML = ''; // Clear original text
+            const words = text.split(' ');
+
+            words.forEach((word) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word-wrapper';
+
+                word.split('').forEach((char, cIdx) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'letter';
+                    charSpan.textContent = char;
+
+                    // Large delay between words (0.35s gap), very slight delay between letters (0.04s stagger)
+                    const delay = (globalWordIndex * 0.35) + (cIdx * 0.04);
+                    charSpan.style.transitionDelay = `${delay}s`;
+                    wordSpan.appendChild(charSpan);
+                });
+
+                heading.appendChild(wordSpan);
+                heading.appendChild(document.createTextNode(' '));
+                globalWordIndex++;
+            });
+        });
+
+        // --- Animation Loop for Ease-Out Curve (Fast then Slow) ---
+        function updateFluidFill() {
+            fillAnimData.forEach(data => {
+                if (data.chars.length === 0) return;
+
+                // Lerp Formula: current += (target - current) * factor.
+                // This naturally moves fast initially, then slows down, creating the ease-out lag effect.
+                data.currentProgress += (data.targetProgress - data.currentProgress) * 0.08;
+
+                // Only paint if the change is visible to optimize performance
+                if (Math.abs(data.targetProgress - data.currentProgress) > 0.001) {
+                    const totalChars = data.chars.length;
+                    const activeCount = data.currentProgress * totalChars;
+                    const spread = 7; // Increased from 10 to make the gradient tip wider and feel more filled
+
+                    data.chars.forEach((char, index) => {
+                        const distance = activeCount - index;
+                        if (distance >= spread) {
+                            char.style.color = '#000000'; // Filled
+                        } else if (distance <= 0) {
+                            char.style.color = '#e5e5e5'; // Unfilled
+                        } else {
+                            // Smooth visual gradient blend across the 'spread'
+                            const ratio = distance / spread;
+                            // Apply ease-out to the color blending itself
+                            const easedRatio = 1 - Math.pow(1 - ratio, 3);
+                            const val = Math.round(229 * (1 - easedRatio)); // 229 is #e5e5e5
+                            char.style.color = `rgb(${val}, ${val}, ${val})`;
+                        }
+                    });
+                }
+            });
+            requestAnimationFrame(updateFluidFill);
+        }
+
+        // Kick off the loop
+        updateFluidFill();
+
+        // Mobile Menu Functionality
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navToggle = document.getElementById('nav-toggle');
+
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            if (navToggle.classList.contains('active')) {
+                mobileMenu.classList.remove('translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+                mobileMenu.classList.remove('translate-x-0');
+            }
+        });
+
+        // Slider Functionality
+        const slides = document.querySelectorAll('.slide');
+        const paginationContainer = document.getElementById('pagination');
+        let currentSlideIndex = 0;
+        let slideInterval;
+        const intervalTime = 6000; // 6 seconds per slide
+
+        // Initialize Pagination
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+
+            // Base inactive classes with relative positioning for the inner filler
+            dot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+
+            // Create filler element for timer effect using hardware-accelerated transform
+            const filler = document.createElement('span');
+            filler.className = 'filler absolute top-0 left-0 h-full w-full bg-white origin-left';
+            filler.style.transform = 'scaleX(0)';
+            filler.style.transitionProperty = 'transform';
+            filler.style.transitionTimingFunction = 'linear';
+            filler.style.transitionDuration = '0ms';
+
+            dot.appendChild(filler);
+
+            dot.addEventListener('click', () => {
+                if (currentSlideIndex !== index) goToSlide(index);
+            });
+            paginationContainer.appendChild(dot);
+        });
+
+        const dots = paginationContainer.querySelectorAll('button');
+
+        // Function to change slides
+        function goToSlide(index, isInit = false) {
+            // Manage slide transitions
+            if (!isInit) {
+                const previousSlide = slides[currentSlideIndex];
+                previousSlide.classList.remove('is-active');
+                previousSlide.classList.add('is-leaving');
+
+                // Remove 'is-leaving' after animation finishes to reset it for the future
+                setTimeout(() => {
+                    previousSlide.classList.remove('is-leaving');
+                }, 1200); // Matches the 1.2s CSS transition duration
+            } else {
+                slides[currentSlideIndex].classList.remove('is-active');
+            }
+
+            const currentDot = dots[currentSlideIndex];
+            currentDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+            const currentFiller = currentDot.querySelector('.filler');
+            currentFiller.style.transitionDuration = '0ms';
+            currentFiller.style.transform = 'scaleX(0)';
+
+            // Update index
+            currentSlideIndex = index;
+
+            // Set new active slide and dot
+            slides[currentSlideIndex].classList.add('is-active');
+
+            // Restart video if the slide has one
+            const activeVideo = slides[currentSlideIndex].querySelector('video');
+            if (activeVideo) {
+                activeVideo.currentTime = 0;
+                activeVideo.play().catch(e => console.log('Autoplay prevented', e));
+            }
+
+            const newDot = dots[currentSlideIndex];
+            // Set the track background (bg-white/30) and expand width
+            newDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/30 w-8 h-2';
+            const newFiller = newDot.querySelector('.filler');
+
+            // Force layout reflow before starting animation to ensure it transitions smoothly from 0
+            void newFiller.offsetWidth;
+
+            // Animate scale matching the interval time
+            newFiller.style.transitionDuration = `${intervalTime}ms`;
+            newFiller.style.transform = 'scaleX(1)';
+
+            // Reset interval when user clicks to prevent sudden jumps
+            resetInterval();
+        }
+
+        // Function to move to the next slide automatically
+        function nextSlide() {
+            let nextIndex = (currentSlideIndex + 1) % slides.length;
+            goToSlide(nextIndex);
+        }
+
+        // Interval management
+        function startInterval() {
+            slideInterval = setInterval(nextSlide, intervalTime);
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startInterval();
+        }
+
+        // Initialize the first slide to trigger the filler animation on load
+        goToSlide(0, true);
+    });
+  </script>
+
+  <!-- ======================================================= -->
+  <!-- PAGE 2: TELUGU BADI — SYDNEY -->
+  <!-- ======================================================= -->
+
+  <!-- Header -->
+  <header class="head" id="head">
+    <div class="wrap head__inner">
+      <a class="brand" href="#top" aria-label="Telugu Badi home">
+        <span class="brand__glyph">తె</span>
+        <span class="brand__text">Telugu&nbsp;Badi<small>Sydney · since 1993</small></span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#courses">Courses</a>
+        <a href="#learn">Learn</a>
+        <a href="#events">Events</a>
+        <a href="#locations">Schools</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a href="#enrol" class="btn btn--pill head__cta">Enrol Now <span aria-hidden="true">→</span></a>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <nav class="menu" id="menu" aria-label="Mobile">
+    <a href="#about"><span>01</span>About</a>
+    <a href="#courses"><span>02</span>Courses</a>
+    <a href="#learn"><span>03</span>Learn</a>
+    <a href="#events"><span>04</span>Events</a>
+    <a href="#locations"><span>05</span>Schools</a>
+    <a href="#contact"><span>06</span>Contact</a>
+    <a href="#enrol" class="menu__cta">Enrol Now →</a>
+  </nav>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="wrap hero__inner">
+        <span class="tag reveal">🪔 Telugu Association Inc. Sydney · Non-profit since 1992</span>
+        <h1 class="hero__title reveal">
+          Let's learn Telugu
+          <span class="hero__title__accent">while we <em>play</em> &amp; <em>sing</em>.</span>
+        </h1>
+        <p class="hero__motto reveal" lang="te">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము!</p>
+        <p class="hero__lead reveal">A joyful weekend Telugu school for children across Sydney — preserving our language, culture and stories for the next generation.</p>
+        <div class="hero__cta reveal">
+          <a href="#enrol" class="btn btn--solid">Join Telugu School</a>
+          <a href="#about" class="btn btn--ghost">Our Story</a>
+        </div>
+        <div class="hero__aksharalu" id="heroAksharalu" aria-hidden="true"></div>
+      </div>
+      <div class="hero__scroll">Scroll <span></span></div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span lang="te">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము</span><span class="dot">✦</span>
+        <span>Learn · Play · Sing</span><span class="dot">✦</span>
+        <span lang="te">మన భాష మన గుర్తింపు</span><span class="dot">✦</span>
+        <span>Since 1993</span><span class="dot">✦</span>
+        <span lang="te">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము</span><span class="dot">✦</span>
+        <span>Learn · Play · Sing</span><span class="dot">✦</span>
+        <span lang="te">మన భాష మన గుర్తింపు</span><span class="dot">✦</span>
+        <span>Since 1993</span><span class="dot">✦</span>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section class="about section" id="about">
+      <div class="wrap about__grid">
+        <div class="about__copy">
+          <span class="eyebrow reveal">Our Objective</span>
+          <h2 class="h2 reveal">Keeping the Telugu language alive, one happy classroom at a time.</h2>
+          <p class="reveal">One of the core objectives of the Telugu Association, Sydney is to preserve the Telugu language and to create avenues for children of Telugu origin — and anyone who wishes — to learn it.</p>
+          <p class="reveal">We have been running <strong>Telugu Badi since 1993</strong>. Today it operates across many suburbs of Sydney with a common set of teaching standards and methodology, delivered by a dedicated team of volunteers.</p>
+          <div class="about__actions reveal">
+            <a href="#about" class="btn btn--solid">More Info</a>
+            <a href="#enrol" class="btn btn--ghost">Enrol a Child</a>
+          </div>
+        </div>
+        <div class="about__cards">
+          <article class="mini reveal" style="--c:var(--saffron)"><span class="mini__ico">📚</span><h3>Structured Curriculum</h3><p>Graded levels from first letters to fluent reading &amp; writing.</p></article>
+          <article class="mini reveal" style="--c:var(--teal)"><span class="mini__ico">🎭</span><h3>Culture &amp; Arts</h3><p>Songs, stories, festivals, arts &amp; crafts woven into every term.</p></article>
+          <article class="mini reveal" style="--c:var(--pink)"><span class="mini__ico">🤝</span><h3>Volunteer Teachers</h3><p>A passionate, competent team guiding every classroom.</p></article>
+          <article class="mini reveal" style="--c:var(--green)"><span class="mini__ico">📍</span><h3>Across Sydney</h3><p>Neighbourhood schools close to families in many suburbs.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats section">
+      <div class="wrap stats__grid">
+        <div class="stat reveal"><span class="stat__num" data-count="30" data-suffix="+">0</span><span class="stat__label">Years teaching</span></div>
+        <div class="stat reveal"><span class="stat__num" data-count="8" data-suffix="+">0</span><span class="stat__label">Sydney schools</span></div>
+        <div class="stat reveal"><span class="stat__num" data-count="600" data-suffix="+">0</span><span class="stat__label">Students taught</span></div>
+        <div class="stat reveal"><span class="stat__num" data-count="40" data-suffix="+">0</span><span class="stat__label">Volunteer teachers</span></div>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section class="courses section" id="courses">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow reveal">Courses Offered</span>
+          <h2 class="h2 reveal">A path for every young learner.</h2>
+        </div>
+        <div class="courses__grid">
+          <article class="course reveal" style="--c:var(--saffron)">
+            <span class="course__level">Level 1</span>
+            <h3 lang="te">అక్షరాలు</h3>
+            <p class="course__en">Aksharalu — First Letters</p>
+            <p>Vowels, consonants and the joy of writing your very first Telugu words.</p>
+            <span class="course__age">Ages 5–7</span>
+          </article>
+          <article class="course reveal" style="--c:var(--teal)">
+            <span class="course__level">Level 2</span>
+            <h3 lang="te">పదాలు</h3>
+            <p class="course__en">Padalu — Words &amp; Reading</p>
+            <p>Building words, gunintaalu and simple sentences through rhyme and play.</p>
+            <span class="course__age">Ages 7–9</span>
+          </article>
+          <article class="course reveal" style="--c:var(--pink)">
+            <span class="course__level">Level 3</span>
+            <h3 lang="te">వాక్యాలు</h3>
+            <p class="course__en">Vakyalu — Sentences</p>
+            <p>Reading short stories, conversation and confident everyday writing.</p>
+            <span class="course__age">Ages 9–11</span>
+          </article>
+          <article class="course reveal" style="--c:var(--purple)">
+            <span class="course__level">Level 4</span>
+            <h3 lang="te">కథలు</h3>
+            <p class="course__en">Kathalu — Stories &amp; Culture</p>
+            <p>Poetry, comprehension, and the culture behind the language.</p>
+            <span class="course__age">Ages 11–13</span>
+          </article>
+          <article class="course reveal" style="--c:var(--green)">
+            <span class="course__level">Short Course</span>
+            <h3 lang="te">సంభాషణ</h3>
+            <p class="course__en">Spoken Telugu</p>
+            <p>A conversational fast-track for teens &amp; adults who want to speak.</p>
+            <span class="course__age">All ages</span>
+          </article>
+          <article class="course course--cta reveal">
+            <h3>Not sure which level?</h3>
+            <p>We'll help place your child in the right class after a friendly chat.</p>
+            <a href="#enrol" class="btn btn--solid">Talk to us</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE: LEARN AN AKSHARA -->
+    <section class="learn section" id="learn">
+      <div class="wrap">
+        <div class="section__head section__head--center">
+          <span class="eyebrow reveal">Try it yourself</span>
+          <h2 class="h2 reveal">Tap a letter — say it out loud! 🔊</h2>
+          <p class="learn__sub reveal">The Telugu <em>achulu</em> (vowels). Click any tile to flip it and learn how it sounds.</p>
+        </div>
+        <div class="learn__grid" id="learnGrid"></div>
+        <p class="learn__hint reveal">…and there are 56 letters in all. Come learn every one of them with us!</p>
+      </div>
+    </section>
+
+    <!-- GALLERY / ARTS & CRAFTS -->
+    <section class="gallery section" id="gallery">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow reveal">Children's Arts &amp; Crafts</span>
+          <h2 class="h2 reveal">Learning that's colourful, hands-on &amp; fun.</h2>
+        </div>
+        <div class="gallery__grid">
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#ff9d2f,#ff5d8f)"><figcaption>Festival crafts</figcaption></figure>
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#00b5a5,#2ad0b5)"><figcaption>Story time</figcaption></figure>
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#a67eff,#6a5cff)"><figcaption>Handwriting</figcaption></figure>
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#ffcf3f,#ff8a00)"><figcaption>Songs &amp; rhymes</figcaption></figure>
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#33cc7a,#0fb2a1)"><figcaption>Rangoli &amp; art</figcaption></figure>
+          <figure class="tile reveal" style="--g:linear-gradient(135deg,#ff5d8f,#a67eff)"><figcaption>Annual day</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section class="events section" id="events">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow reveal">Recent Events</span>
+          <h2 class="h2 reveal">Where language meets celebration.</h2>
+        </div>
+        <div class="events__list">
+          <a class="event reveal" href="#events">
+            <span class="event__date"><b>15</b>Mar</span>
+            <span class="event__body"><h3>Ugadi Celebrations</h3><p>Welcoming the Telugu New Year with students, songs and traditional treats.</p></span>
+            <span class="event__go" aria-hidden="true">→</span>
+          </a>
+          <a class="event reveal" href="#events">
+            <span class="event__date"><b>02</b>Dec</span>
+            <span class="event__body"><h3>Annual Day &amp; Prize Giving</h3><p>Our young learners take the stage to perform in Telugu.</p></span>
+            <span class="event__go" aria-hidden="true">→</span>
+          </a>
+          <a class="event reveal" href="#events">
+            <span class="event__date"><b>10</b>Aug</span>
+            <span class="event__body"><h3>Telugu Handwriting Competition</h3><p>Celebrating neat aksharalu across all levels and schools.</p></span>
+            <span class="event__go" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOCATIONS -->
+    <section class="locations section" id="locations">
+      <div class="wrap locations__grid">
+        <div class="locations__intro">
+          <span class="eyebrow reveal">Badi Locations</span>
+          <h2 class="h2 reveal">Find a Telugu Badi near you.</h2>
+          <p class="reveal">Our schools run on weekends across Sydney, with a shared curriculum and teaching methodology. New locations open as our community grows.</p>
+          <a href="#enrol" class="btn btn--solid reveal">See enrolment terms</a>
+        </div>
+        <ul class="locations__list">
+          <li class="reveal"><span>Strathfield South</span><small>Strathfield South PS</small></li>
+          <li class="reveal"><span>Eastwood</span><small>Weekend campus</small></li>
+          <li class="reveal"><span>Parramatta</span><small>Weekend campus</small></li>
+          <li class="reveal"><span>Kellyville</span><small>Weekend campus</small></li>
+          <li class="reveal"><span>Liverpool</span><small>Weekend campus</small></li>
+          <li class="reveal"><span>Blacktown</span><small>Weekend campus</small></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ENROL CTA -->
+    <section class="enrol section" id="enrol">
+      <div class="wrap enrol__inner">
+        <h2 class="enrol__title reveal">Give your child the gift of<br>their mother tongue.</h2>
+        <p class="reveal">Enrolments are open for the new term. It's easy, and our volunteers are here to help every step of the way.</p>
+        <div class="enrol__cta reveal">
+          <a href="#contact" class="btn btn--solid btn--lg">Start Enrolment</a>
+          <a href="#contact" class="btn btn--ghost btn--lg">Contact a School</a>
+        </div>
+        <p class="enrol__note reveal" lang="te">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="foot" id="contact">
+    <div class="wrap foot__grid">
+      <div class="foot__brand">
+        <span class="brand__glyph">తె</span>
+        <h3>Telugu Badi</h3>
+        <p>An initiative of Telugu Association Inc., Sydney — a non-profit serving the Sydney Telugu community since 1992.</p>
+      </div>
+      <div class="foot__col">
+        <h4>Explore</h4>
+        <a href="#about">About Us</a>
+        <a href="#courses">Courses</a>
+        <a href="#locations">Schools &amp; Terms</a>
+        <a href="#events">Events</a>
+      </div>
+      <div class="foot__col">
+        <h4>Address</h4>
+        <p>Telugu Association Inc.<br>PO Box 603, Gladesville<br>NSW 2111, Australia</p>
+      </div>
+      <div class="foot__col">
+        <h4>Contact</h4>
+        <a href="mailto:info@telugubadi.example">info@telugubadi.example</a>
+        <a href="mailto:telugubadi@sydneytelugu.example">telugubadi@sydneytelugu.example</a>
+        <div class="foot__social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="YouTube">yt</a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap foot__bottom">
+      <span>© Telugu Association Inc. · Community demo redesign</span>
+      <span lang="te">మన భాష · మన సంస్కృతి · మన గర్వం</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>

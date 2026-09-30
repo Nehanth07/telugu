@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telugu Vidyalaya & Exclusive Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --projects-pad-x: 5;
+            --project-row-pad-y: 6;
+            --project-info-width: 25;
+            --project-image-width: 70;
+            --project-image-ratio: 16 / 10;
+            --project-image-min-h: 340;
+            --project-title-size: 2.2;
+            --project-details-width: 80;
+            --project-details-size: 0.95;
+            --garage-pad-y: 10;
+            --garage-heading-size: 2.5;
+            --garage-title-size: 1.8;
+            --garage-details-size: 1.2;
+            --garage-gap: 2;
+            --garage-card-ratio: 4 / 3;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: #f4f1ea; 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+
+        .projects-section { padding: 8vh calc(var(--projects-pad-x)*1vw) 10vh; position: relative; background: #ffffff; overflow: hidden; }
+        .project-row { display: flex; justify-content: space-between; align-items: center; padding: calc(var(--project-row-pad-y)*1vw) 0; position: relative; cursor: pointer; }
+        .project-row.reverse { flex-direction: row-reverse; }
+        
+        .project-info { width: calc(var(--project-info-width)*1%); position: relative; display: flex; flex-direction: column; }
+        .project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .project-details { position: absolute; top: 100%; left: 0; width: calc(var(--project-details-width)*1%); opacity: 0; visibility: hidden; transform: translateY(40px); transition: all .5s cubic-bezier(.19,1,.22,1); padding-top: 20px; z-index: 20; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); }
+        .project-row.reverse .project-details { left: auto; right: 0; }
+        .project-details p { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; margin-bottom: 20px; font-weight: 400; }
+        .project-row:hover .project-details { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .grid-project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0 0 1rem 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .grid-project-desc { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; font-weight: 400; }
+        
+        .arrow-btn { background: #000; color: #fff; border: 0; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; transition: transform .3s; display: flex; align-items: center; justify-content: center; }
+        .arrow-btn:hover { transform: translateX(10px); }
+        
+        /* =========================================
+           IMAGE SIZING & LAYOUT CONTROLS (EDIT THESE)
+           ========================================= */
+        
+        /* 1. First Image (Hippy Market) */
+        .img-size-1 {
+            width: calc(var(--project-image-width)*1%); /* Base width, currently 70% */
+            height: 60vh; /* Massive vertical height */
+        }
+
+        /* 2. Second Image (Mitwit Office) */
+        .img-size-2 {
+            width: 100%;
+            aspect-ratio: 4 / 3.5; /* Slightly taller landscape */
+            height: auto;
+        }
+
+        /* 3. Third Image (Newton Offices) */
+        .img-size-3 {
+            width: 100%;
+            aspect-ratio: 16 / 10; /* Wider landscape */
+            height: auto;
+        }
+        
+        /* Side-by-Side Layout for Images 2 & 3 */
+        .side-projects-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr; /* Left column (Mitwit) is slightly wider than right (Newton) */
+            gap: 5vw; /* Spacing between the two items */
+            margin-top: 8vw;
+            align-items: start;
+        }
+        /* ========================================= */
+
+        .project-image { overflow: hidden; position: relative; border-radius: 8px; }
+        .project-image img, .card-image-container img { width: 100%; height: 130%; position: absolute; top: -15%; left: 0; object-fit: cover; }
+        
+        .garage-section { padding: calc(var(--garage-pad-y)*1vh) calc(var(--projects-pad-x)*1vw); background: #ffffff; }
+        .garage-heading { font-size: calc(var(--garage-heading-size)*1vw); font-weight: 400; margin: 0 0 4vw; letter-spacing: -.02em; }
+        .garage-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: calc(var(--garage-gap)*1vw); }
+        .garage-card { cursor: pointer; }
+        .card-image-container { position: relative; width: 100%; aspect-ratio: var(--garage-card-ratio); overflow: hidden; margin-bottom: 1.5vw; border-radius: 8px; }
+        .garage-title { font-size: calc(var(--garage-title-size)*1vw); font-weight: 400; margin: 0; color: #111; }
+        .garage-details { opacity: 0; visibility: hidden; max-height: 0; transform: translateY(-10px); transition: all .5s cubic-bezier(.19,1,.22,1); margin-top: 0; overflow: hidden; }
+        .garage-details p { font-size: calc(var(--garage-details-size)*1vw); line-height: 1.6; color: #777; margin: 0; font-weight: 400; }
+        .garage-card:hover .garage-details { opacity: 1; visibility: visible; max-height: 200px; transform: translateY(0); margin-top: 1vw; }
+
+        @media(max-width:1200px) and (min-width:769px){
+            .project-title, .grid-project-title { font-size: clamp(1.5rem, calc(var(--project-title-size)*1vw), 2.5rem); }
+            .garage-heading { font-size: clamp(1.8rem, calc(var(--garage-heading-size)*1vw), 2.8rem); }
+        }
+        @media(max-width:768px){
+            .project-row { flex-direction: column !important; align-items: flex-start; padding: 10vw 0; }
+            .project-info { width: 100%; margin-bottom: 2rem; }
+            .project-title, .grid-project-title { font-size: calc(var(--project-title-size)*1vw + 0.8rem); }
+            .project-image { width: 100%; aspect-ratio: var(--project-image-ratio); min-height: 0; }
+            .project-details { position: relative; opacity: 1; visibility: visible; transform: translateY(0); padding-top: 20px; width: 100%; }
+            .garage-heading { font-size: calc(var(--garage-heading-size)*1vw + 0.8rem); margin-bottom: 8vw; }
+            .garage-grid { grid-template-columns: 1fr; gap: calc(var(--garage-gap)*1vw + 2rem); }
+            .card-image-container { margin-bottom: 4vw; }
+            .garage-title { font-size: calc(var(--garage-title-size)*1vw + 0.4rem); }
+            .garage-details p { font-size: calc(var(--garage-details-size)*1vw + 0.2rem); }
+            .garage-card:hover .garage-details { margin-top: 3vw; }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-[#e67e22] selection:text-white">
+
+    <section class="projects-section" id="projectsContainer">
+        
+        <!-- Project 1: Info left, Image right -->
+        <div class="project-row" data-dir="left-right">
+            <div class="project-info slide-left">
+                <h2 class="project-title">Hippy Market</h2>
+                <div class="project-details">
+                    <p style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;">Hippy Market is getting a refresh: a new, more iconic identity for a premium vintage fashion brand, which transforms second-hand into a fashion and cultural experience.</p>
+                    <button class="arrow-btn">→</button>
+                </div>
+            </div>
+            <div class="project-image img-size-1 slide-right">
+                <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=1200" alt="Hippy Market">
+            </div>
+        </div>
+
+        <!-- Projects 2 & 3: Side by Side Layout -->
+        <div class="side-projects-grid">
+            
+            <!-- Project 2 (Mitwit) -->
+            <div class="grid-project cursor-pointer group">
+                <div class="project-image img-size-2">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Mitwit Office">
+                </div>
+                <div class="mt-6 pr-4">
+                    <h2 class="grid-project-title">Mitwit Office</h2>
+                    <p class="grid-project-desc line-clamp-4">Launched by La Poste Immobilier and resulting from the merger of Startway and Multiburo, MITWIT has established itself as a major player in the shared workspace market, with a network of nearly 40 sites in France, Belgium and Switzerland.</p>
+                </div>
+            </div>
+
+            <!-- Project 3 (Newton) -->
+            <div class="grid-project cursor-pointer group">
+                <div class="project-image img-size-3">
+                    <img src="https://images.unsplash.com/photo-1600607687959-ce8a6c25118c?auto=format&fit=crop&q=80&w=1200" alt="Newton Offices">
+                </div>
+                <div class="mt-6 pr-4">
+                    <h2 class="grid-project-title">Newton Offices</h2>
+                    <p class="grid-project-desc line-clamp-4">Inventing a new brand territory for collaborative workspaces. Supporting an investor in the branding process, designing the brand and its key elements.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="garage-section">
+        <h2 class="garage-heading">Garage</h2>
+        <div class="garage-grid">
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=800" alt="Comet Meetings">
+                </div>
+                <h3 class="garage-title">Comet Meetings</h3>
+                <div class="garage-details">
+                    <p>Innovative spaces for corporate meetings and creative team building.</p>
+                </div>
+            </div>
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800" alt="CEB">
+                </div>
+                <h3 class="garage-title">CEB</h3>
+                <div class="garage-details">
+                    <p>L'art de bien ranger. Premium custom organization solutions.</p>
+                </div>
+            </div>
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1545607062-848e4b7b2586?auto=format&fit=crop&q=80&w=800" alt="Centrakor">
+                </div>
+                <h3 class="garage-title">Centrakor</h3>
+                <div class="garage-details">
+                    <p>Commercial retail spaces designed for optimized customer flow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // GSAP Animations for Page 2 with Parallax Effect on Images
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Animate each project row elements sliding in from opposite sides and add parallax movement on scroll
+                gsap.utils.toArray('.project-row').forEach(row => {
+                    const info = row.querySelector('.project-info');
+                    const image = row.querySelector('.project-image');
+                    const imgElement = row.querySelector('.project-image img');
+                    const isReverse = row.classList.contains('reverse');
+
+                    // Determine slide directions based on row alignment
+                    const infoX = isReverse ? 100 : -100;
+                    const imageX = isReverse ? -100 : 100;
+
+                    // Entry animation for info
+                    gsap.fromTo(info, 
+                        { x: infoX, opacity: 0 }, 
+                        {
+                            scrollTrigger: {
+                                trigger: row,
+                                start: 'top 85%',
+                                end: 'top 40%',
+                                scrub: 1
+                            },
+                            x: 0,
+                            opacity: 1,
+                            ease: 'power3.out'
+                        }
+                    );
+
+                    // Entry animation for image container
+                    gsap.fromTo(image, 
+                        { x: imageX, opacity: 0, scale: 1.05 }, 
+                        {
+                            scrollTrigger: {
+                                trigger: row,
+                                start: 'top 85%',
+                                end: 'top 40%',
+                                scrub: 1
+                            },
+                            x: 0,
+                            opacity: 1,
+                            scale: 1,
+                            ease: 'power3.out'
+                        }
+                    );
+
+                    // Parallax effect on the inner image when scrolling up/down
+                    if (imgElement) {
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15,
+                                ease: 'none',
+                                scrollTrigger: {
+                                    trigger: row,
+                                    start: 'top bottom',
+                                    end: 'bottom top',
+                                    scrub: true
+                                }
+                            }
+                        );
+
+                        // Zoom-in hover effect controlled via GSAP to prevent conflict with Parallax transforms
+                        row.addEventListener('mouseenter', () => {
+                            gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' });
+                        });
+                        row.addEventListener('mouseleave', () => {
+                            gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' });
+                        });
+                    }
+                });
+
+                // Animate Side-by-Side Projects (Images 2 & 3)
+                gsap.utils.toArray('.grid-project').forEach(card => {
+                    const image = card.querySelector('.project-image');
+                    const imgElement = card.querySelector('.project-image img');
+                    const info = card.lastElementChild; // The text container
+                    
+                    // Entry animation
+                    gsap.fromTo([image, info], 
+                        { y: 60, opacity: 0 }, 
+                        {
+                            scrollTrigger: {
+                                trigger: card,
+                                start: 'top 85%',
+                                end: 'top 50%',
+                                scrub: 1
+                            },
+                            y: 0,
+                            opacity: 1,
+                            stagger: 0.15,
+                            ease: 'power3.out'
+                        }
+                    );
+
+                    // Parallax effect on the inner image
+                    if (imgElement) {
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15,
+                                ease: 'none',
+                                scrollTrigger: {
+                                    trigger: card,
+                                    start: 'top bottom',
+                                    end: 'bottom top',
+                                    scrub: true
+                                }
+                            }
+                        );
+
+                        // Hover zoom effect for the grid cards
+                        card.addEventListener('mouseenter', () => {
+                            gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' });
+                        });
+                        card.addEventListener('mouseleave', () => {
+                            gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' });
+                        });
+                    }
+                });
+
+                // Garage cards entry animation
+                gsap.from('.garage-card', {
+                    scrollTrigger: {
+                        trigger: '.garage-section',
+                        start: 'top 80%'
+                    },
+                    y: 60,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: 'power3.out'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

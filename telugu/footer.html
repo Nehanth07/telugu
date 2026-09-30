@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitesized to Sonar Footer Animation with Wave</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Scroll Animations & Pulse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'bricolage': ['"Bricolage Grotesque"', 'sans-serif'],
+                        'caveat': ['"Caveat"', 'cursive'],
+                        'inter': ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-cream': '#FDF8F0',
+                        'brand-red': '#F95335',
+                        'brand-yellow': '#FDBB11',
+                        'brand-green': '#4ADE80',
+                        'brand-blue': '#2563EB',
+                        'brand-black': '#1A1A1A',
+                        'sonar-bg': '#EAE8E0',
+                        'sonar-dark': '#1A1A1A',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 4s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transition for all interactive footer elements */
+        #bottom-card a, #bottom-card li, #bottom-card button {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Prevent text scaling conflict between GSAP and Tailwind */
+        .js-wave-text {
+            will-change: transform;
+            display: inline-block; /* Required for GSAP scale transforms */
+        }
+        
+        /* Ensure hardware acceleration for button scaling */
+        .js-wave-button {
+            will-change: transform;
+        }
+
+        /* Consistent hit area to prevent edge wobbling */
+        .js-wave-button::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            min-width: 240px;
+            min-height: 150px;
+            background: transparent;
+            z-index: 10;
+        }
+        @media (min-width: 640px) {
+            .js-wave-button::after {
+                min-width: 320px;
+                min-height: 180px;
+            }
+        }
+
+        /* Active state for circular morph controlled by JS to sync with delay */
+        .js-wave-button.is-active {
+            width: 150px !important;
+            height: 150px !important;
+            box-shadow: 0 4px 0 0 #1A1A1A !important;
+        }
+        @media (min-width: 640px) {
+            .js-wave-button.is-active {
+                width: 180px !important;
+                height: 180px !important;
+                box-shadow: 0 8px 0 0 #1A1A1A !important;
+            }
+        }
+
+        /* Smooth morphing for the button */
+        .btn-morph {
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        /* Wiggle animation for "Let's Go" */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+        }
+        .animate-wiggle {
+            animation: wiggle 0.6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-brand-cream text-brand-black font-inter overflow-x-hidden">
+
+    <!-- Main Wrapper covering exactly 100vh -->
+    <div id="main-container" class="w-full h-screen min-h-[650px] relative bg-brand-cream overflow-hidden">
+        
+        <!-- Bottom Card (The Sonar Footer - Revealed later) - z-0 -->
+        <div id="bottom-card" class="absolute bottom-0 left-0 w-full h-auto bg-sonar-bg z-0 flex flex-col justify-between text-sonar-dark font-inter px-6 sm:px-10 py-8 md:py-10">
+            
+            <!-- 3 Columns Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-7xl mx-auto mb-10 md:mb-12">
+                <!-- Col 1: Services -->
+                <div>
+                    <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Services</h3>
+                    <ul class="text-2xl md:text-3xl lg:text-4xl font-semibold space-y-1 tracking-tight text-brand-black">
+                        <li class="hover:text-brand-red cursor-pointer">Film</li>
+                        <li class="hover:text-brand-red cursor-pointer">Advertising</li>
+                        <li class="hover:text-brand-red cursor-pointer">Television</li>
+                        <li class="hover:text-brand-red cursor-pointer">Documentary</li>
+                        <li class="hover:text-brand-red cursor-pointer">Sonic Branding</li>
+                    </ul>
+                </div>
+
+                <!-- Col 2: Newsletter -->
+                <div>
+                    <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Sign up to our newsletter</h3>
+                    <div class="border-b border-dashed border-brand-black/40 pb-2 flex items-center justify-between mt-4 md:mt-8">
+                        <input type="email" placeholder="Enter your email address" class="bg-transparent border-none outline-none text-sm w-full placeholder-brand-black/40 text-brand-black font-medium">
+                        <button class="text-brand-black hover:text-brand-red transition-colors flex items-center justify-center group" aria-label="Submit">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Col 3: Sitemap -->
+                <div>
+                    <h3 class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-4 text-brand-black/80">Sitemap</h3>
+                    <ul class="text-xs md:text-sm font-medium space-y-2 text-brand-black">
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Index</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Work</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Team</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Studio</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Contact</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                        <li class="group border-b border-dashed border-brand-black/20 pb-2 flex justify-between items-center cursor-pointer hover:text-brand-red hover:border-brand-red">
+                            <span>Awards</span>
+                            <svg class="w-4 h-4 opacity-0 transform translate-y-1 -translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 19L19 5M19 5V15M19 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 lg:gap-8 pt-6 border-t border-brand-black/10 relative">
+                <div class="flex flex-col items-start gap-2">
+                    <div class="relative flex justify-center items-end mt-2">
+                        <h1 class="font-bricolage text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter text-brand-black leading-none relative z-10">
+                            bitesized
+                        </h1>
+                        
+                        <!-- The New Image-Based Doodle Animation -->
+                        <div id="doodle-container" class="relative ml-4 w-12 h-16 sm:w-16 sm:h-20 z-20">
+                            <!-- Thought Bubble -->
+                            <div id="thought-bubble" class="absolute -top-8 -right-12 bg-brand-cream border-[2px] border-brand-black rounded-xl px-2 py-0.5 font-caveat text-sm sm:text-lg font-bold shadow-[2px_2px_0_0_#1A1A1A] opacity-0 transform scale-50 z-20 whitespace-nowrap text-brand-black pointer-events-none">
+                                <span id="thought-text"></span>
+                                <div class="absolute -bottom-1 -left-1 w-2.5 h-2.5 bg-brand-cream border-l-[2px] border-b-[2px] border-brand-black transform -rotate-45"></div>
+                            </div>
+
+                            <svg id="doodle-body" viewBox="0 0 100 120" class="w-full h-full overflow-visible drop-shadow-sm">
+                                
+                                <!-- Doodle Character Group -->
+                                <g id="doodle-character">
+                                    <!-- Legs -->
+                                    <rect x="36" y="70" width="10" height="40" fill="#3B82F6" />
+                                    <rect x="54" y="70" width="10" height="40" fill="#3B82F6" />
+                                    
+                                    <!-- Main Circular Body -->
+                                    <circle cx="50" cy="45" r="38" fill="#3B82F6"/>
+                                    
+                                    <!-- Mouth Group -->
+                                    <g id="mouth-group">
+                                        <!-- Normal Mouth -->
+                                        <path id="mouth-normal" d="M 42 55 Q 50 60 58 55" fill="none" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round"/>
+                                        
+                                        <!-- Thinking Mouth -->
+                                        <circle id="mouth-thinking" cx="50" cy="56" r="3" fill="#1E3A8A" opacity="0"/>
+                                        
+                                        <!-- Curious/Hover Mouth -->
+                                        <line id="mouth-curious" x1="46" y1="56" x2="54" y2="56" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round" opacity="0"/>
+                                        
+                                        <!-- Shocked Mouth -->
+                                        <g id="mouth-shocked" opacity="0">
+                                            <circle cx="50" cy="55" r="14" fill="#1E3A8A"/>
+                                            <rect x="43" y="42" width="5.5" height="7" rx="2" fill="#FFFFFF"/>
+                                            <rect x="51" y="42" width="5.5" height="7" rx="2" fill="#FFFFFF"/>
+                                        </g>
+                                    </g>
+                                    
+                                    <!-- Eyes Group (Scale this during shock) -->
+                                    <g id="eyes-group" style="transform-origin: 50px 32px;">
+                                        <!-- Eye Whites -->
+                                        <circle cx="36" cy="32" r="13" fill="#FFFFFF"/>
+                                        <circle cx="64" cy="32" r="13" fill="#FFFFFF"/>
+                                        
+                                        <!-- Pupils -->
+                                        <circle id="left-pupil" cx="36" cy="32" r="4.5" fill="#1A1A1A"/>
+                                        <circle id="right-pupil" cx="64" cy="32" r="4.5" fill="#1A1A1A"/>
+                                    </g>
+                                </g>
+                                
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="text-[9px] sm:text-[10px] tracking-[0.1em] text-brand-black/50 uppercase mt-1">Bitesized 2024. All rights reserved.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-3 sm:gap-10 text-[9px] sm:text-[10px] tracking-[0.1em] text-brand-black/50 uppercase pb-1 relative">
+                    
+                    <!-- NEW ANSWER CONTAINER (Nested text to pin it to top left) -->
+                    <div id="answer-container" class="absolute bottom-full right-0 mb-4 flex flex-col items-end pointer-events-none opacity-0">
+                        <!-- Extender Line (Now acts as the relative wrapper) -->
+                        <div id="answer-extender" class="relative h-2 sm:h-3 bg-brand-black rounded-l-sm w-0">
+                            <!-- Answer Text (Absolutely positioned to sit on the top-left of the line) -->
+                            <div class="absolute bottom-full left-0 mb-1 overflow-hidden">
+                                <div id="answer-text" class="font-bricolage text-base sm:text-xl font-bold text-brand-black tracking-widest whitespace-nowrap pl-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Website by <span class="text-brand-black font-bold">Niccolo' Miranda</span></p>
+                    <p>Dev Support <span class="text-brand-black font-bold">Ilja Van Eck</span></p>
+                    <div class="flex items-center gap-4 sm:gap-6">
+                        <a href="#" class="hover:text-brand-red">Privacy</a>
+                        <a href="#" class="hover:text-brand-red">Cookie</a>
+                        <a href="#" class="hover:text-brand-red">Terms</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Red Zip Section -->
+        <div id="red-section" class="absolute top-0 left-0 w-full h-screen bg-brand-black z-10 filter drop-shadow-[0_20px_25px_rgba(0,0,0,0.5)]">
+            <div id="parallax-content" class="absolute inset-0 w-full h-full bg-brand-red flex items-center justify-center origin-center">
+                
+                <!-- Canvas replaced the static CSS .pattern-grid -->
+                <canvas id="wave-canvas" class="absolute inset-0 w-full h-full z-0 mix-blend-multiply opacity-100 pointer-events-none"></canvas>
+
+                <div class="relative z-20 w-full max-w-5xl mx-auto h-full flex items-center justify-center">
+                    
+                    <!-- Left Green Ticket -->
+                    <div class="absolute left-[5%] sm:left-[10%] md:left-[15%] top-[25%] sm:top-[30%] -rotate-12 bg-brand-green border-[3px] border-brand-black w-32 sm:w-40 py-1.5 px-1 shadow-sm transition-transform hover:rotate-[-5deg] cursor-pointer">
+                        <div class="border-[2px] border-dashed border-brand-black w-full h-full flex flex-col items-center justify-center p-1">
+                            <div class="flex items-center gap-1 mb-0.5">
+                                <span class="text-[9px] sm:text-[11px] font-inter font-bold tracking-widest text-brand-black">RESERVE</span>
+                                <span class="bg-brand-black text-brand-green rounded-full w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center text-[9px] sm:text-[11px] font-bold">!</span>
+                            </div>
+                            <div class="font-caveat text-xl sm:text-2xl font-bold text-brand-black leading-none">Your Seat</div>
+                        </div>
+                    </div>
+
+                    <!-- Center Yellow Button (Updated to morph via JS class to support hover delay) -->
+                    <button class="js-wave-button flex items-center justify-center bg-brand-yellow border-[4px] sm:border-[5px] border-brand-black rounded-full shadow-[0_8px_0_0_#1A1A1A] sm:shadow-[0_12px_0_0_#1A1A1A] active:translate-y-2 active:shadow-none w-[240px] h-[64px] sm:w-[320px] sm:h-[84px] relative overflow-hidden z-20 group btn-morph cursor-pointer">
+                        
+                        <!-- Default Text -->
+                        <span class="js-text-default absolute inset-0 flex items-center justify-center font-caveat text-3xl sm:text-5xl font-bold text-brand-black tracking-wide">
+                            <span class="relative">
+                                Book a Call
+                                <svg class="absolute -bottom-1 sm:-bottom-2 left-[5%] w-[90%] h-2 sm:h-3" preserveAspectRatio="none" viewBox="0 0 100 10">
+                                    <path d="M0,5 Q50,9 100,2" stroke="#1A1A1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </span>
+
+                        <!-- Hover Text -->
+                        <span class="js-text-hover absolute inset-0 flex flex-col items-center justify-center font-caveat text-4xl sm:text-5xl font-bold text-brand-black leading-none pointer-events-none">
+                            <span class="block animate-wiggle pb-1 text-brand-red">Let's</span>
+                            <span class="block animate-wiggle" style="animation-delay: 0.15s;">Go!</span>
+                        </span>
+                    </button>
+
+                    <!-- Right Blue Starburst -->
+                    <div class="absolute right-[5%] sm:right-[10%] md:right-[15%] top-[30%] sm:top-[35%] rotate-12 transition-transform hover:rotate-12 hover:scale-110 cursor-pointer">
+                        <svg class="w-20 h-20 sm:w-28 sm:h-28 drop-shadow-sm" viewBox="0 0 100 100">
+                            <path d="M50 0 L59 15 L75 5 L77 22 L93 15 L88 32 L100 38 L89 50 L100 62 L88 68 L93 85 L77 78 L75 95 L59 85 L50 100 L41 85 L25 95 L23 78 L7 85 L12 68 L0 62 L11 50 L0 38 L12 32 L7 15 L23 22 L25 5 L41 15 Z" fill="#2563EB" />
+                            <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" class="font-caveat text-3xl sm:text-4xl font-bold fill-white" transform="rotate(-5, 50, 50)">Sale!</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wavy Bottom Border -->
+            <svg class="absolute bottom-0 left-0 w-full h-[30px] sm:h-[40px] translate-y-[98%] z-10" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="wave-red-bottom" width="120" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 0 0 V 15 Q 30 40 60 15 T 120 15 V 0 Z" fill="#F95335" />
+                        <path d="M 0 15 Q 30 40 60 15 T 120 15" fill="none" stroke="#1A1A1A" stroke-width="3" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#wave-red-bottom)" />
+            </svg>
+        </div>
+
+        <!-- Top Curtain -->
+        <div id="top-curtain" class="absolute top-0 left-0 w-full h-[50%] bg-brand-cream z-20">
+            <svg class="absolute bottom-0 left-0 w-full h-[30px] sm:h-[40px] translate-y-[98%]" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="wave-top" width="120" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 0 0 V 15 Q 30 40 60 15 T 120 15 V 0 Z" fill="#FDF8F0" />
+                        <path d="M 0 15 Q 30 40 60 15 T 120 15" fill="none" stroke="#1A1A1A" stroke-width="3" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#wave-top)" />
+            </svg>
+        </div>
+
+        <!-- Bottom Curtain -->
+        <div id="bottom-curtain" class="absolute bottom-0 left-0 w-full h-[50%] bg-brand-cream z-20">
+            <svg class="absolute top-0 left-0 w-full h-[30px] sm:h-[40px] -translate-y-[98%]" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="wave-bottom" width="120" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 0 40 V 25 Q 30 0 60 25 T 120 25 V 40 Z" fill="#FDF8F0" />
+                        <path d="M 0 25 Q 30 0 60 25 T 120 25" fill="none" stroke="#1A1A1A" stroke-width="3" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#wave-bottom)" />
+            </svg>
+        </div>
+
+        <!-- Scroll Hint -->
+        <div id="scroll-hint" class="absolute top-[50%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none flex flex-col items-center gap-1">
+            <span class="font-caveat text-2xl sm:text-3xl font-bold text-brand-black/60 animate-bounce">Scroll slightly to open ↓</span>
+        </div>
+    </div>
+
+    <!-- Animation Logic -->
+    <script>
+        /**
+         * Doodle Animation Controller
+         * Manages the rolling eyes and the shocked 12 o'clock reaction synced with the wave pulse.
+         */
+        class DoodleController {
+            constructor() {
+                // Use base width as numbers to allow responsive scaling
+                this.sequence = [
+                    { q: "What is 2+2?", a: "4", baseW: 200 },
+                    { q: "E = ?", a: "mc²", baseW: 260 },
+                    { q: "∫2x dx?", a: "x² + C", baseW: 250 },
+                    { q: "Water?", a: "H₂O", baseW: 250 }
+                ];
+                this.index = 0;
+                this.mainTl = null;
+                this.isWow = false;
+                
+                // Hover state properties
+                this.isHovering = false;
+                this.hoverTimeout = null;
+                this.mouseX = window.innerWidth / 2;
+                this.mouseY = window.innerHeight / 2;
+                this.currentPupilX = 0;
+                this.currentPupilY = 0;
+                this.followTicker = this.updateEyesFocus.bind(this);
+                
+                // Only init if elements exist
+                if (document.getElementById('doodle-body')) {
+                    this.init();
+                }
+            }
+
+            init() {
+                gsap.set(["#left-pupil", "#right-pupil"], { x: 0, y: 0 });
+                gsap.set("#answer-text", { yPercent: 120 }); // Keep it hidden down natively initially
+                gsap.set("#answer-container", { opacity: 0 });
+                
+                // Track global mouse position for the hover follow effect
+                window.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+
+                // Attach hover listener
+                const container = document.getElementById('doodle-container');
+                if (container) {
+                    container.addEventListener('mouseenter', () => this.triggerHoverFollow());
+                }
+
+                this.startSequence();
+            }
+
+            startSequence() {
+                if (this.isWow || this.isHovering) return;
+                if (this.mainTl) this.mainTl.kill();
+                
+                const data = this.sequence[this.index];
+                document.getElementById('thought-text').innerText = data.q;
+                document.getElementById('answer-text').innerText = data.a;
+
+                // Scale line length responsively
+                const vw = window.innerWidth;
+                const scale = vw >= 1280 ? 2.5 : (vw >= 1024 ? 2 : (vw >= 640 ? 1.5 : 1));
+                const targetWidth = (data.baseW * scale) + "px";
+
+                this.mainTl = gsap.timeline({
+                    onComplete: () => {
+                        this.index = (this.index + 1) % this.sequence.length;
+                        this.startSequence();
+                    }
+                });
+                
+                this.mainTl
+                    // 1. THINKING STATE (Eyes 2 o'clock, mouth thinking)
+                    .to(["#mouth-normal", "#mouth-shocked"], { opacity: 0, duration: 0.1 }, 0)
+                    .to("#mouth-thinking", { opacity: 1, duration: 0.1 }, 0)
+                    .to(["#left-pupil", "#right-pupil"], { x: 5, y: -4, duration: 0.4, ease: "back.out(1.5)" }, 0)
+                    .to("#thought-bubble", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)" }, 0)
+                    
+                    // Hold thinking
+                    .to({}, { duration: 1.5 })
+                    
+                    // 2. ANSWERING STATE (Eyes 4 o'clock, mouth normal)
+                    .to("#mouth-thinking", { opacity: 0, duration: 0.1 })
+                    .to("#mouth-normal", { opacity: 1, duration: 0.1 }, "<")
+                    .to(["#left-pupil", "#right-pupil"], { x: 5, y: 4, duration: 0.4, ease: "power2.inOut" }, "<")
+                    
+                    // Reveal answer and thick black line (extender) on the right
+                    .to("#answer-container", { opacity: 1, duration: 0.3 }, "<")
+                    .to("#answer-extender", { width: targetWidth, duration: 0.5, ease: "power3.out" }, "<")
+                    .to("#answer-text", { yPercent: 0, duration: 0.4, ease: "back.out(1.5)" }, "<0.1")
+                    
+                    // Hold answer
+                    .to({}, { duration: 2.0 })
+                    
+                    // 3. RESET
+                    .to("#thought-bubble", { opacity: 0, scale: 0.8, duration: 0.2 })
+                    .to("#answer-text", { yPercent: 120, duration: 0.3, ease: "power2.in" }, "<")
+                    .to("#answer-extender", { width: "0px", duration: 0.4, ease: "power2.inOut" }, "<0.1")
+                    .to("#answer-container", { opacity: 0, duration: 0.2 }, "<0.2")
+                    .to(["#left-pupil", "#right-pupil"], { x: 0, y: 0, duration: 0.3 }, "<")
+                    
+                    // Small gap before next thought
+                    .to({}, { duration: 0.3 });
+            }
+
+            updateEyesFocus() {
+                const container = document.getElementById('doodle-container');
+                if (!container) return;
+                
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const dx = this.mouseX - centerX;
+                const dy = this.mouseY - centerY;
+                const angle = Math.atan2(dy, dx);
+                
+                // Calculate distance, capping it so pupils don't leave the eyes
+                const maxDistance = 6;
+                const distance = Math.min(Math.sqrt(dx*dx + dy*dy) * 0.015, maxDistance);
+                
+                const targetX = Math.cos(angle) * distance;
+                const targetY = Math.sin(angle) * distance;
+                
+                // Smooth interpolation
+                this.currentPupilX += (targetX - this.currentPupilX) * 0.15;
+                this.currentPupilY += (targetY - this.currentPupilY) * 0.15;
+                
+                gsap.set(["#left-pupil", "#right-pupil"], { x: this.currentPupilX, y: this.currentPupilY });
+            }
+
+            triggerHoverFollow() {
+                if (this.isWow || this.isHovering) return;
+                this.isHovering = true;
+                
+                if (this.mainTl) this.mainTl.kill();
+                
+                // Hide current thought and answer UI cleanly
+                gsap.to("#thought-bubble", { opacity: 0, scale: 0.5, duration: 0.2 });
+                gsap.to("#answer-text", { yPercent: 120, duration: 0.2 });
+                gsap.to("#answer-extender", { width: "0px", duration: 0.2 });
+                gsap.to("#answer-container", { opacity: 0, duration: 0.2 });
+                
+                // Switch to a curious expression (straight line mouth)
+                gsap.to(["#mouth-normal", "#mouth-thinking", "#mouth-shocked"], { opacity: 0, duration: 0.1 });
+                gsap.to("#mouth-curious", { opacity: 1, duration: 0.1 });
+                
+                // Get current pupil transforms to ensure a smooth transition
+                const leftPupil = document.getElementById('left-pupil');
+                if (leftPupil) {
+                    const transform = gsap.getProperty(leftPupil, "x");
+                    this.currentPupilX = typeof transform === 'number' ? transform : 0;
+                    this.currentPupilY = typeof gsap.getProperty(leftPupil, "y") === 'number' ? gsap.getProperty(leftPupil, "y") : 0;
+                }
+
+                // Add ticker for continuous eye tracking
+                gsap.ticker.add(this.followTicker);
+                
+                // End hover effect after 3 seconds
+                this.hoverTimeout = gsap.delayedCall(3, () => {
+                    gsap.ticker.remove(this.followTicker);
+                    this.isHovering = false;
+                    
+                    // Hide curious mouth and resume normal sequence
+                    gsap.to("#mouth-curious", { opacity: 0, duration: 0.2 });
+                    this.startSequence();
+                });
+            }
+
+            triggerWow() {
+                if (this.isWow) return; 
+                this.isWow = true;
+                
+                // Cleanup hover states if shocked while hovering
+                if (this.isHovering) {
+                    gsap.ticker.remove(this.followTicker);
+                    if (this.hoverTimeout) this.hoverTimeout.kill();
+                    this.isHovering = false;
+                }
+                
+                if (this.mainTl) this.mainTl.kill();
+                
+                const wowTl = gsap.timeline();
+                
+                wowTl
+                     // Hide UI instantly without scaling the answer block
+                     .to("#thought-bubble", { opacity: 0, scale: 0.5, duration: 0.1 }, 0)
+                     .to("#answer-text", { yPercent: 120, duration: 0.1 }, 0)
+                     .to("#answer-extender", { width: "0px", duration: 0.1 }, 0)
+                     .to("#answer-container", { opacity: 0, duration: 0.1 }, 0)
+                     
+                     // Switch mouth to shocked open (hide all others including curious)
+                     .to(["#mouth-normal", "#mouth-thinking", "#mouth-curious"], { opacity: 0, duration: 0.1 }, 0)
+                     .to("#mouth-shocked", { opacity: 1, duration: 0.1 }, 0)
+                     
+                     // Pupils snap to 12 o'clock & expand eyes
+                     .to(["#left-pupil", "#right-pupil"], { x: 0, y: -7, duration: 0.2, ease: "power2.out" }, 0)
+                     .to("#eyes-group", { scale: 1.25, duration: 0.3, ease: "back.out(2.5)" }, 0)
+                     
+                     // Jump body
+                     .to("#doodle-character", { y: -12, duration: 0.3, ease: "power2.out" }, 0)
+                     .to("#doodle-character", { y: 0, duration: 0.4, ease: "bounce.out" }, 0.3)
+                     
+                     // Hold the shocked expression without thoughts for 0.5 sec as requested
+                     .to({}, { duration: 0.5 })
+                     
+                     // Reset eyes and resume cycle
+                     .to("#eyes-group", { scale: 1, duration: 0.3, ease: "power2.inOut" })
+                     .call(() => {
+                         this.isWow = false;
+                         this.startSequence();
+                     });
+            }
+        }
+
+        /**
+         * Dynamic Canvas Grid & Wave Animation
+         */
+        class WaveAnimation {
+            constructor() {
+                this.button = document.querySelector('.js-wave-button');
+                this.textDefault = document.querySelector('.js-text-default');
+                this.textHover = document.querySelector('.js-text-hover');
+                this.canvas = document.getElementById('wave-canvas');
+                
+                if (!this.button || !this.canvas) return;
+
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Hide hover text initially
+                if (this.textHover) {
+                    gsap.set(this.textHover, { y: 30, opacity: 0, scale: 0.5 });
+                }
+                
+                // State
+                this.buttonIsHovered = false;
+                this.leaveTimer = null; // Used to track the 0.5s delay
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                this.isSlowMode = false;
+                
+                // Initialize the Doodle Controller
+                this.doodle = new DoodleController();
+                
+                // Matches the old CSS background-size
+                this.gridGap = 80; 
+                
+                this.wave = {
+                    state: 'paused', progress: 0, speed: 0, strength: 0, timeout: null
+                };
+
+                this.grid = { points: [], cols: 0, rows: 0 };
+
+                this.tick = this.tick.bind(this);
+                this.onResize = this.onResize.bind(this);
+                this.onHover = this.onHover.bind(this);
+                this.onLeave = this.onLeave.bind(this);
+
+                this.init();
+            }
+
+            setSlowPulseMode(enable) {
+                this.isSlowMode = enable;
+                const targetDelay = enable ? 10 : 0.5;
+                if (this.tl && this.tl.repeatDelay() !== targetDelay) {
+                    this.tl.repeatDelay(targetDelay);
+                }
+            }
+
+            init() {
+                this.onResize();
+                window.addEventListener('resize', this.onResize);
+                
+                this.button.addEventListener('mouseenter', this.onHover);
+                this.button.addEventListener('mouseleave', this.onLeave);
+                this.button.addEventListener('touchstart', this.onHover, {passive: true});
+                this.button.addEventListener('touchend', this.onLeave);
+
+                this.createPulseTimeline();
+                gsap.ticker.add(this.tick);
+            }
+
+            onResize() {
+                const parent = document.getElementById('parallax-content');
+                this.width = parent ? parent.offsetWidth : window.innerWidth;
+                this.height = parent ? parent.offsetHeight : window.innerHeight;
+                this.canvas.width = this.width;
+                this.canvas.height = this.height;
+                
+                window.safeWidth = this.width;
+                window.safeHeight = this.height;
+
+                this.createGrid();
+            }
+
+            createGrid() {
+                this.grid.points = [];
+                this.grid.cols = Math.ceil(this.width / this.gridGap) + 2;
+                this.grid.rows = Math.ceil(this.height / this.gridGap) + 2;
+
+                const startX = (this.width - (this.grid.cols - 1) * this.gridGap) / 2;
+                const startY = (this.height - (this.grid.rows - 1) * this.gridGap) / 2;
+                const centerX = this.width / 2;
+                const centerY = this.height / 2;
+
+                for (let x = 0; x < this.grid.cols; x++) {
+                    this.grid.points[x] = [];
+                    for (let y = 0; y < this.grid.rows; y++) {
+                        const px = startX + x * this.gridGap;
+                        const py = startY + y * this.gridGap;
+                        const dx = px - centerX;
+                        const dy = py - centerY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        this.grid.points[x][y] = {
+                            x: px, y: py, dx: dx, dy: dy, dist: dist,
+                            vx: 0, vy: 0, wx: 0, wy: 0, mx: 0, my: 0, ox: 0, oy: 0
+                        };
+                    }
+                }
+            }
+
+            createPulseTimeline() {
+                if (this.tl) this.tl.kill();
+                this.tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+                
+                if (this.textDefault) {
+                    this.tl.fromTo(this.textDefault, { scale: 1 }, { scale: 1.05, duration: 2.7, ease: 'power2.in' });
+                    this.tl.to(this.textDefault, { scale: 1, duration: 0.15, ease: 'power4.out' });
+                }
+                this.tl.call(() => this.wavePulse());
+            }
+
+            wavePulse() {
+                if (this.buttonIsHovered) return;
+                this.wave.progress = 0;
+                this.wave.state = 'pulse';
+                this.wave.speed = window.safeWidth > 767 ? 15 : 10;
+                this.wave.strength = window.safeWidth > 767 ? 1 : 0.35;
+
+                // Trigger the awesome WOW animation on the doodle!
+                if (this.isSlowMode && this.doodle) {
+                    this.doodle.triggerWow();
+                }
+            }
+
+            waveShock() {
+                if (!this.buttonIsHovered) return;
+                this.wave.progress = 0;
+                this.wave.state = 'shock';
+                this.wave.speed = 30;
+                this.wave.strength = 5;
+            }
+
+            onHover() {
+                // Clear any pending leave animations so there is no flicker
+                clearTimeout(this.leaveTimer);
+
+                if (this.buttonIsHovered) return;
+                this.buttonIsHovered = true;
+                
+                // Trigger the circular morph via CSS class
+                this.button.classList.add('is-active');
+                
+                this.tl.pause();
+                
+                // Swap text out and in smoothly
+                if (this.textDefault) gsap.to(this.textDefault, { y: -20, opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in' });
+                if (this.textHover) gsap.to(this.textHover, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.5)', delay: 0.15 });
+                
+                // Animate the entire button expanding with an elastic pop
+                gsap.to(this.button, { scale: 1.05, duration: 0.5, ease: 'back.out(1.5)' });
+                
+                clearTimeout(this.wave.timeout);
+                this.wave.timeout = setTimeout(() => { this.waveShock(); }, 100); 
+            }
+
+            onLeave() {
+                // Add exactly a 0.5s delay before reversing the animation
+                this.leaveTimer = setTimeout(() => {
+                    this.buttonIsHovered = false;
+                    
+                    // Revert the shape
+                    this.button.classList.remove('is-active');
+                    
+                    // Swap text back
+                    if (this.textHover) gsap.to(this.textHover, { y: 20, opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in' });
+                    if (this.textDefault) gsap.to(this.textDefault, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.5)', delay: 0.15 });
+                    
+                    // Return button to its original size smoothly
+                    gsap.to(this.button, { scale: 1, duration: 0.5, ease: 'back.out(1.5)' });
+                    
+                    this.tl.resume();
+                }, 500); // 500ms = 0.5 seconds
+            }
+
+            tick() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                if (this.wave.state !== 'paused' && this.wave.progress < this.width * 1.5) {
+                    this.wave.progress += this.wave.speed;
+                }
+                this.movePoints();
+                this.drawLines();
+            }
+
+            movePoints() {
+                const { grid, wave } = this;
+                for (let x = 0; x < grid.cols; x++) {
+                    for (let y = 0; y < grid.rows; y++) {
+                        const point = grid.points[x][y];
+                        if (point.dist === 0) continue;
+
+                        // REALISTIC PHYSICS: Adjusted for an outward-only push
+                        const d = Math.abs(point.dist - wave.progress);
+                        const l = 70; // Keep the tight subtle wave size
+
+                        if (d < l) {
+                            // SMOOTHER FALLOFF: Quadratic ease instead of linear
+                            const s = Math.pow(1 - d / l, 2); 
+                            const a = Math.atan2(point.dy, point.dx);
+                            
+                            // PURE OUTWARD FORCE: Removed the oscillating Sine wave.
+                            // We use 's' directly so the wave ONLY pushes away from center.
+                            const f = s; 
+                            
+                            // Increased multiplier from 0.02 to 0.035 for slightly stronger intensity
+                            point.vx += Math.cos(a) * f * l * 0.035 * wave.strength;
+                            point.vy += Math.sin(a) * f * l * 0.035 * wave.strength;
+                        }
+
+                        // WATER ELASTICITY & DAMPING
+                        // Stronger spring to snap back into place cleanly
+                        point.vx += (0 - point.wx) * 0.012; 
+                        point.vy += (0 - point.wy) * 0.012;
+                        
+                        // Slightly more friction (0.92 instead of 0.94) to kill the backwards momentum
+                        point.vx *= 0.92;
+                        point.vy *= 0.92;
+                        
+                        point.wx += point.vx;
+                        point.wy += point.vy;
+
+                        point.mx = point.wx;
+                        point.my = point.wy;
+
+                        let ox = point.dx / this.width;
+                        let oy = point.dy / this.height;
+                        point.ox = ox * 50 * (point.dist / 1000); 
+                        point.oy = oy * 50 * (point.dist / 1000);
+                    }
+                }
+            }
+
+            getMovedPoint(point) {
+                return { x: point.x + point.mx + point.ox, y: point.y + point.my + point.oy };
+            }
+
+            drawLines() {
+                const { grid } = this;
+                this.ctx.beginPath();
+                // Match the original #1A1A1A line color and 2px thickness from the CSS linear-gradient
+                this.ctx.strokeStyle = '#1A1A1A'; 
+                this.ctx.lineWidth = 2;
+
+                for (let x = 0; x < grid.cols; x++) {
+                    for (let y = 0; y < grid.rows; y++) {
+                        const point = grid.points[x][y];
+                        const curPos = this.getMovedPoint(point);
+
+                        if (x < grid.cols - 1) {
+                            const nextX = grid.points[x + 1][y];
+                            const nextXPos = this.getMovedPoint(nextX);
+                            this.ctx.moveTo(curPos.x, curPos.y);
+                            this.ctx.lineTo(nextXPos.x, nextXPos.y);
+                        }
+
+                        if (y < grid.rows - 1) {
+                            const nextY = grid.points[x][y + 1];
+                            const nextYPos = this.getMovedPoint(nextY);
+                            this.ctx.moveTo(curPos.x, curPos.y);
+                            this.ctx.lineTo(nextYPos.x, nextYPos.y);
+                        }
+                    }
+                }
+                this.ctx.stroke();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // 1. Initialize Canvas Wave Animation (this now contains the doodle logic)
+            const waveAnim = new WaveAnimation();
+
+            // 2. Initialize Scroll Curtain Animations
+            const getBottomCardHeight = () => document.getElementById("bottom-card").offsetHeight;
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#main-container",
+                    start: "top top", 
+                    end: "+=150%", 
+                    scrub: 1, 
+                    pin: true, 
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => {
+                        // The entire timeline duration is roughly 2.2 (1 for intro + 1.2 for footer reveal)
+                        // Footer reveal portion goes from timeline 1.0 to 2.2
+                        // 70% of the 1.2s footer reveal is 0.84s. Point in timeline = 1.0 + 0.84 = 1.84.
+                        // Convert to overall progress threshold: 1.84 / 2.2 ≈ 0.836
+                        const threshold = 1.84 / 2.2;
+                        waveAnim.setSlowPulseMode(self.progress >= threshold);
+                    }
+                }
+            });
+
+            tl.to("#scroll-hint", { opacity: 0, duration: 0.1 }, 0);
+            tl.to("#top-curtain", { yPercent: -150, ease: "power1.inOut", duration: 1 }, 0)
+              .to("#bottom-curtain", { yPercent: 150, ease: "power1.inOut", duration: 1 }, 0)
+              .fromTo("#parallax-content", 
+                { y: "10%", scale: 0.9, opacity: 0 }, 
+                { y: "0%", scale: 1, opacity: 1, ease: "power2.out", duration: 1 }, 
+              0);
+
+            tl.to("#red-section", { 
+                y: () => -getBottomCardHeight(), 
+                ease: "power2.inOut", 
+                duration: 1.2 
+            }, 1);
+        });
+    </script>
+</body>
+</html>

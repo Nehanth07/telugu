@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Olynta — Logo Reveal (Generous-style)</title>
+
+<style>
+  /* =========================================================================
+     OLYNTA logo reveal — same engine as generousbranding.com's header logo.
+     A solid ink block is shaped by a PNG *mask* (our own generated sprite:
+     assets/anim/olynta-sprite.png, a 50-frame vertical film-strip).
+     mask-position scrubs 0 0 -> 0 100% via transition steps(49) over 1.6s,
+     so organic fragments of the letters switch on at different times and
+     resolve into the full wordmark.
+     ========================================================================= */
+  :root{
+    --ink:#0b0f14;
+    --logo-w: 620px;              /* display width; height follows aspect ratio */
+    --sprite: url("assets/anim/olynta-sprite.png");
+    --dur: 1.6s;
+    --steps: 49;                  /* FRAMES - 1 */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:#f2f0ea;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2.4rem;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  .lab-tag{ letter-spacing:.4em; text-transform:uppercase; font-size:.62rem; color:#8a8577; }
+
+  /* ---- reveal engine (mirrors the reference site) ---- */
+  .logo{
+    position:relative;
+    width:var(--logo-w);
+    height:auto;
+  }
+  .logo:before{ display:block; padding-top:28.889%; content:""; } /* 260/900 aspect */
+  .logo__sprite{
+    position:absolute; inset:0;
+    background:var(--ink);
+    -webkit-mask:var(--sprite) 0 0/100% auto no-repeat;
+            mask:var(--sprite) 0 0/100% auto no-repeat;
+    -webkit-transition:-webkit-mask var(--dur) steps(var(--steps));
+            transition:mask var(--dur) steps(var(--steps)),
+                       -webkit-mask var(--dur) steps(var(--steps));
+  }
+  .logo.is-visible .logo__sprite{
+    -webkit-mask-position:0 100%;
+            mask-position:0 100%;
+  }
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+
+  .controls{ display:flex; gap:.9rem; }
+  button{
+    letter-spacing:.15em;text-transform:uppercase;font-size:.72rem;
+    color:#0b0f14;background:transparent;border:1px solid #0b0f14;
+    padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;transition:.2s;
+  }
+  button:hover{ background:#0b0f14;color:#f2f0ea; }
+
+  @media (prefers-reduced-motion: reduce){
+    .logo__sprite{ transition:none; -webkit-mask-position:0 100%; mask-position:0 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lab-tag">Olynta · logo reveal</div>
+
+<div class="logo" id="logo">
+  <span class="logo__sprite"></span>
+  <span class="sr-only">Olynta</span>
+</div>
+
+<div class="controls">
+  <button id="replay">Replay</button>
+</div>
+
+<script>
+  const logo = document.getElementById('logo');
+  function play(){
+    logo.classList.remove('is-visible');
+    void logo.offsetWidth;                         // reflow -> restart transition
+    requestAnimationFrame(()=>requestAnimationFrame(()=>logo.classList.add('is-visible')));
+  }
+  window.addEventListener('load', play);
+  document.getElementById('replay').addEventListener('click', play);
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About 24/7 Artists</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/split-type"></script>
+    
+    <style>
+        :root {
+            /* 24/7 Artists Variables */
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --grid-column-width: 6vw;
+            --grid-gutter-width: 2vw;
+            --grid-offset: 4vw;
+            --color-edu: #b4ff33;
+            --color-tech: #ffb800;
+            --color-net: #9d83ff;
+            --clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0 90%, 0 10%);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: var(--color-brand-10); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+        }
+
+        .u-container { 
+            max-width: 1440px; 
+            margin: 0 auto; 
+            padding: 0 var(--grid-offset); 
+            position: relative; 
+        }
+        
+        .t-label { 
+            display: inline-block; 
+            padding: .15em .5em .2em; 
+            border-radius: 50px; 
+            color: var(--color-black); 
+            font-weight: 500; 
+            line-height: 1; 
+            transform: translateY(-.05em); 
+        }
+        
+        .t-label--education { background: var(--color-edu); }
+        .t-label--technology { background: var(--color-tech); }
+        .t-label--network { background: var(--color-net); }
+        
+        h2.s__suptitle { 
+            margin: 0; 
+            font-size: 1.25rem; 
+            border: 1px solid var(--color-black); 
+            display: inline-block; 
+            padding: .3rem 1.2rem; 
+            border-radius: 50px; 
+            font-weight: 500; 
+            letter-spacing: -.02em; 
+        }
+        
+        .s-about-home { 
+            position: relative; 
+            z-index: 1; 
+            padding: 16.2222rem 0; 
+            background: var(--color-brand-10); 
+            overflow: hidden; 
+        }
+        
+        .s-about-home::before { 
+            position: absolute; 
+            top: 0; 
+            left: 50%; 
+            z-index: -1; 
+            width: 1px; 
+            height: 100%; 
+            background: var(--color-black); 
+            content: ''; 
+        }
+        
+        .s-about-home .s__header { 
+            margin: 0 0 2.25rem; 
+            display: flex; 
+            justify-content: flex-start; 
+        }
+        
+        .s-about-home .s__title { 
+            position: relative; 
+            z-index: 2; 
+            display: inline-block; 
+            background: var(--color-brand-10); 
+            padding: 0 2rem .24em 0; 
+            max-width: 7.125em; 
+            margin: 0; 
+            font-size: min(11.1111rem, 10.4167vw); 
+            line-height: .95; 
+            letter-spacing: -.05em; 
+            font-weight: 600; 
+        }
+
+        .s-about-home .s__title .line { 
+            clip-path: inset(0 0 -.105em 0); 
+        }
+        
+        .s-about-home .s__title .word { 
+            will-change: transform, opacity; 
+            display: inline-block; 
+            opacity: 0; 
+            transform: translate3d(0, 115%, 0) scale(.96); 
+            transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); 
+            transition-delay: var(--word-delay, 0s); 
+        }
+        
+        .s-about-home.is-inview .s__title .word { 
+            opacity: 1; 
+            transform: translate3d(0, 0, 0) scale(1); 
+        }
+        
+        .s-about-home .s__medias { 
+            position: relative; 
+            margin: 4.5rem auto 17.5556rem; 
+            width: calc(7.8 * var(--grid-column-width) + 6.8 * var(--grid-gutter-width)); 
+            max-width: 1180px; 
+        }
+        
+        .s-about-home .s__medias::before, .s-about-home .s__medias .s__video::before { 
+            display: block; 
+            padding-top: 100%; 
+            content: ''; 
+        }
+        
+        .s-about-home .s__medias .s__video { 
+            position: absolute; 
+            z-index: 1; 
+        }
+        
+        .s-about-home .s__medias .s__video-inner { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            clip-path: var(--clip-path); 
+        }
+        
+        .s-about-home .s__medias .s__video--1 .s__video-inner { 
+            clip-path: polygon(20% 0%,80% 0%,80% 5%,85% 5%,85% 10%,90% 10%,90% 15%,95% 15%,95% 20%,100% 20%,100% 80%,95% 80%,95% 85%,90% 85%,90% 90%,85% 90%,85% 95%,80% 95%,80% 100%,20% 100%,20% 95%,15% 95%,15% 90%,10% 90%,10% 85%,5% 85%,5% 80%,0% 80%,0% 20%,5% 20%,5% 15%,10% 15%,10% 10%,15% 10%,15% 5%,20% 5%); 
+        }
+        
+        .s-about-home .s__medias .s__video video { 
+            position: absolute; 
+            inset: 0; 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transform: scale(1.08); 
+            filter: saturate(.72) brightness(.9); 
+            transition: transform 2.2s cubic-bezier(.16,1,.3,1), filter 2s ease; 
+        }
+        
+        .s-about-home .s__medias.is-media-inview .s__video video { 
+            transform: scale(1); 
+            filter: saturate(1) brightness(1); 
+        }
+        
+        .s-about-home .s__medias .s__video--1 { top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .s-about-home .s__medias .s__video--2 { --width: 32%; top: 25%; left: calc(100% - var(--width) * .5); width: var(--width); z-index: 2; }
+        .s-about-home .s__medias .s__video--3 { --width: 25%; top: 35%; right: calc(100% - var(--width) * .5); width: var(--width); z-index: 3; }
+        .s-about-home .s__medias .s__video--4 { --width: 26%; top: 100%; right: 57.5%; margin-top: calc(var(--width) * -.5); width: var(--width); z-index: 4; }
+        
+        .s-about-home .s__medias .s__video-inner::before, 
+        .s-about-home .s__medias .s__video-inner::after { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            width: 50%; 
+            height: 100%; 
+            background: var(--color-brand-10); 
+            z-index: 2; 
+            transition: transform 1.7s cubic-bezier(.19,1,.22,1), opacity 1.7s ease; 
+        }
+        
+        .s-about-home .s__medias .s__video-inner::before { left: 0; transform-origin: left center; }
+        .s-about-home .s__medias .s__video-inner::after { right: 0; transform-origin: right center; }
+        
+        .s-about-home .s__medias .s__video--1 .s__video-inner::before, .s-about-home .s__medias .s__video--1 .s__video-inner::after { transition-delay: .1s; }
+        .s-about-home .s__medias .s__video--2 .s__video-inner::before, .s-about-home .s__medias .s__video--2 .s__video-inner::after { transition-delay: .25s; }
+        .s-about-home .s__medias .s__video--3 .s__video-inner::before, .s-about-home .s__medias .s__video--3 .s__video-inner::after { transition-delay: .4s; }
+        .s-about-home .s__medias .s__video--4 .s__video-inner::before, .s-about-home .s__medias .s__video--4 .s__video-inner::after { transition-delay: .55s; }
+        
+        .s-about-home .s__medias.is-media-inview .s__video-inner::before, 
+        .s-about-home .s__medias.is-media-inview .s__video-inner::after { 
+            opacity: .96; 
+            transform: scaleX(0); 
+        }
+        
+        .s-about-home .s__text { 
+            position: relative; 
+            z-index: 2; 
+            background: var(--color-brand-10); 
+            padding: 1.25rem 1.75rem; 
+            border-radius: 24px; 
+            margin: 0 auto; 
+            max-width: 18.6875em; 
+            font-size: min(4.4444rem, 4.1667vw); 
+            font-weight: 500; 
+            letter-spacing: -.06em; 
+            line-height: 1; 
+            text-indent: 1.425em; 
+            text-align: left; 
+            opacity: 0; 
+            transform: translate3d(0, 38px, 0); 
+            transition: opacity 1.1s ease, transform 1.2s cubic-bezier(.16,1,.3,1); 
+            transition-delay: .9s; 
+        }
+        
+        .s-about-home.is-inview .s__text { 
+            opacity: 1; 
+            transform: translate3d(0, 0, 0); 
+        }
+        
+        /* Breakpoints */
+        @media (max-width:1536px) { 
+            .s-about-home { padding-top: 11rem; } 
+            .s-about-home .s__medias { margin-bottom: 13rem; width: calc(6 * var(--grid-column-width) + 5 * var(--grid-gutter-width)); } 
+        }
+        @media (max-width:1280px) { 
+            .s-about-home { padding: 8rem 0 13rem; } 
+            .s-about-home .s__medias { margin-bottom: 10rem; } 
+            .s-about-home .s__text { font-size: 2.6rem; } 
+        }
+        @media (max-width:987px) { 
+            .s-about-home { padding: 11rem 0 16rem; } 
+            .s-about-home .s__title { font-size: min(5.4rem,12.2656vw); } 
+            .s-about-home .s__medias { margin-bottom: 8rem; width: 70vw; } 
+            .s-about-home .s__text { text-indent: 0; } 
+        }
+        @media (max-width:767px) { 
+            .s-about-home { padding-bottom: 9rem; } 
+            .s-about-home .s__header { margin-bottom: 1.5rem; } 
+            .s-about-home .s__medias { margin-bottom: 5rem; } 
+            .s-about-home .s__text { font-size: 2rem; } 
+        }
+        @media (max-width:576px) { 
+            .s-about-home .s__medias { width: 100%; } 
+            .s-about-home .s__medias .s__video--2 { --width: 37.5%; right: calc(var(--grid-offset) * -2); left: auto; } 
+            .s-about-home .s__medias .s__video--3 { --width: 34%; right: auto; left: calc(var(--grid-offset) * -2); } 
+            .s-about-home .s__medias .s__video--4 { --width: 30%; right: 30%; } 
+        }
+    </style>
+</head>
+<body class="selection:bg-[#e67e22] selection:text-white pb-32">
+    <div class="s-about-home" id="about">
+        <div class="u-container">
+            <div class="s__header">
+                <h2 class="s__suptitle">About</h2>
+            </div>
+            
+            <p class="s__title js-title" aria-label="24/7 Artists is here to make the hard stuff easy.">
+                24/7 Artists is here to make the hard stuff easy.
+            </p>
+            
+            <div class="s__medias js-medias">
+                <div class="s__video s__video--1 parallax-item" data-lag="0.12" data-speed="0.04">
+                    <div class="s__video-inner">
+                        <video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/00-ld.mp4" loop muted playsinline autoplay></video>
+                    </div>
+                </div>
+                <div class="s__video s__video--2 parallax-item" data-lag="0.20" data-speed="0.14">
+                    <div class="s__video-inner">
+                        <video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video>
+                    </div>
+                </div>
+                <div class="s__video s__video--3 parallax-item" data-lag="0.24" data-speed="0.105">
+                    <div class="s__video-inner">
+                        <video preload="auto" src="https://www.w3schools.com/html/mov_bbb.mp4" loop muted playsinline autoplay></video>
+                    </div>
+                </div>
+                <div class="s__video s__video--4 parallax-item" data-lag="0.18" data-speed="0.063">
+                    <div class="s__video-inner">
+                        <video preload="auto" src="https://247artists.com/wp-content/uploads/2025/02/01-ld.mp4" loop muted playsinline autoplay></video>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="parallax-item" data-lag="0.25" data-speed="0.03" style="will-change: transform;">
+                <p class="s__text">
+                    Everything you need to build your music career — in one place. Learn with 
+                    <span class="t-label t-label--education">Education</span>, move faster with 
+                    <span class="t-label t-label--technology">Technology</span>, and link up through a global 
+                    <span class="t-label t-label--network">Network</span> of artists and industry people who actually get it.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Text Splitting for Title Reveal
+            const title = document.querySelector('.js-title');
+            let splitTitle;
+            if (title && typeof SplitType !== 'undefined') {
+                splitTitle = new SplitType(title, { types: 'lines, words' });
+                
+                const setupDelays = () => {
+                    splitTitle.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            // Calculates cascading delay for each word block
+                            word.style.setProperty('--word-delay', `${lineIndex * 0.16 + wordIndex * 0.045}s`);
+                        });
+                    });
+                };
+                
+                setupDelays();
+                
+                // Re-calculate split sizes/delays on window resize
+                window.addEventListener('resize', () => { 
+                    splitTitle.split(); 
+                    setupDelays(); 
+                });
+            }
+            
+            // 2. Intersection Observers to trigger animations
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: 0.15 });
+            
+            const sectionAbout = document.querySelector('.s-about-home');
+            if (sectionAbout) observer.observe(sectionAbout);
+            
+            const mediasContainer = document.querySelector('.js-medias');
+            if (mediasContainer) {
+                const mediaObserver = new IntersectionObserver((entries, observerInstance) => {
+                    entries.forEach(entry => { 
+                        if (entry.isIntersecting) { 
+                            entry.target.classList.add('is-media-inview'); 
+                            observerInstance.unobserve(entry.target); 
+                        } 
+                    });
+                }, { threshold: 0.2 });
+                mediaObserver.observe(mediasContainer);
+            }
+
+            // 3. Custom Parallax Physics Engine
+            const domParallaxItems = document.querySelectorAll('.parallax-item');
+            const parallaxItemsList = Array.from(domParallaxItems).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            let targetScrollY = window.scrollY; 
+            let springY = window.scrollY; 
+            let springVelocity = 0; 
+            let smoothedLag = 0; 
+            
+            // Spring configuration
+            const stiffness = 0.06;
+            const damping = 0.58; 
+            
+            // Update target scroll position on native scroll
+            window.addEventListener('scroll', () => { 
+                targetScrollY = window.scrollY;
+            }, { passive: true }); 
+            
+            // Render Loop
+            function animate() { 
+                // Calculate spring physics for smooth scroll feel
+                const displacement = targetScrollY - springY; 
+                const springForce = displacement * stiffness; 
+                
+                springVelocity = (springVelocity + springForce) * damping; 
+                springY += springVelocity; 
+                
+                // Calculate lag for bounce effect
+                const rawLag = targetScrollY - springY; 
+                smoothedLag += (rawLag - smoothedLag) * 0.15; 
+                
+                // Apply transforms to parallax items
+                parallaxItemsList.forEach(item => {
+                    const bounceOffsetY = -(smoothedLag * item.lag); 
+                    const scrollParallaxY = -(springY * item.speed);
+                    
+                    item.el.style.transform = `translate3d(0, ${bounceOffsetY + scrollParallaxY}px, 0)`;
+                }); 
+                
+                requestAnimationFrame(animate); 
+            }
+            
+            // Start loop
+            requestAnimationFrame(animate);
+        });
+    </script>
+</body>
+</html>

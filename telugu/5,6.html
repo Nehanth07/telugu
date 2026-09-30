@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showcase Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/split-type"></script>
+    
+    <style>
+        :root {
+            /* Journey Variables */
+            --left-ext: 600px;
+            
+            /* Theme Variables */
+            --color-black: #111111;
+            --color-brand-10: #fef5e7;
+            
+            /* Projects Variables */
+            --projects-pad-x: 5;
+            --project-row-pad-y: 6;
+            --project-info-width: 25;
+            --project-image-width: 70;
+            --project-image-ratio: 16 / 10;
+            --project-image-min-h: 340;
+            --project-title-size: 2.2;
+            --project-details-width: 80;
+            --project-details-size: 0.95;
+            --garage-pad-y: 10;
+            --garage-heading-size: 2.5;
+            --garage-title-size: 1.8;
+            --garage-details-size: 1.2;
+            --garage-gap: 2;
+            --garage-card-ratio: 4 / 3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: var(--color-brand-10); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+        }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+        
+        .topo-line { fill: none; stroke: #2d6a38; stroke-width: 0.5; opacity: 0.15; }
+        #horizontal-track { will-change: transform; }
+        
+        .js-split-text .line { clip-path: inset(0 0 -.105em 0); }
+        .js-split-text .word { will-change: transform, opacity; display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); }
+        .js-split-text.is-inview .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+
+        .projects-section { padding: 8vh calc(var(--projects-pad-x)*1vw) 10vh; position: relative; background: #ffffff; overflow: hidden; }
+        .project-row { display: flex; justify-content: space-between; align-items: center; padding: calc(var(--project-row-pad-y)*1vw) 0; position: relative; cursor: pointer; }
+        .project-row.reverse { flex-direction: row-reverse; }
+        
+        .project-info { width: calc(var(--project-info-width)*1%); position: relative; display: flex; flex-direction: column; }
+        .project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .project-details { position: absolute; top: 100%; left: 0; width: calc(var(--project-details-width)*1%); opacity: 0; visibility: hidden; transform: translateY(40px); transition: all .5s cubic-bezier(.19,1,.22,1); padding-top: 20px; z-index: 20; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); }
+        .project-row.reverse .project-details { left: auto; right: 0; }
+        .project-details p { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; margin-bottom: 20px; font-weight: 400; }
+        .project-row:hover .project-details { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .grid-project-title { font-size: calc(var(--project-title-size)*1vw); margin: 0 0 1rem 0; font-weight: 400; letter-spacing: -.01em; color: #111; }
+        .grid-project-desc { font-size: calc(var(--project-details-size)*1rem); line-height: 1.6; color: #777; font-weight: 400; }
+        
+        .arrow-btn { background: #000; color: #fff; border: 0; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; transition: transform .3s; display: flex; align-items: center; justify-content: center; }
+        .arrow-btn:hover { transform: translateX(10px); }
+        
+        .img-size-1 { width: calc(var(--project-image-width)*1%); height: 60vh; }
+        .img-size-2 { width: 100%; aspect-ratio: 4 / 3.5; height: auto; }
+        .img-size-3 { width: 100%; aspect-ratio: 16 / 10; height: auto; }
+        
+        .side-projects-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 5vw; margin-top: 8vw; align-items: start; }
+
+        .project-image { overflow: hidden; position: relative; border-radius: 8px; }
+        .project-image img, .card-image-container img { width: 100%; height: 130%; position: absolute; top: -15%; left: 0; object-fit: cover; }
+        
+        .garage-section { padding: calc(var(--garage-pad-y)*1vh) calc(var(--projects-pad-x)*1vw); background: #ffffff; }
+        .garage-heading { font-size: calc(var(--garage-heading-size)*1vw); font-weight: 400; margin: 0 0 4vw; letter-spacing: -.02em; }
+        .garage-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: calc(var(--garage-gap)*1vw); }
+        .garage-card { cursor: pointer; }
+        .card-image-container { position: relative; width: 100%; aspect-ratio: var(--garage-card-ratio); overflow: hidden; margin-bottom: 1.5vw; border-radius: 8px; }
+        .garage-title { font-size: calc(var(--garage-title-size)*1vw); font-weight: 400; margin: 0; color: #111; }
+        .garage-details { opacity: 0; visibility: hidden; max-height: 0; transform: translateY(-10px); transition: all .5s cubic-bezier(.19,1,.22,1); margin-top: 0; overflow: hidden; }
+        .garage-details p { font-size: calc(var(--garage-details-size)*1vw); line-height: 1.6; color: #777; margin: 0; font-weight: 400; }
+        .garage-card:hover .garage-details { opacity: 1; visibility: visible; max-height: 200px; transform: translateY(0); margin-top: 1vw; }
+
+        @media(max-width:1200px) and (min-width:769px){
+            .project-title, .grid-project-title { font-size: clamp(1.5rem, calc(var(--project-title-size)*1vw), 2.5rem); }
+            .garage-heading { font-size: clamp(1.8rem, calc(var(--garage-heading-size)*1vw), 2.8rem); }
+        }
+        @media(max-width:768px){
+            .project-row { flex-direction: column !important; align-items: flex-start; padding: 10vw 0; }
+            .project-info { width: 100%; margin-bottom: 2rem; }
+            .project-title, .grid-project-title { font-size: calc(var(--project-title-size)*1vw + 0.8rem); }
+            .project-image { width: 100%; aspect-ratio: var(--project-image-ratio); min-height: 0; }
+            .project-details { position: relative; opacity: 1; visibility: visible; transform: translateY(0); padding-top: 20px; width: 100%; }
+            .garage-heading { font-size: calc(var(--garage-heading-size)*1vw + 0.8rem); margin-bottom: 8vw; }
+            .garage-grid { grid-template-columns: 1fr; gap: calc(var(--garage-gap)*1vw + 2rem); }
+            .card-image-container { margin-bottom: 4vw; }
+            .garage-title { font-size: calc(var(--garage-title-size)*1vw + 0.4rem); }
+            .garage-details p { font-size: calc(var(--garage-details-size)*1vw + 0.2rem); }
+            .garage-card:hover .garage-details { margin-top: 3vw; }
+        }
+    </style>
+</head>
+<body class="selection:bg-[#e67e22] selection:text-white scroll-smooth">
+
+    <section id="journey" class="relative h-[650vh] bg-[#f4f1ea]">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex items-center bg-transparent">
+            
+            <svg class="absolute inset-0 h-full pointer-events-none z-0" style="width: calc(9000px + var(--left-ext));" xmlns="http://www.w3.org/2000/svg">
+                <g style="transform: translateX(var(--left-ext));">
+                    <path class="topo-line" d="M-100,500 Q400,200 1200,700 T2800,200 T4500,800 T6500,100 T8000,600 T9500,300" />
+                    <path class="topo-line" d="M-200,800 Q600,900 1500,400 T3200,800 T5000,200 T6800,900 T8500,400" />
+                    <path class="topo-line" stroke-width="1" d="M0,200 Q800,-100 1800,400 T3800,900 T5800,300 T7500,800 T9000,200" />
+                    <path class="topo-line" stroke-dasharray="10, 10" d="M-50,300 Q1000,800 2200,100 T4200,600 T6000,800 T7800,100" />
+                </g>
+            </svg>
+
+            <div id="horizontal-track" class="flex items-center h-full absolute left-0 z-10" style="width: calc(8500px + var(--left-ext));">
+                <div id="track-inner" class="relative w-full h-full" style="transform: translateX(var(--left-ext));">
+
+                    <div class="absolute left-0 top-[50%] parallax-item-h z-10" data-lag="0.18" data-speed="0.10">
+                        <div class="-translate-y-1/2 w-[500px] text-center">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-tight text-[#1b3a20] js-split-text">"It doesn't matter where you start, education is the bridge to everywhere."</p>
+                            <p class="mt-6 text-[#2d6a38] font-medium text-lg inline-block border-b-2 border-[#e67e22] pb-2">A legacy of bringing quality Telugu education to communities across the region.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1050px] bottom-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Hyderabad Campus</div>
+                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" alt="School Campus" class="w-full aspect-[4/3] object-cover rounded" onerror="this.src='https://placehold.co/600x450/e0ded8/1b3a20?text=Hyderabad+Campus';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1400px] top-[45%] parallax-item-h z-10" data-lag="0.22" data-speed="0.14">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">9+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Schools</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[250px] text-center">Establishing centers of excellence in key communities.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[1750px] top-[15%] parallax-item-h z-10" data-lag="0.25" data-speed="0.16">
+                        <div class="pointer-events-auto w-[260px] shadow-lg bg-white p-2 -rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Vijayawada Branch</div>
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="Classroom" class="w-full aspect-square object-cover rounded" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Vijayawada+Branch';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2050px] bottom-[25%] parallax-item-h z-10" data-lag="0.15" data-speed="0.09">
+                        <div class="pointer-events-auto w-[360px] shadow-2xl bg-white p-2 rotate-1 hover:rotate-0 transition-transform duration-500 hover:z-50 border-b-4 border-[#e67e22] rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Tirupati Primary</div>
+                            <img src="https://images.unsplash.com/photo-1546410531-bea5acadb6a0?auto=format&fit=crop&w=800&q=80" alt="Students" class="w-full aspect-[16/9] object-cover rounded" onerror="this.src='https://placehold.co/800x450/e0ded8/1b3a20?text=Tirupati+Primary';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[2650px] top-[20%] parallax-item-h z-10" data-lag="0.18" data-speed="0.11">
+                        <div class="pointer-events-auto w-[330px] shadow-lg bg-[#f4f1ea] p-3 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80" alt="Students studying" class="w-full aspect-[3/4] object-cover rounded-sm filter sepia-[0.2] rounded" onerror="this.src='https://placehold.co/600x800/e0ded8/1b3a20?text=Students+Studying';">
+                            <div class="text-xs text-right mt-2 font-medium text-gray-600">Annual Science Fair, 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3050px] top-[50%] parallax-item-h z-10" data-lag="0.16" data-speed="0.09">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">550+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Students</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[280px] text-center">A growing family of eager learners discovering their heritage.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[3500px] bottom-[10%] parallax-item-h z-10" data-lag="0.1" data-speed="0.06">
+                        <div class="pointer-events-auto w-[420px] shadow-2xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="flex justify-between items-center mb-1 px-1">
+                                <span class="text-xs font-semibold text-[#2d6a38] uppercase tracking-wider">Cultural Day</span>
+                                <span class="text-xs text-[#e67e22] font-['Mukta']">సాంస్కృతిక దినోత్సవం</span>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Cultural Event" class="w-full aspect-[21/9] object-cover rounded" onerror="this.src='https://placehold.co/800x340/e0ded8/1b3a20?text=Cultural+Day';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4000px] top-[30%] parallax-item-h z-10" data-lag="0.22" data-speed="0.14">
+                        <div class="pointer-events-auto w-[280px] shadow-md bg-white p-2 hover:scale-105 transition-transform duration-500 hover:z-50 rounded-full overflow-hidden border-8 border-[#f4f1ea]">
+                            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80" alt="Happy Student" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Student';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4500px] bottom-[20%] parallax-item-h z-10" data-lag="0.12" data-speed="0.07">
+                        <div class="pointer-events-auto w-[350px] shadow-xl bg-white p-2 rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Faculty Training, Vizag</div>
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=80" alt="Teachers Meeting" class="w-full aspect-[4/3] object-cover grayscale-[0.3] rounded" onerror="this.src='https://placehold.co/700x525/e0ded8/1b3a20?text=Faculty+Training';">
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[4950px] top-[40%] parallax-item-h z-10" data-lag="0.25" data-speed="0.11">
+                        <div class="-translate-y-1/2 flex flex-col items-center">
+                            <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">80+</h2>
+                            <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Teachers</p>
+                            <p class="text-sm text-gray-500 mt-4 max-w-[300px] text-center">Dedicated educators bringing passion and expertise to every classroom.</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[5400px] top-[15%] parallax-item-h z-10" data-lag="0.2" data-speed="0.12">
+                        <div class="pointer-events-auto w-[300px] shadow-2xl bg-[#1b3a20] p-1 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50 rounded-lg">
+                            <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80" alt="Teacher interacting" class="w-full aspect-square object-cover opacity-90 rounded" onerror="this.src='https://placehold.co/600x600/e0ded8/1b3a20?text=Teacher+Interaction';">
+                            <div class="text-xs text-white text-center py-2 font-medium tracking-wide">Award-winning Staff</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[6000px] top-[50%] parallax-item-h z-10" data-lag="0.14" data-speed="0.13">
+                        <div id="conclusion-slide" class="-translate-y-1/2 w-[600px] text-center md:text-left">
+                            <p class="serif-font text-4xl md:text-5xl italic leading-relaxed text-[#1b3a20] js-split-text">
+                                "Since our foundation, we have worked tirelessly to make the dream of accessible, high-quality education a reality for every child."
+                            </p>
+                            <div class="flex items-center justify-center md:justify-start gap-4 pt-8">
+                                <div class="h-[2px] w-16 bg-[#e67e22]"></div>
+                                <span class="text-[12px] font-bold uppercase tracking-widest text-[#2d6a38]">End of Part 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects-section" id="projectsContainer">
+        
+        <!-- Project 1: Info left, Image right -->
+        <div class="project-row" data-dir="left-right">
+            <div class="project-info slide-left">
+                <h2 class="project-title">Hippy Market</h2>
+                <div class="project-details">
+                    <p style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;">Hippy Market is getting a refresh: a new, more iconic identity for a premium vintage fashion brand, which transforms second-hand into a fashion and cultural experience.</p>
+                    <button class="arrow-btn">→</button>
+                </div>
+            </div>
+            <div class="project-image img-size-1 slide-right">
+                <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=1200" alt="Hippy Market">
+            </div>
+        </div>
+
+        <!-- Projects 2 & 3: Side by Side Layout -->
+        <div class="side-projects-grid">
+            
+            <!-- Project 2 (Mitwit) -->
+            <div class="grid-project cursor-pointer group">
+                <div class="project-image img-size-2">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Mitwit Office">
+                </div>
+                <div class="mt-6 pr-4">
+                    <h2 class="grid-project-title">Mitwit Office</h2>
+                    <p class="grid-project-desc line-clamp-4">Launched by La Poste Immobilier and resulting from the merger of Startway and Multiburo, MITWIT has established itself as a major player in the shared workspace market, with a network of nearly 40 sites in France, Belgium and Switzerland.</p>
+                </div>
+            </div>
+
+            <!-- Project 3 (Newton) -->
+            <div class="grid-project cursor-pointer group">
+                <div class="project-image img-size-3">
+                    <img src="https://images.unsplash.com/photo-1600607687959-ce8a6c25118c?auto=format&fit=crop&q=80&w=1200" alt="Newton Offices">
+                </div>
+                <div class="mt-6 pr-4">
+                    <h2 class="grid-project-title">Newton Offices</h2>
+                    <p class="grid-project-desc line-clamp-4">Inventing a new brand territory for collaborative workspaces. Supporting an investor in the branding process, designing the brand and its key elements.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="garage-section">
+        <h2 class="garage-heading">Garage</h2>
+        <div class="garage-grid">
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=800" alt="Comet Meetings">
+                </div>
+                <h3 class="garage-title">Comet Meetings</h3>
+                <div class="garage-details">
+                    <p>Innovative spaces for corporate meetings and creative team building.</p>
+                </div>
+            </div>
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800" alt="CEB">
+                </div>
+                <h3 class="garage-title">CEB</h3>
+                <div class="garage-details">
+                    <p>L'art de bien ranger. Premium custom organization solutions.</p>
+                </div>
+            </div>
+            <div class="garage-card">
+                <div class="card-image-container">
+                    <img src="https://images.unsplash.com/photo-1545607062-848e4b7b2586?auto=format&fit=crop&q=80&w=800" alt="Centrakor">
+                </div>
+                <h3 class="garage-title">Centrakor</h3>
+                <div class="garage-details">
+                    <p>Commercial retail spaces designed for optimized customer flow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SplitType Initialization
+            const splitElements = document.querySelectorAll('.js-split-text');
+            let splitInstances = [];
+            
+            if (typeof SplitType !== 'undefined') {
+                splitElements.forEach(el => {
+                    const splitInstance = new SplitType(el, { types: 'lines, words' });
+                    splitInstances.push({ element: el, instance: splitInstance });
+                    const setupDelays = () => splitInstance.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                        });
+                    });
+                    setupDelays();
+                });
+                
+                window.addEventListener('resize', () => { 
+                    splitInstances.forEach(item => {
+                        item.instance.split();
+                        item.instance.lines.forEach((line, lineIndex) => {
+                            line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                            line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                                word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                            });
+                        });
+                    });
+                });
+            }
+            
+            // Intersection Observer for Animations
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            document.querySelectorAll('.js-split-text').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Horizontal Scroll Journey Calculation ---
+            const journeySection = document.getElementById('journey');
+            const hTrack = document.getElementById('horizontal-track');
+            
+            // Initialize horizontal parallax items list
+            const hParallaxItemsList = Array.from(document.querySelectorAll('.parallax-item-h')).map(el => ({
+                el,
+                lag: parseFloat(el.getAttribute('data-lag')) || 0,
+                speed: parseFloat(el.getAttribute('data-speed')) || 0
+            }));
+
+            // Physics Variables for Animation Loop
+            let targetHScroll = 0;
+            let springHScroll = 0;
+            let springHVelocity = 0;
+            let smoothedHLag = 0;
+            const hStiffness = 0.06;
+            const hDamping = 0.58;
+
+            // Calculate target translation on scroll
+            window.addEventListener('scroll', () => {
+                if(!journeySection) return;
+                
+                const rect = journeySection.getBoundingClientRect();
+                const totalScroll = journeySection.offsetHeight - window.innerHeight;
+                
+                // Track horizontal scroll based on vertical scroll progress
+                let progress = -rect.top / totalScroll;
+                progress = Math.max(0, Math.min(1, progress)); // clamp between 0 and 1
+                
+                const rootStyles = getComputedStyle(document.documentElement);
+                const leftExt = parseInt(rootStyles.getPropertyValue('--left-ext').trim()) || 1200;
+                
+                // The endpoint is perfectly mapped to 1.0 progress based on the 650vh height
+                const conclusionLeft = 6000 + leftExt; 
+                const targetTranslateX = conclusionLeft - (window.innerWidth / 2) + 300;
+                
+                targetHScroll = -progress * targetTranslateX;
+            }, { passive: true });
+
+            // Main Animation & Physics Loop
+            function animate() { 
+                // Horizontal Spring Logic
+                const hDisplacement = targetHScroll - springHScroll;
+                const hSpringForce = hDisplacement * hStiffness;
+                
+                springHVelocity = (springHVelocity + hSpringForce) * hDamping;
+                springHScroll += springHVelocity;
+                
+                const hRawLag = targetHScroll - springHScroll;
+                smoothedHLag += (hRawLag - smoothedHLag) * 0.15;
+                
+                // Apply Translation to Main Track
+                if (hTrack) {
+                    hTrack.style.transform = `translateX(${springHScroll}px)`;
+                }
+                
+                // Apply Spring Physics & Parallax to inner items
+                if (hParallaxItemsList) {
+                    hParallaxItemsList.forEach(item => {
+                        const bounceOffsetX = -(smoothedHLag * item.lag); 
+                        const scrollParallaxX = (springHScroll * item.speed);
+                        item.el.style.transform = `translate3d(${bounceOffsetX + scrollParallaxX}px, 0, 0)`;
+                    });
+                }
+                
+                requestAnimationFrame(animate); 
+            }
+            // Start the loop
+            requestAnimationFrame(animate);
+
+            // GSAP Animations for Projects Section
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Animate each project row elements
+                gsap.utils.toArray('.project-row').forEach(row => {
+                    const info = row.querySelector('.project-info');
+                    const image = row.querySelector('.project-image');
+                    const imgElement = row.querySelector('.project-image img');
+                    const isReverse = row.classList.contains('reverse');
+
+                    const infoX = isReverse ? 100 : -100;
+                    const imageX = isReverse ? -100 : 100;
+
+                    // Removed 'scrub' to ensure a smooth, time-based animation regardless of scroll speed
+                    const tl = gsap.timeline({
+                        scrollTrigger: { 
+                            trigger: row, 
+                            start: 'top 65%', // Delayed start so it comes in cleanly
+                            toggleActions: "play none none none" 
+                        }
+                    });
+
+                    // Animate the text info first
+                    tl.fromTo(info, 
+                        { x: infoX, opacity: 0 }, 
+                        { x: 0, opacity: 1, duration: 1.5, ease: 'power3.out' }
+                    )
+                    // Animate the image with a slight overlap delay for a premium feel
+                    .fromTo(image, 
+                        { x: imageX, opacity: 0, scale: 1.05 }, 
+                        { x: 0, opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' },
+                        "<0.3" 
+                    );
+
+                    if (imgElement) {
+                        // The internal parallax image effect stays scrubbed for the scrolling depth effect
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15, ease: 'none',
+                                scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true }
+                            }
+                        );
+
+                        row.addEventListener('mouseenter', () => { gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' }); });
+                        row.addEventListener('mouseleave', () => { gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' }); });
+                    }
+                });
+
+                // Animate Side-by-Side Projects
+                gsap.utils.toArray('.grid-project').forEach(card => {
+                    const image = card.querySelector('.project-image');
+                    const imgElement = card.querySelector('.project-image img');
+                    const info = card.lastElementChild; 
+                    
+                    // Converted to duration-based animation for consistency and smoothness
+                    gsap.fromTo([image, info], 
+                        { y: 60, opacity: 0 }, 
+                        {
+                            scrollTrigger: { trigger: card, start: 'top 70%', toggleActions: "play none none none" }, 
+                            y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: 'power3.out' 
+                        }
+                    );
+
+                    if (imgElement) {
+                        gsap.fromTo(imgElement, 
+                            { yPercent: -15 }, 
+                            {
+                                yPercent: 15, ease: 'none',
+                                scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: true }
+                            }
+                        );
+
+                        card.addEventListener('mouseenter', () => { gsap.to(imgElement, { scale: 1.05, duration: 0.8, ease: 'power3.out' }); });
+                        card.addEventListener('mouseleave', () => { gsap.to(imgElement, { scale: 1, duration: 0.8, ease: 'power3.out' }); });
+                    }
+                });
+
+                // Garage cards entry
+                gsap.from('.garage-card', {
+                    scrollTrigger: { trigger: '.garage-section', start: 'top 75%' }, 
+                    y: 60, opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

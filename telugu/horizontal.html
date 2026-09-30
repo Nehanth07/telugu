@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Long Page Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-brand-10: #fef5e7;
+            --color-black: #111111;
+            --color-white: #ffffff;
+            --color-tb-black: #231C3B;
+            --color-tb-bg: #FCF8F2;
+            --color-pink: #FF4B8A;
+            --color-teal: #00BFA5;
+            --color-orange: #FF9800;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: var(--color-black); 
+            background: #f4f1ea; 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            position: relative;
+        }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f1ea; }
+        ::-webkit-scrollbar-thumb { background: #2d6a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1b3a20; }
+
+        .topo-line { fill: none; stroke: #2d6a38; stroke-width: 0.5; opacity: 0.15; }
+        #horizontal-track { will-change: transform; }
+
+        .js-split-text .line { clip-path: inset(0 0 -.105em 0); }
+        .js-split-text .word { will-change: transform, opacity; display: inline-block; opacity: 0; transform: translate3d(0, 115%, 0) scale(.96); transition: opacity 1s ease, transform 1.15s cubic-bezier(.16,1,.3,1); transition-delay: var(--word-delay, 0s); }
+        .js-split-text.is-inview .word { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    </style>
+</head>
+<body class="selection:bg-[#e67e22] selection:text-white">
+
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 bg-[#fcf8f2]/90 backdrop-blur-md border-b border-[#2d6a38]/10 transition-transform duration-300">
+        <div class="flex items-center space-x-3">
+            <span class="text-2xl font-bold tracking-tight text-[#2d6a38]">Telugu Vidyalaya</span>
+            <span class="text-sm font-medium text-[#e67e22] hidden sm:inline-block font-['Mukta']">తెలుగు విద్యాలయ</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="#journey" class="text-xs uppercase font-bold tracking-widest text-[#1b3a20] hover:text-[#e67e22] transition">Journey Timeline</a>
+        </div>
+    </header>
+
+    <section id="journey" class="relative h-[650vh] bg-[#f4f1ea] pt-20">
+        <div class="sticky top-0 h-screen w-full overflow-hidden flex items-center bg-transparent">
+            
+            <svg class="absolute inset-0 h-full pointer-events-none z-0" style="width: 10000px;" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path class="topo-line" d="M-100,500 Q400,200 1200,700 T2800,200 T4500,800 T6500,100 T8000,600 T9500,300" />
+                    <path class="topo-line" d="M-200,800 Q600,900 1500,400 T3200,800 T5000,200 T6800,900 T8500,400" />
+                    <path class="topo-line" stroke-width="1" d="M0,200 Q800,-100 1800,400 T3800,900 T5800,300 T7500,800 T9000,200" />
+                    <path class="topo-line" stroke-dasharray="10, 10" d="M-50,300 Q1000,800 2200,100 T4200,600 T6000,800 T7800,100" />
+                </g>
+            </svg>
+
+            <div id="horizontal-track" class="flex items-center h-full absolute left-0 z-10" style="width: 8500px;">
+                <div id="track-inner" class="relative w-full h-full">
+
+                    <!-- Intro Slide -->
+                    <div class="absolute" style="left: calc(50vw - 250px); top: 50%; transform: translateY(-50%); width: 500px; text-align: center;">
+                        <p class="serif-font text-4xl md:text-5xl italic leading-tight text-[#1b3a20] js-split-text">"It doesn't matter where you start, education is the bridge to everywhere."</p>
+                        <p class="mt-6 text-[#2d6a38] font-medium text-lg inline-block border-b-2 border-[#e67e22] pb-2">A legacy of bringing quality Telugu education to communities across the region.</p>
+                    </div>
+
+                    <!-- Milestone 1: Schools -->
+                    <div class="absolute left-[2000px] top-[45%] -translate-y-1/2 flex flex-col items-center">
+                        <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">9+</h2>
+                        <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Schools</p>
+                        <p class="text-sm text-gray-500 mt-4 max-w-[250px] text-center">Establishing centers of excellence in key communities.</p>
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[1650px] bottom-[15%] w-[320px] shadow-xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Hyderabad Campus</div>
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=600&q=80" alt="School Campus" class="w-full aspect-[4/3] object-cover" onerror="this.src='https://placehold.co/600x450/e0ded8/1b3a20?text=Hyderabad+Campus';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[2350px] top-[15%] w-[280px] shadow-lg bg-white p-2 -rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Vijayawada Branch</div>
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="Classroom" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Vijayawada+Branch';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[2650px] bottom-[25%] w-[400px] shadow-2xl bg-white p-2 rotate-1 hover:rotate-0 transition-transform duration-500 hover:z-50 border-b-4 border-[#e67e22]">
+                        <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Tirupati Primary</div>
+                        <img src="https://images.unsplash.com/photo-1546410531-bea5acadb6a0?auto=format&fit=crop&w=800&q=80" alt="Students" class="w-full aspect-[16/9] object-cover" onerror="this.src='https://placehold.co/800x450/e0ded8/1b3a20?text=Tirupati+Primary';">
+                    </div>
+
+                    <!-- Milestone 2: Students -->
+                    <div class="absolute left-[4000px] top-[50%] -translate-y-1/2 flex flex-col items-center">
+                        <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">550+</h2>
+                        <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Students</p>
+                        <p class="text-sm text-gray-500 mt-4 max-w-[280px] text-center">A growing family of eager learners discovering their heritage.</p>
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[3400px] top-[20%] w-[350px] shadow-lg bg-[#f4f1ea] p-3 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80" alt="Students studying" class="w-full aspect-[3/4] object-cover rounded-sm filter sepia-[0.2]" onerror="this.src='https://placehold.co/600x800/e0ded8/1b3a20?text=Students+Studying';">
+                        <div class="text-xs text-right mt-2 font-medium text-gray-600">Annual Science Fair, 2023</div>
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[4400px] bottom-[10%] w-[450px] shadow-2xl bg-white p-2 rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <div class="flex justify-between items-center mb-1 px-1">
+                            <span class="text-xs font-semibold text-[#2d6a38] uppercase tracking-wider">Cultural Day</span>
+                            <span class="text-xs text-[#e67e22] font-['Mukta']">సాంస్కృతిక దినోత్సవం</span>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Cultural Event" class="w-full aspect-[21/9] object-cover" onerror="this.src='https://placehold.co/800x340/e0ded8/1b3a20?text=Cultural+Day';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[5000px] top-[30%] w-[300px] shadow-md bg-white p-2 hover:scale-105 transition-transform duration-500 hover:z-50 rounded-full overflow-hidden border-8 border-[#f4f1ea]">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80" alt="Happy Student" class="w-full aspect-square object-cover" onerror="this.src='https://placehold.co/500x500/e0ded8/1b3a20?text=Student';">
+                    </div>
+
+                    <!-- Milestone 3: Teachers -->
+                    <div class="absolute left-[6200px] top-[40%] -translate-y-1/2 flex flex-col items-center">
+                        <h2 class="text-7xl md:text-8xl font-black text-[#1b3a20]">80+</h2>
+                        <p class="text-2xl text-[#00b4d8] font-semibold mt-2 tracking-wide">Teachers</p>
+                        <p class="text-sm text-gray-500 mt-4 max-w-[300px] text-center">Dedicated educators bringing passion and expertise to every classroom.</p>
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[5600px] bottom-[20%] w-[380px] shadow-xl bg-white p-2 rotate-3 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <div class="text-xs font-semibold text-[#2d6a38] mb-1 uppercase tracking-wider">Faculty Training, Vizag</div>
+                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=80" alt="Teachers Meeting" class="w-full aspect-[4/3] object-cover grayscale-[0.3]" onerror="this.src='https://placehold.co/700x525/e0ded8/1b3a20?text=Faculty+Training';">
+                    </div>
+
+                    <div class="pointer-events-auto absolute left-[6600px] top-[15%] w-[320px] shadow-2xl bg-[#1b3a20] p-1 -rotate-2 hover:rotate-0 transition-transform duration-500 hover:z-50">
+                        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=600&q=80" alt="Teacher interacting" class="w-full aspect-square object-cover opacity-90" onerror="this.src='https://placehold.co/600x600/e0ded8/1b3a20?text=Teacher+Interaction';">
+                        <div class="text-xs text-white text-center py-2 font-medium tracking-wide">Award-winning Staff</div>
+                    </div>
+
+                    <!-- Conclusion Slide (Centered exactly at the end of scroll) -->
+                    <div class="absolute left-[7300px] top-[50%] -translate-y-1/2 w-[600px] text-center md:text-left">
+                        <p class="serif-font text-4xl md:text-5xl italic leading-relaxed text-[#1b3a20] js-split-text">
+                            "Since our foundation, we have worked tirelessly to make the dream of accessible, high-quality education a reality for every child."
+                        </p>
+                        <div class="flex items-center justify-center md:justify-start gap-4 pt-8">
+                            <div class="h-[2px] w-16 bg-[#e67e22]"></div>
+                            <span class="text-[12px] font-bold uppercase tracking-widest text-[#2d6a38]">End of Journey</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="py-12 px-6 bg-[#122615] text-[#f4f1ea]/60 border-t border-white/5 text-center md:text-left z-30 relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+            <div>
+                <span class="text-xl font-bold tracking-tight text-white">Telugu Vidyalaya</span>
+                <p class="text-xs mt-2 uppercase tracking-wider">Nurturing Roots, Growing Futures</p>
+            </div>
+            <div class="flex items-center space-x-6 text-sm">
+                <a href="#journey" class="hover:text-white transition">Back to Top</a>
+                <a href="#" class="hover:text-white transition">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- SplitType & Intersect Observers ---
+            const splitElements = document.querySelectorAll('.js-split-text');
+            let splitInstances = [];
+            
+            if (typeof SplitType !== 'undefined') {
+                splitElements.forEach(el => {
+                    const splitInstance = new SplitType(el, { types: 'lines, words' });
+                    splitInstances.push({ element: el, instance: splitInstance });
+                    const setupDelays = () => splitInstance.lines.forEach((line, lineIndex) => {
+                        line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                        line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                            word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                        });
+                    });
+                    setupDelays();
+                });
+                
+                window.addEventListener('resize', () => { 
+                    splitInstances.forEach(item => {
+                        item.instance.split();
+                        item.instance.lines.forEach((line, lineIndex) => {
+                            line.style.clipPath = 'inset(0 0 -0.2em 0)';
+                            line.querySelectorAll('.word').forEach((word, wordIndex) => {
+                                word.style.setProperty('--word-delay', `${lineIndex * .16 + wordIndex * .045}s`);
+                            });
+                        });
+                    });
+                });
+            }
+            
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('is-inview'); 
+                        observerInstance.unobserve(entry.target); 
+                    } 
+                });
+            }, { threshold: .15 });
+            
+            document.querySelectorAll('.js-split-text').forEach(el => {
+                observer.observe(el);
+            });
+
+            // --- Horizontal Scroll Journey ---
+            const journeySection = document.getElementById('journey');
+            const horizontalTrack = document.getElementById('horizontal-track');
+            
+            window.addEventListener('scroll', () => {
+                const rect = journeySection.getBoundingClientRect();
+                const totalScroll = journeySection.offsetHeight - window.innerHeight;
+                let progress = -rect.top / totalScroll;
+                progress = Math.max(0, Math.min(1, progress));
+                
+                // Target translation calculation so final quote ends right in the middle (center) of the viewport
+                const maxTranslateX = 7300 - (window.innerWidth / 2) + 300;
+                const translateX = -progress * maxTranslateX;
+                horizontalTrack.style.transform = `translateX(${translateX}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

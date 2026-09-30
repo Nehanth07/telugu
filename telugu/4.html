@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telugu Badi - Learn, Play & Sing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-black: #231C3B;
+            --color-white: #FFFFFF;
+            --color-bg: #FCF8F2;
+            --color-pink: #FF4B8A;
+            --color-teal: #00BFA5;
+            --color-orange: #FF9800;
+            --color-purple: #8E24AA;
+            --color-green: #4CAF50;
+            --font-family-sans: 'Plus Jakarta Sans', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--color-bg);
+            background-image: radial-gradient(circle at 10% 80%, rgba(162,228,213,.4) 0%, transparent 35%), radial-gradient(circle at 90% 10%, rgba(255,236,179,.4) 0%, transparent 35%), radial-gradient(circle at 80% 80%, rgba(255,204,229,.4) 0%, transparent 35%);
+            color: var(--color-black); font-family: var(--font-family-sans); overflow-x: hidden; min-height: 100vh; position: relative;
+        }
+        .s-education-home { position: relative; height: 120vh; overflow: visible; z-index: 10; }
+        .sticky-wrapper { position: sticky; top: 0; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; overflow: visible; }
+        .parallax-text-group { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
+        .center-line { position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; }
+        .center-line::before, .center-line::after { content: ''; position: absolute; left: 0; width: 1px; height: 200vh; background: var(--color-black); opacity: .15; }
+        .center-line::before { bottom: 180px; } .center-line::after { top: 200px; }
+        .s__content { position: relative; z-index: 10; text-align: center; max-width: 800px; display: flex; flex-direction: column; align-items: center; padding: 0 20px; margin-top: 40px; }
+        .s_suptitle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(35,28,59,.1); border-radius: 50px; padding: 8px 24px; font-size: .9rem; font-weight: 600; margin-bottom: 30px; background: var(--color-white); color: #555; box-shadow: 0 4px 15px rgba(0,0,0,.03); }
+        .s_title { font-size: clamp(3rem,7vw,6.5rem); line-height: 1.05; font-weight: 800; letter-spacing: -.03em; margin-bottom: 25px; color: var(--color-black); }
+        .c-teal { color: var(--color-teal); } .c-pink { color: var(--color-pink); }
+        .s_subtitle_telugu { color: var(--color-orange); font-size: clamp(1.5rem,3vw,2.5rem); font-weight: 700; margin-bottom: 20px; }
+        .s__text { font-size: 1.15rem; line-height: 1.5; max-width: 600px; color: #444; margin-bottom: 40px; }
+        .hero-buttons { display: flex; gap: 15px; align-items: center; }
+        .btn-primary { background: var(--color-black); color: var(--color-white); padding: 16px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; box-shadow: 0 8px 20px rgba(35,28,59,.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(35,28,59,.3); }
+        .btn-secondary { background: transparent; color: var(--color-black); border: 1px solid rgba(35,28,59,.2); padding: 15px 32px; border-radius: 40px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all .2s ease; }
+        .btn-secondary:hover { background: rgba(35,28,59,.05); }
+        .sb-letter { position: absolute; font-size: clamp(2rem,5vw,4rem); font-weight: 800; will-change: transform; z-index: 5; user-select: none; pointer-events: none; text-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .s__courses { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .s_courses_list { position: relative; width: 100%; height: 100%; list-style: none; }
+        @media (max-width: 900px) { .hero-buttons { flex-direction: column; width: 100%; } .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; } .s__text { padding: 0 20px; } }
+    </style>
+</head>
+<body>
+    <div class="s-education-home" id="education">
+        <div class="sticky-wrapper">
+            <div class="parallax-text-group js-spring-group">
+                <div class="center-line"></div>
+                <div class="s__content">
+                    <div class="s_suptitle"><span style="font-size:1.2em;line-height:0;">🍲</span> Telugu Association Inc. Sydney • Non-profit since 1992</div>
+                    <h1 class="s_title">Let's learn <span class="c-teal">Telugu</span><br>while we <span class="c-pink">play</span> &amp; <span class="c-teal">sing</span>.</h1>
+                    <h2 class="s_subtitle_telugu">ఆడుతూ పాడుతూ తెలుగు నేర్చుకుందాము!</h2>
+                    <p class="s__text">A joyful weekend Telugu school for children across Sydney —<br>preserving our language, culture and stories for the next generation.</p>
+                    <div class="hero-buttons"><a href="#" class="btn-primary">Join Telugu School</a><a href="#" class="btn-secondary">Our Story</a></div>
+                </div>
+            </div>
+            <div class="s__courses"><ul class="s_courses_list" id="coursesList"></ul></div>
+        </div>
+    </div>
+    <script>
+        const teluguLetters = [
+            {text:'అ',color:'#FF9800',top:'15%',left:'10%',rot:'-15deg',speedY:.35},{text:'క',color:'#FF4B8A',top:'65%',left:'12%',rot:'10deg',speedY:.15},{text:'చ',color:'#00BFA5',top:'25%',left:'80%',rot:'25deg',speedY:.45},{text:'ట',color:'#8E24AA',top:'75%',left:'85%',rot:'-20deg',speedY:.25},{text:'త',color:'#4CAF50',top:'82%',left:'70%',rot:'15deg',speedY:.55},{text:'ప',color:'#00BFA5',top:'78%',left:'25%',rot:'-5deg',speedY:.35},{text:'య',color:'#FF9800',top:'10%',left:'60%',rot:'30deg',speedY:.2},{text:'శ',color:'#8E24AA',top:'45%',left:'90%',rot:'-15deg',speedY:.6},{text:'స',color:'#FF4B8A',top:'85%',left:'45%',rot:'10deg',speedY:.3},{text:'ళ',color:'#4CAF50',top:'35%',left:'5%',rot:'-25deg',speedY:.4},{text:'వ',color:'#FF9800',top:'50%',left:'15%',rot:'5deg',speedY:.15},{text:'మ',color:'#8E24AA',top:'20%',left:'20%',rot:'15deg',speedY:.5},{text:'గ',color:'#4CAF50',top:'60%',left:'80%',rot:'-10deg',speedY:.25},{text:'ఆ',color:'#8E24AA',top:'12%',left:'85%',rot:'12deg',speedY:.3}
+        ];
+        const listContainer=document.getElementById('coursesList'); const parallaxElements=[];
+        teluguLetters.forEach(card=>{ const li=document.createElement('li'); li.className='sb-letter'; li.style.top=card.top; li.style.left=card.left; li.style.color=card.color; li.innerHTML=card.text; listContainer.appendChild(li); const rand=Math.random(); const floatSpeed=rand<.3?.015+Math.random()*.02:rand<.8?.04+Math.random()*.04:.12+Math.random()*.15; parallaxElements.push({element:li,rot:parseFloat(card.rot)||0,currentRot:parseFloat(card.rot)||0,baseRotSpeed:(Math.random()>.5?1:-1)*(.75-card.speedY)*.07,speedY:card.speedY,topPercent:parseFloat(card.top),floatSpeed,ambientDistance:0}); });
+        let targetScrollY=window.scrollY; let springY=window.scrollY; let springVelocity=0; const stiffness=.06,damping=.58,lagIntensity=.35; let smoothedLag=0; const springGroup=document.querySelector('.js-spring-group'); const educationSection=document.getElementById('education'); window.addEventListener('scroll',()=>{targetScrollY=window.scrollY},{passive:true}); let lastTime=null,lastScrollDirection=1;
+        function animate(time){ if(!lastTime)lastTime=time; const deltaTime=time-lastTime; lastTime=time; const displacement=targetScrollY-springY; const springForce=displacement*stiffness; const prevSpringY=springY; springVelocity=(springVelocity+springForce)*damping; springY+=springVelocity; if(Math.abs(springY-prevSpringY)>.1)lastScrollDirection=Math.sign(springY-prevSpringY); const rawLag=targetScrollY-springY; smoothedLag+=(rawLag-smoothedLag)*.15; if(springGroup){const offsetY=-(smoothedLag*lagIntensity); springGroup.style.transform=`translate3d(0, ${offsetY}px, 0)`;} const H=window.innerHeight,minY=-500,maxY=H+500,wrapRange=maxY-minY,relativeSpringY=springY-educationSection.offsetTop; parallaxElements.forEach(item=>{item.ambientDistance+=item.floatSpeed*deltaTime*lastScrollDirection; const startY=(item.topPercent/100)*H; const distanceMoved=(relativeSpringY*item.speedY*2.5)+item.ambientDistance; const absY=startY-distanceMoved; const wrappedAbsY=((absY-minY)%wrapRange+wrapRange)%wrapRange+minY; const translateY=wrappedAbsY-startY; item.currentRot+=(item.baseRotSpeed*lastScrollDirection)*deltaTime; item.element.style.transform=`translate3d(0, ${translateY}px, 0) rotate(${item.currentRot}deg)`;}); requestAnimationFrame(animate); }
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>

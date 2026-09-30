@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24/7 Artists - Making the Music Business Better</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lenis for smooth, heavy scrolling -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <!-- GSAP & ScrollTrigger for the second-page curtain animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Google Fonts for typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Strict lock to prevent horizontal sliding from the colossal text */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Lenis Required Styles */
+        html.lenis, html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-smooth iframe {
+            pointer-events: none;
+        }
+
+        /* Custom Font Loading */
+        @font-face {
+            font-family: 'Telegraf';
+            font-style: normal;
+            font-weight: 400;
+            src: url('./telegraf/PPTelegraf-Regular.woff2') format('woff2');
+            font-display: swap;
+            text-rendering: optimizeLegibility;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #000;
+            color: #fff;
+            /* overflow: hidden; Removed to enable scrolling for the second page */
+        }
+
+        /* Custom slide transitions for right-to-left slide over */
+        .slide {
+            visibility: hidden;
+            transform: translateX(100%);
+            z-index: 1;
+            will-change: transform;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+        }
+
+        .slide.is-active {
+            visibility: visible;
+            transform: translateX(0);
+            z-index: 10;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.2s;
+        }
+
+        .slide.is-leaving {
+            visibility: visible;
+            /* Keep the container perfectly still so the text falls straight down */
+            transform: translateX(0);
+            filter: brightness(0.5);
+            /* Darken as it gets covered */
+            z-index: 5;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), filter 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        /* Apply the parallax push-back strictly to the background video so text isn't dragged sideways */
+        .slide video {
+            transform: translateX(0);
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .slide.is-leaving video {
+            transform: translateX(-15%);
+        }
+
+        /* Text Animation (Line Reveal) */
+        .slide-text {
+            transform: translateY(120%);
+            /* Exponential Ease-Out: Comes in very fast, slowly settles into place */
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: block;
+            will-change: transform;
+        }
+
+        .slide.is-active .slide-text {
+            transform: translateY(0);
+        }
+
+        /* Heading Slide IN (Wait for slide transition to almost finish) */
+        .slide.is-active h3.slide-text {
+            transition-delay: 1.0s;
+        }
+
+        /* Description Slide IN (0.5s delay after heading) */
+        .slide.is-active p.slide-text {
+            transition-delay: 1.5s;
+        }
+
+        /* Slide OUT transitions */
+        .slide:not(.is-active) .slide-text {
+            /* Exponential Ease-Out for sliding back down */
+            transform: translateY(120%);
+            transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide:not(.is-active) h3.slide-text {
+            /* Heading falls AFTER the description to mirror the entrance */
+            transition-delay: 0.27s;
+        }
+
+        .slide:not(.is-active) p.slide-text {
+            /* Description falls FIRST */
+            transition-delay: 0s;
+        }
+
+        .spin-slow {
+            animation: spin 15s linear infinite;
+        }
+
+        /* Subtle gradient to ensure text readability over bright images */
+        .text-overlay-gradient {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 40%, transparent 100%);
+        }
+
+        /* Layered Button Animation */
+        .layered-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            overflow: hidden;
+            z-index: 1;
+            text-decoration: none;
+        }
+
+        .header-btn {
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 0.4rem 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header-btn {
+                padding: 0.6rem 1.6rem;
+            }
+        }
+
+        .vision-btn {
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+        }
+
+        /* Multiple Color Slide Effect Backgrounds */
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleY(0);
+            transform-origin: center;
+        }
+
+        .bg-layer-1 { 
+            background-color: #f0f0f0; 
+            z-index: -3;
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.2s; 
+        }
+        .bg-layer-2 { 
+            background-color: #D1FF00; 
+            z-index: -2; 
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0.1s; 
+        }
+        .bg-layer-3 { 
+            background-color: #1a1a1a; 
+            z-index: -1; 
+            transition: transform 0.5s cubic-bezier(0.85, 0, 0.15, 1) 0s; 
+        }
+        
+        .layered-btn:hover .bg-layer-1 {
+            transform: scaleY(1);
+            transition-delay: 0s;
+        }
+        .layered-btn:hover .bg-layer-2 {
+            transform: scaleY(1);
+            transition-delay: 0.1s;
+        }
+        .layered-btn:hover .bg-layer-3 {
+            transform: scaleY(1);
+            transition-delay: 0.2s;
+        }
+
+        .btn-text, .btn-icon {
+            position: relative;
+            z-index: 2;
+            transition: color 0.2s ease 0.2s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .layered-btn:hover .btn-text,
+        .layered-btn:hover .btn-icon {
+            color: #D1FF00;
+            transition-delay: 0.25s;
+        }
+        
+        .layered-btn:hover .btn-icon {
+            transform: translate(4px, -4px);
+        }
+
+        /* Nav Toggle Animation Mechanics */
+        :root {
+            --line-color: #ffffff;
+            --line-height: 2px;
+            --line-width: 32px;
+            --gap: 8px;
+            --collapse-dist: 5px;
+        }
+
+        .nav-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            gap: var(--gap);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            width: 40px;
+        }
+
+        .line {
+            height: var(--line-height);
+            background-color: var(--line-color);
+            display: block;
+            transform-origin: center;
+            will-change: transform, translate, rotate, width;
+            scale: 1 1;
+            translate: 0 0;
+            rotate: 0deg;
+            transition:
+                rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                opacity 0.2s ease 0.3s,
+                scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+        }
+
+        .l1 {
+            width: var(--line-width);
+        }
+
+        .l2 {
+            width: calc(var(--line-width) * 0.55);
+        }
+
+        @keyframes wave-expand {
+
+            0%,
+            100% {
+                width: calc(var(--line-width) * 0.55);
+            }
+
+            50% {
+                width: calc(var(--line-width) * 0.85);
+            }
+        }
+
+        @keyframes wave-contract {
+
+            0%,
+            100% {
+                width: var(--line-width);
+            }
+
+            50% {
+                width: calc(var(--line-width) * 0.7);
+            }
+        }
+
+        .nav-toggle:not(.active):hover .l1 {
+            animation: wave-contract 0.6s infinite ease-in-out;
+        }
+
+        .nav-toggle:not(.active):hover .l2 {
+            animation: wave-expand 0.6s infinite ease-in-out;
+            animation-delay: 0.1s;
+        }
+
+        .nav-toggle.active .line {
+            width: var(--line-width);
+            transition:
+                translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+                rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+                opacity 0.2s ease 0s,
+                scale 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+        }
+
+        .nav-toggle.active .l1 {
+            translate: 0 var(--collapse-dist);
+            rotate: 45deg;
+        }
+
+        .nav-toggle.active .l2 {
+            translate: 0 calc(var(--collapse-dist) * -1);
+            rotate: -45deg;
+        }
+
+        .nav-toggle.active:hover .l1,
+        .nav-toggle.active:hover .l2 {
+            scale: 1.15;
+        }
+
+        .nav-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Animated Menu Link Hover (Desktop & Mobile) */
+        .animated-link {
+            position: relative;
+            display: inline-block;
+            width: max-content;
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            left: 0;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: right;
+            /* Shrinks to the right when hovered out */
+            transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .animated-link:hover::after {
+            transform-origin: left;
+            /* Grows from the left when hovered in */
+            transform: scaleX(1);
+        }
+
+        .desktop-link::after {
+            height: 1.5px;
+            bottom: -4px;
+        }
+
+        .mobile-link::after {
+            height: 5px;
+            /* Matches the bold underline look */
+            bottom: 4px;
+            /* Sits cleanly beneath the uppercase text */
+        }
+
+        /* Fluid Segment Text Fill Animation */
+        .char {
+            color: #e5e5e5;
+            /* Transition removed here; animation is purely driven by JS loop for "alive" fluid feel */
+            will-change: color;
+        }
+
+        /* Staggered Split Text Reveal Animation */
+        .word-wrapper {
+            display: inline-flex;
+            overflow: hidden;
+            padding-bottom: 0.1em;
+            margin-right: 0.25em; /* Fallback, though JS inserts natural spaces */
+        }
+        
+        .letter {
+            display: inline-block;
+            transform: translateY(120%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); /* Matches hero slide curve */
+            will-change: transform;
+        }
+
+        .is-revealed .letter {
+            transform: translateY(0);
+        }
+
+        /* Scroll Arrow Animation */
+        @keyframes scroll-arrow-slide {
+            0% {
+                transform: translateY(-10px) scale(1.3);
+                opacity: 0;
+            }
+
+            30% {
+                transform: translateY(-3px) scale(1.3);
+                opacity: 1;
+            }
+
+            70% {
+                transform: translateY(3px) scale(1.3);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(10px) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .scroll-container:hover .scroll-arrow {
+            animation: scroll-arrow-slide 1.2s infinite ease-in-out;
+        }
+
+        .scroll-arrow {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* ===================================================================
+           SECOND PAGE — Curtain Message Animation
+        =================================================================== */
+        .msg-root {
+            --color-black: #000000;
+            --color-white: #ffffff;
+            --color-brand-red: #FF4337;
+            --color-brand-pink: #FF55F8;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .section-message {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--color-black);
+        }
+
+        .curtain-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .curtain-panel {
+            flex: 1;
+            height: 100%;
+            background-color: var(--color-brand-red);
+            transform: translateY(100vh);
+            will-change: transform, flex-grow;
+            border-right: 1px solid #000;
+        }
+        .curtain-panel:last-child { border-right: none; }
+
+        .message-container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .msg-block {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            padding: 0 6vw;
+            opacity: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            perspective: 1200px;
+        }
+
+        .msg-2 {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .section-message .line {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0;
+            height: auto;
+            background: none;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .section-message .word {
+            display: inline-block;
+            font-size: clamp(4rem, 13.5vw, 16rem);
+            font-weight: 400;
+            line-height: 0.75;
+            letter-spacing: -0.05em;
+            color: var(--color-black);
+            white-space: nowrap;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        /* Original manual word placement */
+        .word-the, .word-music, .word-business, .word-can, .word-be, .word-hard { transform: translate(0px, 0px); }
+        .word-it-2, .word-doesnt-2 { transform: translate(-100px, 0px); }
+        .word-have-2, .word-to-2, .word-be-2 { transform: translate(50px, 0px); }
+
+        @media (min-width: 768px) {
+            .word-it-2, .word-doesnt-2 { transform: translate(-5vw, 0vh); }
+            .word-have-2, .word-to-2, .word-be-2 { transform: translate(3vw, 0vh); }
+        }
+
+        @media (min-width: 1024px) {
+            .word-the { transform: translate(-21vw, 0vh); }
+            .word-music { transform: translate(-22.75vw, 0vh); }
+            .word-business { transform: translate(26vw, -18vh); }
+            .word-can, .word-be, .word-hard { transform: translate(0vw, -15vh); }
+            .word-it-2, .word-doesnt-2 { transform: translate(-10vw, 0vh); }
+            .word-have-2, .word-to-2, .word-be-2 { transform: translate(10vw, 0vh); }
+        }
+
+        /* SIDE TEXT — sits to the right of the second headline line */
+        .msg-text-side {
+            position: absolute;
+            top: 55%;
+            right: 12%;
+            width: 280px;
+            text-align: left;
+            opacity: 0;
+            z-index: 20;
+        }
+        .msg-text-side .line {
+            text-align: left;
+            margin-bottom: 5px;
+            display: block;
+            height: auto;
+            width: auto;
+            background: none;
+        }
+        .msg-text-side .word {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.3;
+            letter-spacing: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .section-message .word { white-space: normal; }
+            .msg-text-side { right: 5%; width: 200px; }
+            .msg-text-side .word { font-size: 1rem; }
+        }
+
+        @media (max-width: 768px) {
+            .msg-text-side {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 2rem;
+                width: 80%;
+                text-align: center;
+            }
+            .msg-text-side .line { text-align: center; }
+        }
+
+        .canvas-wrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40vh;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.6;
+        }
+
+        .about-page { position: relative; z-index: 30; background: #f7f7f4; color: #101010; font-family: 'Outfit', sans-serif; }
+        .about-page section { padding: 12rem 6vw; }
+        .about-intro { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .about-kicker, .about-label { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: #666; }
+        .about-intro h2 { max-width: 1050px; margin: 2rem 0 3rem; font-size: clamp(3.5rem, 10vw, 10rem); line-height: .84; font-weight: 300; letter-spacing: -.07em; }
+        .about-intro h2 span { color: #ff4337; }
+        .about-intro > p { max-width: 660px; margin-left: auto; font-size: clamp(1.05rem, 1.8vw, 1.55rem); line-height: 1.35; }
+        .about-intro strong { font-weight: 500; }
+        .about-section { border-top: 1px solid #d7d7d2; }
+        .about-section-header { display: grid; grid-template-columns: .8fr 1.2fr; gap: 5vw; margin-bottom: 5rem; }
+        .about-section h3 { font-size: clamp(3rem, 7vw, 7rem); line-height: .85; font-weight: 300; letter-spacing: -.07em; }
+        .about-section-header p { max-width: 550px; align-self: end; font-size: 1.25rem; line-height: 1.3; }
+        .course-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #cfcfca; border: 1px solid #cfcfca; }
+        .course-card { min-height: 205px; padding: 1.5rem; background: #f7f7f4; display: flex; flex-direction: column; justify-content: space-between; }
+        .course-card:nth-child(2n) { background: #e8e8e3; }
+        .course-number { font-size: .72rem; color: #777; }
+        .course-card h4 { max-width: 190px; font-size: 1.25rem; line-height: 1; font-weight: 400; letter-spacing: -.03em; }
+        .course-card a { color: #101010; text-decoration: none; font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; }
+        .tools-list { border-top: 1px solid #222; }
+        .tool-row { display: grid; grid-template-columns: 80px 1fr 1.3fr; gap: 2rem; align-items: center; padding: 2rem 0; border-bottom: 1px solid #cfcfca; }
+        .tool-row > span { color: #777; font-size: .8rem; }
+        .tool-row h4 { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 300; letter-spacing: -.06em; }
+        .tool-row p { max-width: 370px; font-size: 1rem; line-height: 1.3; }
+        .network-section { background: #101010; color: #f7f7f4; }
+        .network-section .about-label { color: #a7a7a0; }
+        .network-section .about-section-header { border-bottom: 1px solid #3a3a38; padding-bottom: 4rem; }
+        .network-section .about-section-header p { color: #c7c7c1; }
+        .network-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #484844; }
+        .network-card { aspect-ratio: 1 / 1.15; padding: 1.5rem; display: flex; flex-direction: column; justify-content: flex-end; background: #181817; position: relative; overflow: hidden; }
+        .network-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(145deg, transparent 35%, rgba(255,67,55,.7)); opacity: .55; }
+        .network-card:nth-child(2)::before { background: linear-gradient(145deg, transparent 35%, rgba(209,255,0,.7)); }
+        .network-card:nth-child(3)::before { background: linear-gradient(145deg, transparent 35%, rgba(108,180,255,.7)); }
+        .network-card:nth-child(4)::before { background: linear-gradient(145deg, transparent 35%, rgba(255,180,65,.7)); }
+        .network-card h4, .network-card p { position: relative; z-index: 1; }
+        .network-card h4 { font-size: 2rem; font-weight: 300; letter-spacing: -.06em; }
+        .network-card p { color: #deded8; font-size: .85rem; }
+        .network-cta { display: inline-flex; margin-top: 3rem; color: #f7f7f4; border-bottom: 1px solid #f7f7f4; padding-bottom: .5rem; text-decoration: none; text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; }
+        .membership { min-height: 75vh; display: flex; align-items: center; justify-content: space-between; gap: 4rem; background: #d1ff00; }
+        .membership h3 { max-width: 760px; font-size: clamp(3rem, 8vw, 8rem); line-height: .82; }
+        .membership p { max-width: 280px; font-size: 1.1rem; }
+        .membership a { display: inline-block; margin-top: 2rem; color: #101010; border-bottom: 1px solid #101010; padding-bottom: .5rem; text-decoration: none; text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; }
+        .about-footer { padding: 2rem 6vw; display: flex; justify-content: space-between; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; background: #101010; color: #aaa; }
+        @media (max-width: 800px) {
+            .about-page section { padding: 7rem 6vw; }
+            .about-intro { min-height: 80vh; }
+            .about-intro h2 { font-size: clamp(3.2rem, 16vw, 7rem); }
+            .about-intro > p { margin-left: 0; }
+            .about-section-header, .membership { grid-template-columns: 1fr; display: grid; gap: 2rem; }
+            .course-grid, .network-grid { grid-template-columns: repeat(2, 1fr); }
+            .tool-row { grid-template-columns: 42px 1fr; gap: 1rem; }
+            .tool-row p { grid-column: 2; }
+            .about-footer { flex-direction: column; gap: .8rem; }
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden w-full">
+    <!-- Header Navigation Background (Drops down on scroll) -->
+    <div id="nav-bg"
+        class="fixed top-0 left-0 w-full h-[88px] lg:h-[104px] bg-white z-[65]" style="transform: translateY(-100%); will-change: transform;">
+    </div>
+
+    <!-- Header Navigation -->
+    <header
+        class="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-6 md:px-12 z-[70] mix-blend-difference text-white">
+        <!-- Logo -->
+        <a href="#" class="z-50 block hover:opacity-80 transition-opacity">
+            <div class="text-3xl md:text-4xl lg:text-[2.2rem] font-bold tracking-tight text-white"
+                style="font-family: 'Telegraf', sans-serif;">
+                24/7 ARTISTS
+            </div>
+        </a>
+
+        <div class="flex items-center gap-6 lg:gap-10 z-50">
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-xs font-semibold tracking-[0.15em] uppercase">
+                <a href="#about" class="animated-link desktop-link">About</a>
+                <a href="#education" class="animated-link desktop-link">Education</a>
+                <a href="#technology" class="animated-link desktop-link">Technology</a>
+                <a href="#network" class="animated-link desktop-link">Network</a>
+            </nav>
+
+            <!-- Book Now Button (Desktop) -->
+            <a href="#" class="layered-btn header-btn hidden md:inline-flex group text-xs font-semibold tracking-[0.15em] uppercase">
+                <span class="bg-layer bg-layer-1"></span>
+                <span class="bg-layer bg-layer-2"></span>
+                <span class="bg-layer bg-layer-3"></span>
+                <span class="btn-text">Book Now</span>
+                <svg class="btn-icon w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2.5"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                </svg>
+            </a>
+
+            <!-- Mobile Actions (Book Now + Divider + Hamburger) -->
+            <div class="flex md:hidden items-center gap-3">
+                <a href="#" class="layered-btn header-btn group text-[10px] font-semibold tracking-wider uppercase">
+                    <span class="bg-layer bg-layer-1"></span>
+                    <span class="bg-layer bg-layer-2"></span>
+                    <span class="bg-layer bg-layer-3"></span>
+                    <span class="btn-text">Book Now</span>
+                    <svg class="btn-icon w-4 h-4 ml-1.5" fill="none" stroke="currentColor" stroke-width="2.5"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7-7m7-7H3"></path>
+                    </svg>
+                </a>
+                <div class="w-[1px] h-5 bg-white/40"></div>
+                <button id="nav-toggle" class="nav-toggle cursor-pointer p-2">
+                    <span class="line l1"></span>
+                    <span class="line l2"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] flex flex-col text-black h-screen w-full md:hidden">
+
+        <!-- Navigation Links -->
+        <nav class="flex flex-col px-6 flex-grow gap-2 pt-32">
+            <a href="#about" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">ABOUT</a>
+            <a href="#education"
+                class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">EDUCATION</a>
+            <a href="#technology" class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">TECHNOLOGY</a>
+            <a href="#network"
+                class="animated-link mobile-link text-[3.5rem] leading-tight font-normal tracking-wide">NETWORK</a>
+        </nav>
+
+        <!-- Footer Text -->
+        <div class="px-6 py-8 text-gray-500 text-sm">
+            © 24/7 Artists 2026
+        </div>
+    </div>
+
+    <!-- Main Hero Slider -->
+    <main class="relative w-full h-screen z-0">
+        <div id="slider" class="relative w-full h-full bg-black">
+
+            <!-- Slider Dimmer Overlay (Fades in on scroll) -->
+            <div id="slider-dimmer" class="absolute inset-0 bg-black z-[25] pointer-events-none" style="opacity: 0; will-change: opacity;"></div>
+
+            <!-- Slide 1: Video Background Slide -->
+            <article class="slide is-active absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="img_8751.mp4" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-driving-a-car-on-a-mountain-road-13176-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <!-- Dark Gradient for Text -->
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">The Journey</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Experience the freedom of the open road with our premium selection of vehicles, tailored for
+                            your ultimate driving adventure.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Slide 2: Video Background Slide -->
+            <article class="slide absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="clip.mp4" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-city-traffic-on-a-bridge-at-night-34692-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Mitwit</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            Reinventing modern workspaces to empower teams and cultivate a culture of deep innovation.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Slide 3: Video Background Slide -->
+            <article class="slide absolute inset-0 w-full h-full">
+                <!-- Background Video with object-cover for perfect aspect ratio handling -->
+                <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="img_8753.mov" type="video/mp4">
+                    <source
+                        src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-through-a-pine-forest-4286-large.mp4"
+                        type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute inset-0 text-overlay-gradient mix-blend-multiply"></div>
+
+                <!-- Content -->
+                <div class="absolute bottom-24 left-6 md:bottom-32 md:left-12 max-w-2xl z-20">
+                    <div class="overflow-hidden mb-4 md:mb-6 pb-2">
+                        <h3 class="slide-text text-6xl md:text-[5.5rem] font-light tracking-tight">Saaj Paris</h3>
+                    </div>
+                    <div class="overflow-hidden pb-2">
+                        <p class="slide-text text-base md:text-xl font-light leading-relaxed max-w-md md:max-w-xl text-white/90">
+                            A fresh approach to elegance, blending timeless Parisian chic with striking contemporary design.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="absolute bottom-8 left-6 md:bottom-12 md:left-12 flex items-center gap-3 z-30" id="pagination">
+            <!-- Pagination dots will be injected by JS -->
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div
+            class="scroll-container absolute bottom-6 right-6 md:bottom-10 md:right-10 w-24 h-24 md:w-32 md:h-32 flex items-center justify-center z-30 mix-blend-difference cursor-pointer">
+            <!-- Rotating SVG Text -->
+            <svg class="absolute inset-0 w-full h-full spin-slow" viewBox="0 0 100 100">
+                <path id="circlePath" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
+                <text fill="white" font-size="10.5" font-weight="600" letter-spacing="3.5">
+                    <textPath href="#circlePath">SCROLL • SCROLL • SCROLL •</textPath>
+                </text>
+            </svg>
+            <!-- Center Arrow (Bigger with longer stem) -->
+            <svg class="scroll-arrow w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor"
+                stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20m0 0l-7-7m7 7l7-7"></path>
+            </svg>
+        </div>
+    </main>
+
+    <!-- Second Page — Curtain Message Animation -->
+    <section class="section-message msg-root" id="message">
+
+        <div class="curtain-wrapper">
+            <div class="curtain-panel"></div>
+            <div class="curtain-panel"></div>
+            <div class="curtain-panel"></div>
+            <div class="curtain-panel"></div>
+            <div class="curtain-panel"></div>
+            <div class="curtain-panel"></div>
+        </div>
+
+        <div class="message-container">
+
+            <!-- FIRST MESSAGE GROUP -->
+            <div class="msg-block msg-1">
+                <div class="line">
+                            <div class="word word-the manual-anim">The</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-music manual-anim">Music</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-business manual-anim">Business</div>
+                </div>
+                <div class="line">
+                            <div class="word word-can manual-anim">can</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-be manual-anim">be</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-hard manual-anim">hard.</div>
+                </div>
+
+                <!-- Side Text -->
+                <div class="msg-text-side">
+                    <div class="line">
+                        <div class="word word-making">Making</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-money">money</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-with">with</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-music-s">music</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-is">is</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-hard-s">hard</div>
+                    </div>
+                    <div class="line">
+                        <div class="word word-and">and</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-comes">comes</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-with1">with</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-complex">complex</div>
+                        <div class="word">&nbsp;</div>
+                        <div class="word word-tasks">tasks...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECOND MESSAGE GROUP (Continuation) -->
+            <div class="msg-block msg-2">
+                <div class="line">
+                            <div class="word word-it-2">It</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-doesnt-2">doesn’t</div>
+                </div>
+                <div class="line">
+                            <div class="word word-have-2">have</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-to-2">to</div>
+                            <div class="word">&nbsp;</div>
+                            <div class="word word-be-2">be...</div>
+                </div>
+            </div>
+
+            <div class="canvas-wrap" style="z-index: -1;">
+                <canvas id="canvas-message"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- About page continuation -->
+    <div class="about-page" id="about-page">
+        <section class="about-intro" id="about">
+            <span class="about-kicker">About 24/7 Artists</span>
+            <h2>Build your music career <span>step by step.</span></h2>
+            <p>The music business can be hard. Making money with music is hard and comes with complex tasks... <strong>It doesn't have to be.</strong></p>
+        </section>
+
+        <section class="about-section" id="education">
+            <div class="about-section-header">
+                <span class="about-label">01 / Education</span>
+                <div><h3>We help artists grow.</h3><p>Everything you need to build your music career in one place. Learn with expert-led courses, live webinars, and mentorship designed for the real world.</p></div>
+            </div>
+            <div class="course-grid">
+                <article class="course-card"><span class="course-number">01 / 20+</span><h4>Creating a One Year Indie Music Plan</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">02 / 20+</span><h4>Building an Unstoppable Brand Identity</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">03 / 20+</span><h4>The Art of Vision Boarding</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">04 / 20+</span><h4>Five Tips for Artists Going on Tour</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">05 / 20+</span><h4>Music Business Intro</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">06 / 20+</span><h4>Marketing for Artists</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">07 / 20+</span><h4>Building a Team</h4><a href="#">Explore course ↗</a></article>
+                <article class="course-card"><span class="course-number">08 / 20+</span><h4>Music Publishing 101</h4><a href="#">Explore course ↗</a></article>
+            </div>
+        </section>
+
+        <section class="about-section" id="technology">
+            <div class="about-section-header"><span class="about-label">02 / Technology</span><div><h3>We simplify the business.</h3><p>Tools that turn complicated career admin into clear, useful next steps, so you can keep making music.</p></div></div>
+            <div class="tools-list">
+                <article class="tool-row"><span>01 / 05</span><h4>Career GPS</h4><p>Get a clear path for your music career by answering a few questions and discovering your next best steps.</p></article>
+                <article class="tool-row"><span>02 / 05</span><h4>Agreements</h4><p>Simple, ready-to-use agreements to keep you safe and focused on your music.</p></article>
+                <article class="tool-row"><span>03 / 05</span><h4>Catalog and File Management</h4><p>Organize and share your entire catalog in one secure place.</p></article>
+                <article class="tool-row"><span>04 / 05</span><h4>Streaming Calculator</h4><p>Estimate your streaming income in seconds by entering plays and platform.</p></article>
+                <article class="tool-row"><span>05 / 05</span><h4>Album Cover Maker</h4><p>Make a release-ready album cover in minutes: pick a style, add your title, and export.</p></article>
+            </div>
+        </section>
+
+        <section class="about-section network-section" id="network">
+            <div class="about-section-header"><span class="about-label">03 / Network 24/7</span><div><h3>Find your people.</h3><p>Join a global network of like-minded creatives who share your passion and drive. Connect with industry experts and build relationships that fuel your journey.</p></div></div>
+            <div class="network-grid"><article class="network-card"><h4>Collaborate</h4><p>24/7 Sessions</p></article><article class="network-card"><h4>Perform</h4><p>Community and partner events</p></article><article class="network-card"><h4>Create</h4><p>LA Memoirs</p></article><article class="network-card"><h4>Build</h4><p>24/7 Showcase</p></article></div>
+            <a href="#membership" class="network-cta">Join the movement now ↗</a>
+        </section>
+
+        <section class="membership" id="membership"><div><span class="about-kicker">04 / Memberships</span><h3>Make your next move.</h3></div><div><p>Build a career with the guidance, tools, and community to make your work matter.</p><a href="#">Become a member ↗</a></div></section>
+        <footer class="about-footer"><span>© 24/7 Artists 2026</span><span>Making the music business better</span></footer>
+    </div>
+
+    <!-- JavaScript for Slider Functionality -->
+    <script>
+        // --- Premium "Heavy" Smooth Scrolling Initialization (Lenis) ---
+        const lenis = new Lenis({
+            duration: 1.2, // Reduced from 2.0 for faster settling
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Smooth ease-out
+            smoothWheel: true,
+            wheelMultiplier: 1.0, // Increased from 0.75 for less initial drag resistance
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navigation Background Dropdown & Slider Dimming on Scroll
+            const navBg = document.getElementById('nav-bg');
+            const sliderDimmer = document.getElementById('slider-dimmer');
+            
+            // Vision Section Animation Elements
+            const visionSection = document.getElementById('vision-section');
+            const fillTexts = document.querySelectorAll('.text-fill-anim');
+
+            // Pre-process fillTexts to split into characters for fluid sequential filling
+            fillTexts.forEach(text => {
+                if (text.dataset.initialized) return;
+                text.dataset.initialized = 'true';
+                
+                const newNodes = [];
+                text.childNodes.forEach(node => {
+                    if (node.nodeType === 3) { // Process only pure text nodes
+                        const textContent = node.textContent;
+                        for (let i = 0; i < textContent.length; i++) {
+                            const char = textContent[i];
+                            // Keep whitespace as normal text nodes to allow natural line wrapping
+                            if (char === ' ' || char === '\n' || char === '\t') {
+                                newNodes.push(document.createTextNode(char));
+                            } else {
+                                const span = document.createElement('span');
+                                span.textContent = char;
+                                span.className = 'char'; 
+                                newNodes.push(span);
+                            }
+                        }
+                    } else {
+                        // Keeps inline HTML icons and formatting untouched
+                        newNodes.push(node.cloneNode(true));
+                    }
+                });
+                text.innerHTML = '';
+                newNodes.forEach(node => text.appendChild(node));
+            });
+
+            // --- NEW: State array for "Alive" Ease-Out fluid scroll fill ---
+            const fillAnimData = Array.from(fillTexts).map(text => ({
+                element: text,
+                chars: text.querySelectorAll('.char'),
+                targetProgress: 0,
+                currentProgress: 0
+            }));
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const vh = window.innerHeight;
+
+                // 1. Navbar Dropdown Logic
+                // Maps exactly 1:1 with scroll position to stay perfectly "in sync" with the page
+                const navHeight = navBg.offsetHeight || (window.innerWidth >= 1024 ? 104 : 88);
+                if (scrollY >= navHeight) {
+                    navBg.style.transform = `translateY(0px)`;
+                } else {
+                    navBg.style.transform = `translateY(${scrollY - navHeight}px)`;
+                }
+
+                // 2. Slider Dimming Logic
+                let dimOpacity = 0;
+                if (scrollY <= vh * 0.2) {
+                    // 0 to 20% scroll -> 0% to 10% opacity
+                    dimOpacity = (scrollY / (vh * 0.2)) * 0.1;
+                } else if (scrollY <= vh * 0.8) {
+                    // 20% to 80% scroll -> 10% to 100% opacity
+                    dimOpacity = 0.1 + ((scrollY - (vh * 0.2)) / (vh * 0.6)) * 0.9;
+                } else {
+                    // Beyond 80% scroll -> 100% opacity
+                    dimOpacity = 1;
+                }
+
+                if (sliderDimmer) {
+                    sliderDimmer.style.opacity = dimOpacity;
+                }
+
+                // 3. Vision Section Scroll Target Update
+                fillAnimData.forEach(data => {
+                    if (data.chars.length === 0) return;
+                    const textRect = data.element.getBoundingClientRect();
+
+                    // Active trigger zone: from 90% down the screen to 40% down the screen
+                    const start = vh * 0.9;
+                    const end = vh * 0.7; // Increased from 0.2 so it finishes filling earlier
+
+                    const scrollDistance = (start - end) + textRect.height;
+                    let progress = (start - textRect.top) / scrollDistance;
+
+                    // Update target. The loop handles the smooth ease-out catchup
+                    data.targetProgress = Math.max(0, Math.min(1, progress));
+                });
+                
+                // 4. Trigger Heading Reveal
+                const headingContainer = document.getElementById('vision-heading-container');
+                if (headingContainer) {
+                    const rect = headingContainer.getBoundingClientRect();
+                    // Trigger the slide-in when the top of the heading is 85% down the viewport
+                    if (rect.top < vh * 0.85) {
+                        headingContainer.classList.add('is-revealed');
+                    }
+                }
+            });
+
+            // 5. Setup Staggered Split Text Animation for Headings
+            const splitTexts = document.querySelectorAll('.split-text-anim');
+            let globalWordIndex = 0;
+            
+            splitTexts.forEach((heading) => {
+                const text = heading.textContent.trim();
+                heading.innerHTML = ''; // Clear original text
+                const words = text.split(' ');
+
+                words.forEach((word) => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word-wrapper';
+
+                    word.split('').forEach((char, cIdx) => {
+                        const charSpan = document.createElement('span');
+                        charSpan.className = 'letter';
+                        charSpan.textContent = char;
+                        
+                        // Large delay between words (0.35s gap), very slight delay between letters (0.04s stagger)
+                        const delay = (globalWordIndex * 0.35) + (cIdx * 0.04); 
+                        charSpan.style.transitionDelay = `${delay}s`;
+                        wordSpan.appendChild(charSpan);
+                    });
+                    
+                    heading.appendChild(wordSpan);
+                    heading.appendChild(document.createTextNode(' '));
+                    globalWordIndex++;
+                });
+            });
+
+            // --- NEW: Animation Loop for Ease-Out Curve (Fast then Slow) ---
+            function updateFluidFill() {
+                fillAnimData.forEach(data => {
+                    if (data.chars.length === 0) return;
+                    
+                    // Lerp Formula: current += (target - current) * factor. 
+                    // This naturally moves fast initially, then slows down, creating the ease-out lag effect.
+                    data.currentProgress += (data.targetProgress - data.currentProgress) * 0.08;
+
+                    // Only paint if the change is visible to optimize performance
+                    if (Math.abs(data.targetProgress - data.currentProgress) > 0.001) {
+                        const totalChars = data.chars.length;
+                        const activeCount = data.currentProgress * totalChars;
+                        const spread = 7; // Increased from 10 to make the gradient tip wider and feel more filled
+
+                        data.chars.forEach((char, index) => {
+                            const distance = activeCount - index;
+                            if (distance >= spread) {
+                                char.style.color = '#000000'; // Filled
+                            } else if (distance <= 0) {
+                                char.style.color = '#e5e5e5'; // Unfilled
+                            } else {
+                                // Smooth visual gradient blend across the 'spread'
+                                const ratio = distance / spread; 
+                                // Apply ease-out to the color blending itself
+                                const easedRatio = 1 - Math.pow(1 - ratio, 3);
+                                const val = Math.round(229 * (1 - easedRatio)); // 229 is #e5e5e5
+                                char.style.color = `rgb(${val}, ${val}, ${val})`;
+                            }
+                        });
+                    }
+                });
+                requestAnimationFrame(updateFluidFill);
+            }
+            
+            // Kick off the loop
+            updateFluidFill();
+
+            // Mobile Menu Functionality
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navToggle = document.getElementById('nav-toggle');
+
+            navToggle.addEventListener('click', () => {
+                navToggle.classList.toggle('active');
+                if (navToggle.classList.contains('active')) {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                } else {
+                    mobileMenu.classList.add('translate-x-full');
+                    mobileMenu.classList.remove('translate-x-0');
+                }
+            });
+
+            // Slider Functionality
+            const slides = document.querySelectorAll('.slide');
+            const paginationContainer = document.getElementById('pagination');
+            let currentSlideIndex = 0;
+            let slideInterval;
+            const intervalTime = 6000; // 6 seconds per slide
+
+            // Initialize Pagination
+            slides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+
+                // Base inactive classes with relative positioning for the inner filler
+                dot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+
+                // Create filler element for timer effect using hardware-accelerated transform
+                const filler = document.createElement('span');
+                filler.className = 'filler absolute top-0 left-0 h-full w-full bg-white origin-left';
+                filler.style.transform = 'scaleX(0)';
+                filler.style.transitionProperty = 'transform';
+                filler.style.transitionTimingFunction = 'linear';
+                filler.style.transitionDuration = '0ms';
+
+                dot.appendChild(filler);
+
+                dot.addEventListener('click', () => {
+                    if (currentSlideIndex !== index) goToSlide(index);
+                });
+                paginationContainer.appendChild(dot);
+            });
+
+            const dots = paginationContainer.querySelectorAll('button');
+
+            // Function to change slides
+            function goToSlide(index, isInit = false) {
+                // Manage slide transitions
+                if (!isInit) {
+                    const previousSlide = slides[currentSlideIndex];
+                    previousSlide.classList.remove('is-active');
+                    previousSlide.classList.add('is-leaving');
+
+                    // Remove 'is-leaving' after animation finishes to reset it for the future
+                    setTimeout(() => {
+                        previousSlide.classList.remove('is-leaving');
+                    }, 1200); // Matches the 1.2s CSS transition duration
+                } else {
+                    slides[currentSlideIndex].classList.remove('is-active');
+                }
+
+                const currentDot = dots[currentSlideIndex];
+                currentDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/50 hover:bg-white w-2 h-2';
+                const currentFiller = currentDot.querySelector('.filler');
+                currentFiller.style.transitionDuration = '0ms';
+                currentFiller.style.transform = 'scaleX(0)';
+
+                // Update index
+                currentSlideIndex = index;
+
+                // Set new active slide and dot
+                slides[currentSlideIndex].classList.add('is-active');
+
+                // Restart video if the slide has one
+                const activeVideo = slides[currentSlideIndex].querySelector('video');
+                if (activeVideo) {
+                    activeVideo.currentTime = 0;
+                    activeVideo.play().catch(e => console.log('Autoplay prevented', e));
+                }
+
+                const newDot = dots[currentSlideIndex];
+                // Set the track background (bg-white/30) and expand width
+                newDot.className = 'relative overflow-hidden rounded-full transition-all duration-500 ease-out bg-white/30 w-8 h-2';
+                const newFiller = newDot.querySelector('.filler');
+
+                // Force layout reflow before starting animation to ensure it transitions smoothly from 0
+                void newFiller.offsetWidth;
+
+                // Animate scale matching the interval time
+                newFiller.style.transitionDuration = `${intervalTime}ms`;
+                newFiller.style.transform = 'scaleX(1)';
+
+                // Reset interval when user clicks to prevent sudden jumps
+                resetInterval();
+            }
+
+            // Function to move to the next slide automatically
+            function nextSlide() {
+                let nextIndex = (currentSlideIndex + 1) % slides.length;
+                goToSlide(nextIndex);
+            }
+
+            // Interval management
+            function startInterval() {
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+
+            function resetInterval() {
+                clearInterval(slideInterval);
+                startInterval();
+            }
+
+            // Initialize the first slide to trigger the filler animation on load
+            goToSlide(0, true);
+        });
+    </script>
+
+    <!-- Second Page — Curtain Message Animation (GSAP) -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        // Sync ScrollTrigger with the existing Lenis smooth-scroll instance
+        lenis.on('scroll', ScrollTrigger.update);
+
+        const msgConfig = {
+            outerPanelGrow: 3.25,
+            innerPanelShrink: 0.65,
+            finalOuterGrow: 4.0,
+            finalInnerShrink: 0.5,
+            finalZValue: -200,
+            wordDuration: 0.8,
+            wordStagger: 0.2,
+            durationSqueeze: 0.7,
+            durationHold: 1.5,
+            durationTransition: 2.2,
+            totalPinHeight: 4000
+        };
+
+        window.addEventListener('load', () => {
+            const panels = document.querySelectorAll(".curtain-panel");
+            if (panels.length < 6) return;
+
+            // Parallax rise order (staggered like the nav dropdown)
+            const orderedPanels = [panels[1], panels[3], panels[4], panels[2], panels[0], panels[5]];
+
+            // 1. Curtain Entry — panels rise from bottom as the section scrolls into view
+            const entryTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#message",
+                    start: "top bottom",
+                    end: "top top",
+                    scrub: 1
+                }
+            });
+            entryTl.to(orderedPanels, {
+                y: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power2.inOut"
+            });
+
+            // 2. Master pinned timeline
+            const mainTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#message",
+                    start: "top top",
+                    end: `+=${msgConfig.totalPinHeight}`,
+                    pin: true,
+                    scrub: 1,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    snap: {
+                        snapTo: "labels",
+                        duration: { min: 0.6, max: 1.2 },
+                        delay: 0.2,
+                        ease: "power2.inOut"
+                    }
+                }
+            });
+
+            // Step A: Squeeze lines
+            mainTl.to([panels[0], panels[5]], {
+                flexGrow: msgConfig.outerPanelGrow,
+                duration: msgConfig.durationSqueeze,
+                ease: "power1.inOut"
+            }, "squeeze");
+            mainTl.to([panels[1], panels[2], panels[3], panels[4]], {
+                flexGrow: msgConfig.innerPanelShrink,
+                duration: msgConfig.durationSqueeze,
+                ease: "power1.inOut"
+            }, "squeeze");
+
+            // Step B: Text 1 zooms back in depth (the zoom-out effect)
+            const words1 = document.querySelectorAll('.msg-1 .manual-anim');
+            mainTl.to(words1, {
+                z: msgConfig.finalZValue,
+                duration: msgConfig.wordDuration,
+                stagger: msgConfig.wordStagger,
+                ease: "power2.inOut"
+            }, ">");
+
+            // Step C: Side text slides in
+            mainTl.fromTo(".msg-text-side",
+                { x: 300, opacity: 0 },
+                { x: 0, opacity: 1, duration: 1.5, ease: "power2.out" },
+                ">"
+            );
+
+            mainTl.addLabel("msg1");
+            mainTl.to({}, { duration: msgConfig.durationHold });
+
+            // Step D: Transition to message 2
+            mainTl.to(".msg-1", {
+                y: -window.innerHeight,
+                opacity: 0,
+                duration: msgConfig.durationTransition,
+                ease: "power2.inOut"
+            }, "transitionOut");
+
+            const linesMsg2 = document.querySelectorAll(".msg-2 .line");
+            mainTl.set(".msg-2", { opacity: 1 });
+            mainTl.fromTo(linesMsg2[0],
+                { y: 800, opacity: 0 },
+                { y: 0, opacity: 1, duration: 4, ease: "power2.out" },
+                "transitionOut+=0.3"
+            );
+            mainTl.fromTo(linesMsg2[1],
+                { y: 1000, opacity: 0 },
+                { y: 0, opacity: 1, duration: 5, ease: "power2.out" },
+                "transitionOut+=0.5"
+            );
+
+            mainTl.addLabel("msg2");
+            mainTl.to({}, { duration: 2 });
+
+            // Exit message 2
+            mainTl.to(".msg-2", {
+                y: -window.innerHeight,
+                opacity: 0,
+                duration: 1.5,
+                ease: "power2.in"
+            });
+
+            // Step E: Final line squeeze
+            mainTl.to([panels[0], panels[5]], {
+                flexGrow: msgConfig.finalOuterGrow,
+                duration: 2,
+                ease: "power1.inOut"
+            }, "finalSqueeze");
+            mainTl.to([panels[1], panels[2], panels[3], panels[4]], {
+                flexGrow: msgConfig.finalInnerShrink,
+                duration: 2,
+                ease: "power1.inOut"
+            }, "finalSqueeze");
+            mainTl.to({}, { duration: 1 });
+        });
+
+        // Canvas wave visualizer for the message section
+        const initMsgCanvas = (id) => {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height, time = 0;
+
+            const resize = () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = canvas.parentElement.offsetHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            const animate = () => {
+                ctx.clearRect(0, 0, width, height);
+                const waves = 3;
+                const baseAmplitude = height * 0.15;
+                for (let i = 0; i < waves; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, height);
+                    for (let x = 0; x <= width; x += 10) {
+                        const y = height - (
+                            Math.sin(x * 0.003 + time + i) * baseAmplitude +
+                            Math.sin(x * 0.01 + time * 1.5 + i) * (baseAmplitude * 0.5)
+                        ) - (i * 20);
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(width, height);
+                    ctx.fillStyle = (i % 2 === 0 ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.05)');
+                    ctx.fill();
+                }
+                time += 0.005;
+                requestAnimationFrame(animate);
+            };
+            animate();
+        };
+        initMsgCanvas('canvas-message');
+    </script>
+</body>
+</html>

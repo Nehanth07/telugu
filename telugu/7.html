@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exclusive - Scroll & Hover Reveal</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+:root{--nav-pad-y:1.5;--nav-pad-x:5;--nav-logo-size:1.8;--nav-links-size:.8;--nav-links-gap:3;--hero-min-h:88;--hero-offset-top:5;--hero-text-size:16;--hero-dot-size:5;--hero-dot-gap:4;--hero-dot-lift:-.5;--projects-pad-x:5;--project-row-pad-y:6;--project-info-width:25;--project-image-width:70;--project-image-ratio:16 / 10;--project-image-min-h:340;--project-title-size:3.5;--project-details-width:80;--project-details-size:1.1;--garage-pad-y:10;--garage-heading-size:3.5;--garage-title-size:1.5;--garage-details-size:1.1;--garage-gap:2;--garage-card-ratio:4 / 3;--footer-pad-y:1.5;--footer-pad-x:2}
+*{box-sizing:border-box}html,body{margin:0;overflow-x:hidden;background:#fff;color:#000;font-family:'Helvetica Neue',Arial,sans-serif}a{color:inherit}.editable-node{--edit-x:0px;--edit-y:0px;--edit-scale:1;transform:translate(var(--edit-x),var(--edit-y)) scale(var(--edit-scale));transform-origin:top left}.navbar{display:flex;justify-content:space-between;align-items:center;padding:calc(var(--nav-pad-y)*1vw) calc(var(--nav-pad-x)*1vw);position:fixed;top:0;width:100%;z-index:100;background:#fff}.nav-logo{font-size:calc(var(--nav-logo-size)*1vw);font-weight:700;letter-spacing:-.05em;margin:0}.nav-links{display:flex;gap:calc(var(--nav-links-gap)*1vw);font-size:calc(var(--nav-links-size)*1vw);font-weight:500;letter-spacing:.05em;text-transform:uppercase}.hero-colossal{min-height:clamp(420px,calc(var(--hero-min-h)*1svh),980px);display:flex;align-items:center;position:relative;overflow:hidden;margin-top:clamp(48px,calc(var(--hero-offset-top)*1vh),76px)}.marquee-track{display:flex;white-space:nowrap;will-change:transform;align-items:center;width:max-content;animation:marqueeScroll 15s linear infinite}.marquee-content{display:flex;align-items:center}@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.colossal-text{font-size:calc(var(--hero-text-size)*1vw);margin:0;font-weight:500;letter-spacing:-.04em;line-height:1;display:flex;align-items:center}.colossal-dot{display:inline-block;width:calc(var(--hero-dot-size)*1vw);height:calc(var(--hero-dot-size)*1vw);background:#000;border-radius:50%;margin:0 calc(var(--hero-dot-gap)*1vw);transform:translateY(calc(var(--hero-dot-lift)*1vw))}.projects-section{padding:0 calc(var(--projects-pad-x)*1vw) 10vh;position:relative}.project-row{display:flex;justify-content:space-between;align-items:center;padding:calc(var(--project-row-pad-y)*1vw) 0;position:relative;cursor:pointer}.project-row.reverse{flex-direction:row-reverse}.project-info{width:calc(var(--project-info-width)*1%);position:relative;display:flex;flex-direction:column}.project-title{font-size:calc(var(--project-title-size)*1vw);margin:0;font-weight:400;letter-spacing:-.02em}.project-details{position:absolute;top:100%;left:0;width:calc(var(--project-details-width)*1%);opacity:0;visibility:hidden;transform:translateY(40px);transition:all .5s cubic-bezier(.19,1,.22,1);padding-top:20px}.project-row.reverse .project-details{left:auto;right:0}.project-details p{font-size:calc(var(--project-details-size)*1rem);line-height:1.6;color:#555;margin-bottom:30px}.project-row:hover .project-details{opacity:1;visibility:visible;transform:translateY(0)}.arrow-btn{background:#000;color:#fff;border:0;border-radius:50%;width:60px;height:60px;font-size:24px;cursor:pointer;transition:transform .3s}.arrow-btn:hover{transform:translateX(10px)}.project-image{width:calc(var(--project-image-width)*1%);aspect-ratio:var(--project-image-ratio);min-height:calc(var(--project-image-min-h)*1px);overflow:hidden;position:relative}.project-image img,.card-image-container img,.custom-placed-tile img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.19,1,.22,1)}.project-row:hover .project-image img,.garage-card:hover img{transform:scale(1.05)}.garage-section{padding:calc(var(--garage-pad-y)*1vh) calc(var(--projects-pad-x)*1vw);background:#fff}.garage-heading{font-size:calc(var(--garage-heading-size)*1vw);font-weight:400;margin:0 0 4vw;letter-spacing:-.02em}.garage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--garage-gap)*1vw)}.garage-card{cursor:pointer}.card-image-container{position:relative;width:100%;aspect-ratio:var(--garage-card-ratio);overflow:hidden;margin-bottom:1.5vw}.garage-title{font-size:calc(var(--garage-title-size)*1vw);font-weight:400;margin:0}.garage-details{opacity:0;visibility:hidden;max-height:0;transform:translateY(-10px);transition:all .5s cubic-bezier(.19,1,.22,1);margin-top:0;overflow:hidden}.garage-details p{font-size:calc(var(--garage-details-size)*1vw);line-height:1.5;color:#555;margin:0}.garage-card:hover .garage-details{opacity:1;visibility:visible;max-height:200px;transform:translateY(0);margin-top:1vw}
+
+/* Builder Mode Styles */
+.builder-active .project-image, .builder-active .card-image-container, .builder-active .custom-placed-tile { border: 2px dashed #000; cursor: move; overflow: visible; }
+.builder-active .layout-target.selected { outline: 3px solid #111; outline-offset: 4px; z-index: 95; }
+.builder-active .layout-target img { pointer-events: none; user-select: none; }
+.builder-active .project-image, .builder-active .card-image-container { min-width: 80px; min-height: 80px; }
+.builder-active .custom-placed-tile { min-width: 120px; min-height: 80px; }
+.resize-handle { display: none; position: absolute; width: 12px; height: 12px; background: #fff; border: 2px solid #111; z-index: 20; }
+.builder-active .layout-target.selected .resize-handle { display: block; }
+.resize-handle[data-direction="nw"] { top: -7px; left: -7px; cursor: nwse-resize; }
+.resize-handle[data-direction="n"] { top: -7px; left: calc(50% - 7px); cursor: ns-resize; }
+.resize-handle[data-direction="ne"] { top: -7px; right: -7px; cursor: nesw-resize; }
+.resize-handle[data-direction="e"] { top: calc(50% - 7px); right: -7px; cursor: ew-resize; }
+.resize-handle[data-direction="se"] { bottom: -7px; right: -7px; cursor: nwse-resize; }
+.resize-handle[data-direction="s"] { bottom: -7px; left: calc(50% - 7px); cursor: ns-resize; }
+.resize-handle[data-direction="sw"] { bottom: -7px; left: -7px; cursor: nesw-resize; }
+.resize-handle[data-direction="w"] { top: calc(50% - 7px); left: -7px; cursor: ew-resize; }
+.builder-active .text-target { border: 2px dashed #555; cursor: move; min-width: 80px; min-height: 40px; }
+.builder-active .text-target[contenteditable="true"] { cursor: text; }
+.builder-active { min-height: 3000px; }
+.custom-placed-tile, .custom-placed-text { position: absolute; width: 300px; height: 200px; z-index: 90; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+.custom-placed-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.custom-placed-text { padding: 24px; font-size: 22px; line-height: 1.35; overflow: hidden; }
+.custom-placed-tile .delete-tile { position: absolute; top: 5px; right: 5px; background: #000; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; z-index: 10; display: none; }
+.custom-placed-text .delete-tile { position: absolute; top: 5px; right: 5px; background: #000; color: #fff; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; cursor: pointer; z-index: 10; display: none; }
+.builder-active .custom-placed-tile .delete-tile { display: block; }
+.builder-active .custom-placed-text .delete-tile { display: block; }
+
+/* Custom Context Menu */
+#ctxMenu { position: fixed; background: #fff; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-radius: 8px; padding: 6px 0; z-index: 1000; display: none; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+#ctxMenu div { padding: 8px 16px; cursor: pointer; }
+#ctxMenu div:hover { background: #f0f0f0; }
+
+.site-footer-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.95);padding:calc(var(--footer-pad-y)*1rem) calc(var(--footer-pad-x)*1rem);display:flex;justify-content:space-between;z-index:50;border-top:1px solid rgba(255,255,255,.1)}.site-footer-nav a{font-size:.85rem;font-weight:600;letter-spacing:.05em;text-decoration:none;color:rgba(255,255,255,.7);text-transform:uppercase}.layout-control-bar{position:fixed;top:78px;right:16px;width:min(380px,92vw);background:rgba(255,255,255,.96);border:1px solid rgba(0,0,0,.12);box-shadow:0 14px 40px rgba(0,0,0,.14);z-index:120;border-radius:12px;overflow:hidden;max-height:calc(100vh - 108px)}.layout-control-head{display:flex;justify-content:space-between;align-items:center;padding:.7rem .85rem;border-bottom:1px solid rgba(0,0,0,.08);background:#fff;cursor:move;user-select:none}.layout-control-head strong{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase}.layout-control-toggle,.control-row select,.control-row input{cursor:pointer}.layout-control-toggle,.control-actions button{border:1px solid rgba(0,0,0,.2);background:#fff;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .55rem}.layout-control-body{padding:.8rem;overflow-y:auto;max-height:calc(100vh - 165px);display:grid;gap:.8rem}.layout-control-bar.is-collapsed .layout-control-body{display:none}.control-row{display:grid;gap:.35rem}.control-row label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(0,0,0,.7);font-weight:700}.control-row select,.control-row input[type=text],.control-row input[type=number]{border:1px solid rgba(0,0,0,.18);border-radius:8px;padding:.45rem .55rem;font-size:.78rem;width:100%;background:#fff}.control-row input[type=range]{width:100%}.control-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.control-value{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(0,0,0,.55);text-align:right}.control-divider{border-top:1px solid rgba(0,0,0,.1);margin:.3rem 0}.control-actions{display:flex;gap:.45rem}.control-actions button{border-radius:8px;cursor:pointer;flex:1}.layout-control-bar.is-collapsed{width:auto}.layout-control-bar.is-collapsed .layout-control-head{gap:14px}
+@media(max-width:1200px) and (min-width:769px){.nav-logo{font-size:clamp(1.25rem,calc(var(--nav-logo-size)*1vw),2rem)}.nav-links{font-size:clamp(.65rem,calc(var(--nav-links-size)*1vw),.9rem)}.project-title{font-size:clamp(1.9rem,calc(var(--project-title-size)*1vw),3.2rem)}.garage-heading{font-size:clamp(2rem,calc(var(--garage-heading-size)*1vw),3.2rem)}}
+@media(max-width:768px){.navbar{padding:4vw 5vw}.nav-links{display:none}.nav-logo{font-size:clamp(1.35rem,calc(var(--nav-logo-size)*1vw),2.15rem)}.hero-colossal{min-height:clamp(320px,calc(var(--hero-min-h)*1svh),680px)}.colossal-text{font-size:calc(var(--hero-text-size)*1vw)}.project-row{flex-direction:column;align-items:flex-start;padding:10vw 0}.project-info{width:100%;margin-bottom:2rem}.project-title{font-size:calc(var(--project-title-size)*1vw)}.project-image{width:100%;aspect-ratio:var(--project-image-ratio);min-height:0}.project-details{position:relative;opacity:1;visibility:visible;transform:translateY(0);padding-top:20px;width:100%}.garage-heading{font-size:calc(var(--garage-heading-size)*1vw);margin-bottom:8vw}.garage-grid{grid-template-columns:1fr;gap:calc(var(--garage-gap)*1vw)}.card-image-container{margin-bottom:4vw}.garage-title{font-size:calc(var(--garage-title-size)*1vw)}.garage-details p{font-size:calc(var(--garage-details-size)*1vw)}.garage-card:hover .garage-details{margin-top:3vw}.layout-control-bar{width:min(390px,95vw);top:72px;right:8px}}
+</style>
+</head>
+<body>
+<nav class="navbar editable-node" data-edit-key="navbar"><h2 class="nav-logo editable-node" id="ctlNavLogo" data-edit-key="navLogo">GENEROUS</h2><div class="nav-links editable-node" data-edit-key="navLinks"><span data-nav-link="1">Work</span><span data-nav-link="2">Vision</span><span data-nav-link="3">The Agency</span><span data-nav-link="4">Contact</span></div></nav>
+<aside class="layout-control-bar" id="layoutControlBar"><div class="layout-control-head"><strong>Adaptive Layout Panel</strong><button class="layout-control-toggle" id="layoutPanelToggle" type="button">Collapse</button></div><div class="layout-control-body"><div class="control-grid-2"><div class="control-row"><label for="controlMode">Edit Mode</label><select id="controlMode"><option value="auto">Auto Device</option><option value="builder">Free Layout Builder</option></select></div><div class="control-row"><label for="controlProfile">Edit Aspect</label><select id="controlProfile"><option value="auto">Auto Aspect</option><option value="default">Default</option></select></div></div><div class="control-divider"></div><div class="control-row"><label for="ctlNavLogoText">Logo Text</label><input id="ctlNavLogoText" type="text" value="GENEROUS"></div><div class="control-grid-2"><div class="control-row"><label for="ctlNavLink1">Nav 1</label><input id="ctlNavLink1" type="text" value="Work"></div><div class="control-row"><label for="ctlNavLink2">Nav 2</label><input id="ctlNavLink2" type="text" value="Vision"></div><div class="control-row"><label for="ctlNavLink3">Nav 3</label><input id="ctlNavLink3" type="text" value="The Agency"></div><div class="control-row"><label for="ctlNavLink4">Nav 4</label><input id="ctlNavLink4" type="text" value="Contact"></div></div><div class="control-row"><label for="ctlHeroWord">Hero Word</label><input id="ctlHeroWord" type="text" value="EXCLUSIVE"></div><div class="control-row"><label for="ctlGarageHeading">Garage Heading</label><input id="ctlGarageHeading" type="text" value="Garage"></div><div class="control-divider"></div><div class="control-row"><label for="rangeHeroText">Hero Size (vw)</label><input id="rangeHeroText" type="range" min="10" max="32" step=".1" value="16"><div class="control-value" id="valueHeroText"></div></div><div class="control-row"><label for="rangeProjectTitle">Project Title Size (vw)</label><input id="rangeProjectTitle" type="range" min="2" max="12" step=".1" value="3.5"><div class="control-value" id="valueProjectTitle"></div></div><div class="control-row"><label for="rangeGarageHeading">Garage Heading Size (vw)</label><input id="rangeGarageHeading" type="range" min="2" max="14" step=".1" value="3.5"><div class="control-value" id="valueGarageHeading"></div></div><div class="control-row"><label for="rangeGarageGap">Garage Gap (vw)</label><input id="rangeGarageGap" type="range" min="1" max="10" step=".1" value="2"><div class="control-value" id="valueGarageGap"></div></div><div class="control-actions"><button id="exportLayoutCode" type="button">Export Code</button><button id="layoutPanelClose" type="button">Close</button></div></div></aside>
+
+<!-- Context Menu for Right-Click Image Addition -->
+<div id="ctxMenu">
+  <div id="ctxAddImage">Add Image Frame Here</div>
+  <div id="ctxAddText">Add Text Here</div>
+</div>
+
+<section class="hero-colossal editable-node" data-edit-key="heroSection"><div class="marquee-track"><div class="marquee-content"><h1 class="colossal-text editable-node" data-edit-key="heroText"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1></div><div class="marquee-content" aria-hidden="true"><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1><h1 class="colossal-text"><span class="colossal-dot"></span><span class="hero-word">EXCLUSIVE</span></h1></div></div></section>
+
+<section class="projects-section editable-node" id="projectsContainer" data-edit-key="projectsSection">
+  <!-- Project 1: Info left, Image right -->
+  <div class="project-row editable-node" data-edit-key="projectRow1">
+    <div class="project-info editable-node" data-edit-key="projectInfo1">
+      <h2 class="project-title project-title-1 editable-node" data-edit-key="projectTitle1">Hippy Market</h2>
+      <div class="project-details editable-node" data-edit-key="projectDetails1">
+        <p>Hippy Market is getting a refresh: a new, more iconic identity for a premium vintage fashion brand, which transforms second-hand into a fashion and cultural experience.</p>
+        <button class="arrow-btn">→</button>
+      </div>
+    </div>
+    <div class="project-image editable-node" data-edit-key="projectImage1">
+      <img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=1200" alt="Hippy Market">
+    </div>
+  </div>
+
+  <!-- Project 2: Image left, Info right (Reverse) -->
+  <div class="project-row reverse editable-node" data-edit-key="projectRow2">
+    <div class="project-info editable-node" data-edit-key="projectInfo2">
+      <h2 class="project-title project-title-2 editable-node" data-edit-key="projectTitle2">Mitwit Office</h2>
+      <div class="project-details editable-node" data-edit-key="projectDetails2">
+        <p>Launched by La Poste Immobilier and resulting from the merger of Startway and Multiburo, MITWIT has established itself as a major player in the shared workspace market, with a network of nearly 40 sites in France, Belgium and Switzerland.</p>
+        <button class="arrow-btn">→</button>
+      </div>
+    </div>
+    <div class="project-image editable-node" data-edit-key="projectImage2">
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200" alt="Mitwit Office">
+    </div>
+  </div>
+
+  <!-- Project 3: Info left, Image right -->
+  <div class="project-row editable-node" data-edit-key="projectRow3">
+    <div class="project-info editable-node" data-edit-key="projectInfo3">
+      <h2 class="project-title project-title-3 editable-node" data-edit-key="projectTitle3">Newton Offices</h2>
+      <div class="project-details editable-node" data-edit-key="projectDetails3">
+        <p>Inventing a new brand territory for collaborative workspaces. Supporting an investor in the branding process, designing the brand and its key elements.</p>
+        <button class="arrow-btn">→</button>
+      </div>
+    </div>
+    <div class="project-image editable-node" data-edit-key="projectImage3">
+      <img src="https://images.unsplash.com/photo-1600607687959-ce8a6c25118c?auto=format&fit=crop&q=80&w=1200" alt="Newton Offices">
+    </div>
+  </div>
+</section>
+
+<section class="garage-section editable-node" data-edit-key="garageSection"><h2 class="garage-heading editable-node" id="garageHeadingText" data-edit-key="garageHeading">Garage</h2><div class="garage-grid"><div class="garage-card editable-node"><div class="card-image-container"><img src="https://images.unsplash.com/photo-1558442074-3c19857bc1dc?auto=format&fit=crop&q=80&w=800" alt="Comet Meetings"></div><h3 class="garage-title">Comet Meetings</h3><div class="garage-details"><p>Innovative spaces for corporate meetings and creative team building.</p></div></div><div class="garage-card editable-node"><div class="card-image-container"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800" alt="CEB"></div><h3 class="garage-title">CEB</h3><div class="garage-details"><p>L'art de bien ranger. Premium custom organization solutions.</p></div></div><div class="garage-card editable-node"><div class="card-image-container"><img src="https://images.unsplash.com/photo-1545607062-848e4b7b2586?auto=format&fit=crop&q=80&w=800" alt="Centrakor"></div><h3 class="garage-title">Centrakor</h3><div class="garage-details"><p>Commercial retail spaces designed for optimized customer flow.</p></div></div></div></section>
+<footer class="site-footer-nav"><a href="index.html">← Back to Index</a><a href="footer.html">Next Page →</a></footer>
+
+<script>
+window.addEventListener('load',function(){
+ const root=document.documentElement, panel=document.getElementById('layoutControlBar');
+ const panelHead=panel.querySelector('.layout-control-head');
+ let panelDrag=null;
+ panelHead.addEventListener('mousedown',e=>{
+  if(e.target.closest('button'))return;
+  const rect=panel.getBoundingClientRect();
+  panel.style.left=rect.left+'px'; panel.style.top=rect.top+'px'; panel.style.right='auto';
+  panelDrag={startX:e.clientX,startY:e.clientY,left:rect.left,top:rect.top};
+  e.preventDefault();
+ });
+ window.addEventListener('mousemove',e=>{
+  if(!panelDrag)return;
+  panel.style.left=panelDrag.left+e.clientX-panelDrag.startX+'px';
+  panel.style.top=panelDrag.top+e.clientY-panelDrag.startY+'px';
+ });
+ window.addEventListener('mouseup',()=>panelDrag=null);
+ const setVar=(name,value)=>root.style.setProperty(name,value);
+ const values=[['rangeHeroText','valueHeroText','--hero-text-size','vw'],['rangeProjectTitle','valueProjectTitle','--project-title-size','vw'],['rangeGarageHeading','valueGarageHeading','--garage-heading-size','vw'],['rangeGarageGap','valueGarageGap','--garage-gap','vw']];
+ function refresh(){values.forEach(([id,out,name,unit])=>{const input=document.getElementById(id),label=document.getElementById(out);if(input){setVar(name,input.value);label.textContent=Number(input.value).toFixed(1).replace('.0','')+unit;}})}
+ values.forEach(([id])=>document.getElementById(id).addEventListener('input',refresh));
+ document.getElementById('ctlNavLogoText').addEventListener('input',e=>document.getElementById('ctlNavLogo').textContent=e.target.value);
+ ['1','2','3','4'].forEach(n=>document.getElementById('ctlNavLink'+n).addEventListener('input',e=>document.querySelector('[data-nav-link="'+n+'"]').textContent=e.target.value));
+ document.getElementById('ctlHeroWord').addEventListener('input',e=>document.querySelectorAll('.hero-word').forEach(node=>node.textContent=e.target.value));
+ document.getElementById('ctlGarageHeading').addEventListener('input',e=>document.getElementById('garageHeadingText').textContent=e.target.value);
+ document.getElementById('layoutPanelToggle').addEventListener('click',()=>{panel.classList.toggle('is-collapsed');document.getElementById('layoutPanelToggle').textContent=panel.classList.contains('is-collapsed')?'Expand':'Collapse'});
+ document.getElementById('layoutPanelClose').addEventListener('click',()=>panel.classList.add('is-collapsed'));
+ refresh();
+
+ // Free layout builder: select, drag, resize, and export image placement.
+ const controlMode=document.getElementById('controlMode');
+ const ctxMenu=document.getElementById('ctxMenu');
+ const editorSelector='.project-image, .card-image-container, .custom-placed-tile, .custom-placed-text, .project-info, .project-title, .project-details, .garage-heading, .garage-title, .garage-details, .nav-logo, .nav-links, .colossal-text';
+ let selectedTarget=null, dragState=null, clickX=0, clickY=0;
+ const resizeDirections=['nw','n','ne','e','se','s','sw','w'];
+
+ function targets(){return document.querySelectorAll(editorSelector);}
+ function setTargetStyle(target,x,y,width,height){
+  target.dataset.layoutX=Math.round(x); target.dataset.layoutY=Math.round(y);
+  target.dataset.layoutWidth=Math.round(width); target.dataset.layoutHeight=Math.round(height);
+  target.style.width=Math.max(80,width)+'px';
+  target.style.height=Math.max(80,height)+'px';
+  if(target.classList.contains('custom-placed-tile')){target.style.left=Math.round(x)+'px';target.style.top=Math.round(y)+'px';}
+  else {target.style.setProperty('--edit-x',Math.round(x)+'px');target.style.setProperty('--edit-y',Math.round(y)+'px');}
+ }
+ function isTextTarget(target){return target.matches('.custom-placed-text, .project-info, .project-title, .project-details, .garage-heading, .garage-title, .garage-details, .nav-logo, .nav-links, .colossal-text');}
+ function targetRect(target){
+  const rect=target.getBoundingClientRect();
+  return {x:Number(target.dataset.layoutX||0),y:Number(target.dataset.layoutY||0),width:rect.width,height:rect.height};
+ }
+ function addResizeHandles(target){
+  target.querySelectorAll('.resize-handle').forEach(handle=>handle.remove());
+  resizeDirections.forEach(direction=>{
+   const handle=document.createElement('span');
+   handle.className='resize-handle'; handle.dataset.direction=direction; handle.setAttribute('aria-hidden','true');
+   handle.addEventListener('mousedown',e=>{
+    if(controlMode.value!=='builder')return;
+    const rect=targetRect(target);
+    selectTarget(target);
+    dragState={target,startX:e.clientX,startY:e.clientY,rect,resizing:true,direction};
+    e.preventDefault(); e.stopPropagation();
+   });
+   target.appendChild(handle);
+  });
+ }
+ function selectTarget(target){
+  if(selectedTarget){selectedTarget.classList.remove('selected');selectedTarget.querySelectorAll('.resize-handle').forEach(handle=>handle.remove());}
+  selectedTarget=target;
+  if(target){target.classList.add('selected');addResizeHandles(target);}
+ }
+ function persistTarget(target){
+  const rect=target.getBoundingClientRect();
+  target.dataset.layoutWidth=Math.round(rect.width); target.dataset.layoutHeight=Math.round(rect.height);
+ }
+ function bindTarget(target){
+  target.classList.add('layout-target');
+  if(isTextTarget(target))target.classList.add('text-target');
+  target.addEventListener('mousedown',e=>{
+  if(controlMode.value!=='builder'||e.target.closest('.delete-tile'))return;
+   if(e.target.closest('.resize-handle')||target.isContentEditable)return;
+  selectTarget(target); dragState={target,startX:e.clientX,startY:e.clientY,rect:targetRect(target),resizing:false}; e.preventDefault(); e.stopPropagation();
+  });
+  target.addEventListener('dblclick',e=>{
+   if(controlMode.value!=='builder'||!isTextTarget(target))return;
+   target.contentEditable='true'; target.focus();
+   const selection=window.getSelection(); selection.selectAllChildren(target); selection.collapseToEnd();
+   e.preventDefault(); e.stopPropagation();
+  });
+  target.addEventListener('blur',()=>{if(isTextTarget(target))target.contentEditable='false';});
+  target.addEventListener('mouseup',()=>persistTarget(target));
+ }
+ targets().forEach(bindTarget);
+ controlMode.addEventListener('change',e=>{
+  document.body.classList.toggle('builder-active',e.target.value==='builder');
+  if(e.target.value!=='builder')selectTarget(null);
+ });
+ window.addEventListener('mousemove',e=>{
+  if(!dragState)return;
+  const {target,startX,startY,rect}=dragState;
+  if(dragState.resizing){
+   const dx=e.clientX-startX, dy=e.clientY-startY, direction=dragState.direction;
+   let x=rect.x, y=rect.y, width=rect.width, height=rect.height;
+   if(direction.includes('e'))width=rect.width+dx;
+   if(direction.includes('s'))height=rect.height+dy;
+   if(direction.includes('w')){width=rect.width-dx;x=rect.x+dx;}
+   if(direction.includes('n')){height=rect.height-dy;y=rect.y+dy;}
+   if(width>=80&&height>=80)setTargetStyle(target,x,y,width,height);
+  } else {setTargetStyle(target,rect.x+e.clientX-startX,rect.y+e.clientY-startY,rect.width,rect.height);}
+ });
+ window.addEventListener('mouseup',()=>{if(dragState)persistTarget(dragState.target);dragState=null;});
+
+ // Right-click anywhere in builder mode to add movable image or text frames.
+ window.addEventListener('contextmenu',e=>{
+  if(controlMode.value!=='builder')return;
+  e.preventDefault(); clickX=e.clientX; clickY=e.clientY;
+  ctxMenu.style.left=clickX+'px'; ctxMenu.style.top=clickY+'px'; ctxMenu.style.display='block';
+ });
+ window.addEventListener('click',()=>ctxMenu.style.display='none');
+ document.getElementById('ctxAddImage').addEventListener('click',()=>{
+  const url=prompt('Enter Image URL:','https://images.unsplash.com/photo-1545607062-848e4b7b2586?auto=format&fit=crop&q=80&w=800');
+  if(!url)return;
+  const tile=document.createElement('div'); tile.className='custom-placed-tile';
+  tile.innerHTML='<button class="delete-tile" type="button" aria-label="Delete image">×</button><img alt="Added image">';
+  tile.querySelector('img').src=url; document.body.appendChild(tile);
+  setTargetStyle(tile,clickX+window.scrollX-150,clickY+window.scrollY-100,300,200); bindTarget(tile); selectTarget(tile);
+  tile.querySelector('.delete-tile').addEventListener('click',e=>{e.stopPropagation();tile.remove();selectTarget(null);});
+ });
+ document.getElementById('ctxAddText').addEventListener('click',()=>{
+  const text=prompt('Enter text:','Double-click to edit this text');
+  if(text===null)return;
+  const tile=document.createElement('div'); tile.className='custom-placed-text';
+  tile.innerHTML='<button class="delete-tile" type="button" aria-label="Delete text">×</button><span class="custom-text-content"></span>';
+  tile.querySelector('.custom-text-content').textContent=text||'Double-click to edit this text';
+  document.body.appendChild(tile);
+  setTargetStyle(tile,clickX+window.scrollX-150,clickY+window.scrollY-100,300,200); bindTarget(tile); selectTarget(tile);
+  tile.querySelector('.delete-tile').addEventListener('click',e=>{e.stopPropagation();tile.remove();selectTarget(null);});
+ });
+
+ // Export Layout Code
+ document.getElementById('exportLayoutCode').addEventListener('click',()=>{
+  const exported=document.documentElement.cloneNode(true);
+  exported.querySelectorAll('.resize-handle').forEach(node=>node.remove());
+  exported.querySelectorAll('.selected').forEach(node=>node.classList.remove('selected'));
+  exported.querySelectorAll('[contenteditable="true"]').forEach(node=>node.removeAttribute('contenteditable'));
+  const htmlOutput='<!DOCTYPE html>\n'+exported.outerHTML;
+  const blob=new Blob([htmlOutput],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='exclusive-custom-layout.html';
+  a.click();
+ });
+
+ if(typeof gsap!=='undefined'&&typeof ScrollTrigger!=='undefined'){gsap.registerPlugin(ScrollTrigger);gsap.utils.toArray('.project-row').forEach(row=>{const img=row.querySelector('img');gsap.fromTo(img,{y:80,scale:1.15},{scrollTrigger:{trigger:row,start:'top 90%',end:'top 30%',scrub:1,invalidateOnRefresh:true},y:0,scale:1,ease:'power2.out'});});gsap.from('.garage-card',{scrollTrigger:{trigger:'.garage-section',start:'top 80%'},y:60,opacity:0,duration:.8,stagger:.15,ease:'power3.out'});}
+});
+</script>
+</body>
+</html>

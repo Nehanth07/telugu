@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Generous — O · N · E (reference study)</title>
+<style>
+  /* =========================================================================
+     STUDY PAGE (reference only — not for shipping).
+     Shows ONLY the O, N, E letters, each animating EXACTLY as in the real
+     Generous Branding logo animation.
+
+     How: the real Generous sprite (assets/anim/ref-sprite.png, a 314x3500
+     50-frame mask film-strip of the word "GENEROUS") is used as a CSS mask on a
+     solid ink block. For each letter we open a narrow WINDOW over just that
+     letter's columns and shift the full masked block left so the letter sits at
+     the window's origin. The identical reveal (mask-position 0 0 -> 0 100% via
+     transition steps(49) over 1.6s) then plays, so each letter forms precisely
+     the way Generous forms it.
+
+     Letter columns measured from the sprite's final frame (word width = 314):
+        E : x 47..79   N : x 79..114   O : x 184..241
+     ========================================================================= */
+  :root{
+    --ink:#0b0f14;
+    --bg:#f2f0ea;
+    --word-w: 1100px;                 /* virtual full-word width the sprite maps to */
+    --aspect: 0.222929;               /* 70/314 -> one frame's height / word width */
+    --sprite: url("assets/anim/ref-sprite.png");
+    --dur: 1.6s;
+    --steps: 49;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2.4rem; font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  .lab-tag{ letter-spacing:.4em; text-transform:uppercase; font-size:.62rem; color:#8a8577; }
+
+  .row{ display:flex; align-items:flex-end; gap:3.2rem; }
+
+  .letter{ display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .letter .name{ letter-spacing:.3em; font-size:.7rem; color:#8a8577; text-transform:uppercase; }
+
+  /* window over one letter */
+  .win{
+    position:relative; overflow:hidden;
+    width: calc(var(--word-w) * var(--wf));
+    height: calc(var(--word-w) * var(--aspect));
+  }
+  /* the full masked ink block, shifted so this letter starts at the window edge */
+  .win .sprite{
+    position:absolute; top:0;
+    left: calc(-1 * var(--word-w) * var(--x0));
+    width: var(--word-w);
+    height: calc(var(--word-w) * var(--aspect));
+    background: var(--ink);
+    -webkit-mask: var(--sprite) 0 0 / 100% auto no-repeat;
+            mask: var(--sprite) 0 0 / 100% auto no-repeat;
+    -webkit-transition: -webkit-mask var(--dur) steps(var(--steps));
+            transition: mask var(--dur) steps(var(--steps)),
+                        -webkit-mask var(--dur) steps(var(--steps));
+  }
+  .playing .win .sprite{
+    -webkit-mask-position: 0 100%;
+            mask-position: 0 100%;
+  }
+
+  .controls{ display:flex; gap:.9rem; }
+  button{
+    letter-spacing:.15em;text-transform:uppercase;font-size:.72rem;
+    color:#0b0f14;background:transparent;border:1px solid #0b0f14;
+    padding:.7rem 1.4rem;border-radius:999px;cursor:pointer;transition:.2s;
+  }
+  button:hover{ background:#0b0f14;color:#f2f0ea; }
+</style>
+</head>
+<body>
+
+<div class="lab-tag">Generous · O · N · E — exact reference animation</div>
+
+<div class="row" id="row">
+  <div class="letter">
+    <!-- O : columns 184..241 -->
+    <div class="win" style="--x0:0.58599; --wf:0.18153;"><span class="sprite"></span></div>
+    <div class="name">O</div>
+  </div>
+
+  <div class="letter">
+    <!-- N : columns 79..114 -->
+    <div class="win" style="--x0:0.25159; --wf:0.11146;"><span class="sprite"></span></div>
+    <div class="name">N</div>
+  </div>
+
+  <div class="letter">
+    <!-- E : columns 47..79 -->
+    <div class="win" style="--x0:0.14968; --wf:0.10191;"><span class="sprite"></span></div>
+    <div class="name">E</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="replay">Replay</button>
+</div>
+
+<script>
+  const row = document.getElementById('row');
+  function play(){
+    row.classList.remove('playing');
+    void row.offsetWidth;                       // reflow -> restart transitions
+    requestAnimationFrame(()=>requestAnimationFrame(()=>row.classList.add('playing')));
+  }
+  window.addEventListener('load', play);
+  document.getElementById('replay').addEventListener('click', play);
+</script>
+</body>
+</html>
